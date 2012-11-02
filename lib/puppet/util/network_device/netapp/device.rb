@@ -20,4 +20,10 @@ class Puppet::Util::NetworkDevice::Netapp::Device
 
 		@transport ||= NaServer.new(filer)
 		@transport.set_admin_user(username, password)
+		@transport.set_transport_type("HTTPS")
+		
+		# Test interface
+		result = @transport.invoke("system-get-version")
+		version = result.child_get_string("version")
+		Puppet.debug("Puppet::Device::NetApp: Verion = $version")
 
