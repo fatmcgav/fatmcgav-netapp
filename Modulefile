@@ -1,11 +1,9 @@
-name    'shrug-netapp'
-version '0.0.1'
-source 'UNKNOWN'
-author 'shrug'
+name 'fatmcgav-netapp'
+version '0.1.0'
+
+author 'fatmcgav'
 license 'UNKNOWN'
+project_page 'UNKNOWN'
+source 'UNKNOWN'
 summary 'UNKNOWN'
 description 'UNKNOWN'
-project_page 'UNKNOWN'
-
-## Add dependencies, if any:
-# dependency 'username/name', '>= 1.2.0'

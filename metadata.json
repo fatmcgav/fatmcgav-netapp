@@ -1,14 +1,14 @@
 {
-  "name": "shrug-netapp",
-  "author": "shrug",
+  "name": "fatmcgav-netapp",
+  "author": "fatmcgav",
   "description": "UNKNOWN",
   "license": "UNKNOWN",
   "project_page": "UNKNOWN",
   "source": "UNKNOWN",
   "summary": "UNKNOWN",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "checksums": {
-    "Modulefile": "5d96d863fa568a8e57891f6597a9b550",
+    "Modulefile": "f16c65d4d1afabc570ebee2a986f67f7",
     "README.markdown": "ee4534ce8cb32e5213e7380cbd04ad3c",
     "lib\\puppet\\provider\\netapp.rb": "3be2121ab99116c4bc89db21d5d4b54b",
     "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
