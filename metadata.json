@@ -11,7 +11,9 @@
     "Modulefile": "f16c65d4d1afabc570ebee2a986f67f7",
     "README.markdown": "ee4534ce8cb32e5213e7380cbd04ad3c",
     "lib\\puppet\\provider\\netapp.rb": "3be2121ab99116c4bc89db21d5d4b54b",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "e4feab736408c8c5435f437b8aab7599",
     "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
+    "lib\\puppet\\type\\netapp_volume.rb": "0ba8db2b5b88baf0fd80fa52c4e552cb",
     "lib\\puppet\\util\\network_device\\netapp.rb": "b667292c27a681a4d3ab8673b94b2d88",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -40,6 +42,21 @@
       ],
       "name": "netapp_nfs",
       "doc": "Manage Netapp NFS exports"
+    },
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The volume name."
+        }
+      ],
+      "providers": [
+        {
+          "name": "netapp_volume"
+        }
+      ],
+      "name": "netapp_volume",
+      "doc": "Manage Netapp Volume creation, modification and deletion."
     }
   ],
   "dependencies": []
