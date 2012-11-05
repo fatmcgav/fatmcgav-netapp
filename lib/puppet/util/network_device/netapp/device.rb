@@ -10,7 +10,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
 
 		Puppet.debug("Puppet::Device::Netapp: connecting to Netapp device #{filer}.")
 		#This should work to find the configdir
-		configdir = Puppet[:configdir]
+		configdir = Puppet[:confdir]
 		Puppet.debug("Puppet::Device::Netapp: configdir is #{configdir}.")
 
 		configfile = File.read(configdir+"/netapp.yml")

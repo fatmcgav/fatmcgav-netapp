@@ -19,7 +19,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
 
   def exists?
     Puppet.debug("Puppet::Provider::Netapp_volume: checking existance of Netapp Volume #{resource[:name]}")
-    transport.invoke("volume-list-info").include?(resource[:name])
+    @transport.invoke("volume-list-info").include?(resource[:name])
   end
   
 end
