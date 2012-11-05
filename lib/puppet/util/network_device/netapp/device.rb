@@ -36,6 +36,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
       version = result.child_get_string("version")
       Puppet.debug("Puppet::Device::Netapp: Verion = #{version}")
     end
+   end
 		
   def facts
     @facts ||= Puppet::Util::NetworkDevice::Netapp::Facts.new(@transport)
@@ -44,4 +45,5 @@ class Puppet::Util::NetworkDevice::Netapp::Device
     facts
   
   end
+
 end

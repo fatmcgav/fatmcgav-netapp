@@ -1,5 +1,5 @@
 
-module Puppet::Util::NetworkDevice::NetApp
+module Puppet::Util::NetworkDevice::Netapp
   
   
 end
