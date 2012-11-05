@@ -1,6 +1,6 @@
 require 'puppet/util/network_device/netapp'
 
-class Puppet::Util::NetworkDevice::NetApp::Facts
+class Puppet::Util::NetworkDevice::Netapp::Facts
   
   attr_reader :transport
   
@@ -10,7 +10,8 @@ class Puppet::Util::NetworkDevice::NetApp::Facts
   
   def retreive
     
-    
+    @facts = {}
+    @facts
     
   end
 end
