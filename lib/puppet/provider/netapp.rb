@@ -1,6 +1,6 @@
 require 'puppet/util/network_device/netapp/device'
 
-class Puppet::Provider::Netapp < Puppet::Provider
+class Puppet::Provider::NetApp < Puppet::Provider
 
 	attr_accessor :device
 

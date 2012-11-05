@@ -2,7 +2,7 @@ require 'puppet/util/network_device/netapp/facts'
 require 'puppet/util/network_device/netapp/NaServer'
 require 'yaml'
 
-class Puppet::Util::NetworkDevice::Netapp::Device
+class Puppet::Util::NetworkDevice::NetApp::Device
 
 	attr_accessor :filer
 
@@ -25,5 +25,12 @@ class Puppet::Util::NetworkDevice::Netapp::Device
 		# Test interface
 		result = @transport.invoke("system-get-version")
 		version = result.child_get_string("version")
-		Puppet.debug("Puppet::Device::NetApp: Verion = $version")
+		Puppet.debug("Puppet::Device::NetApp: Verion = ${version}")
+		
+end
 
+def facts
+  @facts ||= Puppet::Util::NetworkDevice::NetApp::Facts.new(@transport)
+  facts = @facts.retreive
+
+end
