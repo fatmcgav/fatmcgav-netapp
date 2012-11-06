@@ -23,17 +23,17 @@ Puppet::Type.newtype(:netapp_volume) do
     #newvalues(/^[[:alpha:][:digit:]\.]+$/)
   end
 
-  newparam(:initsize) do
+  newproperty(:initsize) do
     desc "The initial volume size."
      
   end
   
-  newparam(:aggr) do
+  newproperty(:aggr) do
     desc "The aggregate this volume should be created in." 
     
   end
   
-  newparam(:spaceresv) do
+  newproperty(:spaceresv) do
     desc "The space reservation mode."
     
   end
