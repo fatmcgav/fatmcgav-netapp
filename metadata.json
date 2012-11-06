@@ -13,7 +13,7 @@
     "lib\\puppet\\provider\\netapp.rb": "3be2121ab99116c4bc89db21d5d4b54b",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "07d9b9af7760bf35f8bb85fa08c7fc59",
     "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
-    "lib\\puppet\\type\\netapp_volume.rb": "1a125a0c0c93ace0182151f562ea1951",
+    "lib\\puppet\\type\\netapp_volume.rb": "4cf42eefa25628630553f8e63facf082",
     "lib\\puppet\\util\\network_device\\netapp.rb": "d6e7e7315f0fbcd545f0626f8470913e",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -48,9 +48,7 @@
         {
           "name": "name",
           "doc": "The volume name."
-        }
-      ],
-      "properties": [
+        },
         {
           "name": "initsize",
           "doc": "The initial volume size."
