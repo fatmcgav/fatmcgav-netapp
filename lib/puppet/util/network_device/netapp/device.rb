@@ -18,7 +18,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
 		username = filerconfig[:user]
 		password = filerconfig[:password]
     if(username == nil || password == nil)
-      raise Puppet::Error, "Puppet::Devfice::Netapp username or password for #{filer} are null."
+      raise Puppet::Error, "Puppet::Device::Netapp username or password for #{filer} are null."
     else
       Puppet.debug("Puppet::Device::Netapp: config read. User = #{username}.")
     end
