@@ -4,7 +4,7 @@ require 'yaml'
 
 class Puppet::Util::NetworkDevice::Netapp::Device
 
-	attr_accessor :filer
+	attr_accessor :filer, :transport
 
 	def initialize(filer)
 
