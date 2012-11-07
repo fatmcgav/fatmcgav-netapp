@@ -24,11 +24,10 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     # Check if volume is online. 
     result = transport.invoke("volume-list-info", "volume", @resource[:name])
     if(result.results_status == "passed")
-      volumes = out.child_get("volumes")
+      volumes = result.child_get("volumes")
       volume_info = volumes.child_get("volume-info")
       plexes = volume_info.child_get("plexes")
       plex_info = plexes.child_get("plex-info")
-      print (plex_info.sprintf())
       online = plex_info.child_get_string("is-online")
       if(online)
         Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
@@ -38,8 +37,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
           raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} offline failed due to #{result.result_reason} \n."
           return false
         else 
-          Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
-          return true
+          Puppet.debug("Puppet::Provider::Netapp_volume: Volume taken offline successfully. \n")
         end
       end
     end
