@@ -21,6 +21,28 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   def destroy
     Puppet.debug("Puppet::Provider::Netapp_volume: destroying Netapp Volume #{@resource[:name]}")
+    # Check if volume is online. 
+    result = transport.invoke("volume-list-info", "volume", @resource[:name])
+    if(result.results_status == "passed")
+      volumes = out.child_get("volumes")
+      volume_info = volumes.child_get("volume-info")
+      plexes = volume_info.child_get("plexes")
+      plex_info = plexes.child_get("plex-info")
+      print (plex_info.sprintf())
+      online = plex_info.child_get_string("is-online")
+      if(online)
+        Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
+        result = transport.invoke("volume-offline", "name", @resource[:name])
+        if(result.results_status == "failed")
+          Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} offline failed due to #{result.result_reason}. \n")
+          raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} offline failed due to #{result.result_reason} \n."
+          return false
+        else 
+          Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
+          return true
+        end
+      end
+    end
     result = transport.invoke("volume-destroy", "name", @resource[:name])
     Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroy output: " + result.sprintf() + "\n")
     if(result.results_status == "failed")
@@ -38,10 +60,10 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     result = transport.invoke("volume-list-info", "volume", @resource[:name])
     Puppet.debug("Puppet::Provider::Netapp_volume: Vol Info: " + result.sprintf() + "\n")
     if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume doesn't currently exist. \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume doesn't exist. \n")
       return false
     else 
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume already exists. \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume exists. \n")
       return true
     end
 
