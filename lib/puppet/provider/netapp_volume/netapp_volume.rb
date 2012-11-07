@@ -26,7 +26,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     if(vi_result.results_status == "passed")
       volumes = vi_result.child_get("volumes")
       volume_info = volumes.child_get("volume-info")
-      state = plex_info.child_get_string("state")
+      state = volume_info.child_get_string("state")
       if(state == "online")
         Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
         off_result = transport.invoke("volume-offline", "name", @resource[:name])
