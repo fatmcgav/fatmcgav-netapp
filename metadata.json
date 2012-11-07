@@ -11,8 +11,10 @@
     "Modulefile": "f16c65d4d1afabc570ebee2a986f67f7",
     "README.markdown": "ee4534ce8cb32e5213e7380cbd04ad3c",
     "lib\\puppet\\provider\\netapp.rb": "3be2121ab99116c4bc89db21d5d4b54b",
+    "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "2dba5031473b41c068003d7217e118f2",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "1fec994590ac625716c2a802cdef87b3",
     "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
+    "lib\\puppet\\type\\netapp_qtree.rb": "a9670fe0ee5a28079913be195981f1f3",
     "lib\\puppet\\type\\netapp_volume.rb": "78c45666a65a27495ae7048c033347ab",
     "lib\\puppet\\util\\network_device\\netapp.rb": "d6e7e7315f0fbcd545f0626f8470913e",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
@@ -42,6 +44,25 @@
       ],
       "name": "netapp_nfs",
       "doc": "Manage Netapp NFS exports"
+    },
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The qtree name."
+        },
+        {
+          "name": "volume",
+          "doc": "The volume to create qtree against."
+        }
+      ],
+      "providers": [
+        {
+          "name": "netapp_qtree"
+        }
+      ],
+      "name": "netapp_qtree",
+      "doc": "Manage Netapp Qtree creation, modification and deletion."
     },
     {
       "parameters": [
