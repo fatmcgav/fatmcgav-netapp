@@ -21,7 +21,16 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   def destroy
     Puppet.debug("Puppet::Provider::Netapp_volume: destroying Netapp Volume #{@resource[:name]}")
-    #transport[wsdl].delete_node_address(@resource[:name])
+    result = transport.invoke("volume-destroy", "name", @resource[:name])
+    Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroy output: " + result.sprintf() + "\n")
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} wasn't destroyed due to #{result.result_reason}. \n")
+      raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} destroy failed due to #{result.result_reason} \n."
+      return false
+    else 
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
+      return true
+    end
   end
 
   def exists?
