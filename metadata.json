@@ -11,7 +11,7 @@
     "Modulefile": "2a873045ef1e20979b7524e5d9ae3737",
     "README.markdown": "ee4534ce8cb32e5213e7380cbd04ad3c",
     "lib\\puppet\\provider\\netapp.rb": "37c1647c605725d17ac83c54ad6be49b",
-    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "540b2cf05b301923e177591794100a5e",
+    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "94e0bf8c288a29a3f46ff4eae80ef9b7",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "2dba5031473b41c068003d7217e118f2",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "1fec994590ac625716c2a802cdef87b3",
     "lib\\puppet\\type\\netapp_export.rb": "2f68c2b7115aa4a07d90a89a802c9109",
