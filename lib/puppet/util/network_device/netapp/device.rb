@@ -1,3 +1,4 @@
+require 'puppet/util/network_device'
 require 'puppet/util/network_device/netapp/facts'
 require 'puppet/util/network_device/netapp/NaServer'
 require 'yaml'
