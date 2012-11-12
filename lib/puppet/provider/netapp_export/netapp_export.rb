@@ -69,7 +69,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
   end
 
   def exists?
-    Puppet.debug("Puppet::Provider::Netapp_export: checking existance of Netapp export rule #{@resource[:name]} against path #{@resource[:path]}")
+    Puppet.debug("Puppet::Provider::Netapp_export: checking existance of Netapp export rule #{@resource[:name]}.")
     # Query Netapp for export-list against path. 
     result = transport.invoke("nfs-exportfs-list-rules-2", "pathname", @resource[:name])
     # Check result status. 

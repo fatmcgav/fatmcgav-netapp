@@ -30,6 +30,12 @@ Puppet::Type.newtype(:netapp_export) do
   
   newparam(:path) do
     desc "The filer path to export."
+    
+    munge do |value|
+      if value.empty?
+        resource[:name]
+      end
+    end
   end
   
 end
