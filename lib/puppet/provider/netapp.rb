@@ -3,7 +3,7 @@ require 'puppet/util/network_device/netapp/device'
 
 class Puppet::Provider::Netapp < Puppet::Provider
 
-	attr_accessor :device
+  attr_accessor :device
 
   def self.transport
     if Facter.value(:url) then
