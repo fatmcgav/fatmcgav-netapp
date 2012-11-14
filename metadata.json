@@ -14,12 +14,12 @@
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "0a17c8bc8e91333e9c8bb0a5a7579510",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "2dba5031473b41c068003d7217e118f2",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "1fec994590ac625716c2a802cdef87b3",
-    "lib\\puppet\\provider\\netapp_volume_options\\netapp_volume_options.rb": "4f3a1a7d5012e9300b3340934910446d",
+    "lib\\puppet\\provider\\netapp_volume_options\\netapp_volume_options.rb": "9781641ec086eddda481b833182fde54",
     "lib\\puppet\\type\\netapp_export.rb": "20e8ce23b47d4e012b6eddd1ab840a18",
     "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
     "lib\\puppet\\type\\netapp_qtree.rb": "a9670fe0ee5a28079913be195981f1f3",
     "lib\\puppet\\type\\netapp_volume.rb": "78c45666a65a27495ae7048c033347ab",
-    "lib\\puppet\\type\\netapp_volume_options.rb": "bee190653cfaa29ec22b25354eb7d629",
+    "lib\\puppet\\type\\netapp_volume_options.rb": "93f97be259121618c4d1862672a63898",
     "lib\\puppet\\util\\network_device\\netapp.rb": "d6e7e7315f0fbcd545f0626f8470913e",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -126,7 +126,7 @@
         },
         {
           "name": "options",
-          "doc": "Array of options to be applied to this volume."
+          "doc": "Hash of options to be applied to this volume."
         }
       ],
       "providers": [

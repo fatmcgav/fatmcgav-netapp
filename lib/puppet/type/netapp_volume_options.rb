@@ -23,7 +23,10 @@ Puppet::Type.newtype(:netapp_volume_options) do
   end
   
   newparam(:options, :array_matching => :all) do
-    desc "Array of options to be applied to this volume."
+    desc "Hash of options to be applied to this volume."
     
+    validate do |value|
+      raise Puppet::Error, "Puppet::Type::Netapp_volume_options: options property must be a hash." unless value.is_a? Hash
+    end
   end
 end
