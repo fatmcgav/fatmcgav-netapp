@@ -26,7 +26,7 @@ Puppet::Type.newtype(:netapp_snap_reserve) do
     desc "The snap reserve percentage for volume." 
     
     validate do |value|
-      raise Puppet::Error, "Puppet::Type::Netapp_snap_reserve: Reserved percentage must be between 0 and 100." unless value.between?(0,100)
+      raise Puppet::Error, "Puppet::Type::Netapp_snap_reserve: Reserved percentage must be between 0 and 100." unless value.to_i.between?(0,100)
     end    
   end
   

@@ -36,11 +36,11 @@ Puppet::Type.type(:netapp_snap_reserve).provide(:netapp_snap_reserve, :parent =>
       return false
     else 
       # Get a list of qtrees
-      current_reserve = result.child_get("percent-reserved")
+      current_reserve = result.child_get_int("percent-reserved")
       Puppet.debug("Puppet::Provider::Netapp_snap_reserve: Current snap reserve is #{current_reserve}. \n")
       
       # Compare current to requested.
-      if(current_reserve != @resource[:reserved])
+      if(current_reserve != @resource[:reserved].to_i)
         Puppet.debug("Puppet::Provider::Netapp_snap_reserve: Current snap reserve and requested snap reserve do not match. \n")
         return false
       else
