@@ -17,24 +17,31 @@ Puppet::Type.newtype(:netapp_volume) do
     end
   end
   
-  newparam(:name) do
+  newproperty(:volume, :namevar => true) do
     desc "The volume name."
-    isnamevar
   end
 
   newparam(:initsize) do
     desc "The initial volume size."
     defaultto "1g"
-     
   end
   
   newparam(:aggregate) do
     desc "The aggregate this volume should be created in." 
-    
   end
   
   newparam(:spaceres) do
     desc "The space reservation mode."
+  end
+  
+  newproperty(:options, :array_matching => :all) do 
+    desc "The volume options hash."
+    validate do |value|
+      raise Puppet::Error, "Puppet::Type::Netapp_volume: options property must be a hash." unless value.is_a? Hash
+    end
     
+    def insync?(is)
+      
+    end
   end
 end

@@ -17,9 +17,8 @@ Puppet::Type.newtype(:netapp_export) do
     end
   end
   
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The export name."
-    isnamevar
   end
 
   newparam(:persistent) do

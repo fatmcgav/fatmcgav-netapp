@@ -17,9 +17,8 @@ Puppet::Type.newtype(:netapp_qtree) do
     end
   end
   
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The qtree name."
-    isnamevar
   end
 
   newparam(:volume) do

@@ -1,10 +1,10 @@
-Puppet::Type.newtype(:netapp_snap_reserve) do 
-  @doc = "Manage Netapp Snap Reserve percentage setting."
+Puppet::Type.newtype(:netapp_volume_autosize) do 
+  @doc = "Manage Netapp Volume Autosize settings."
   
   apply_to_device
   
   ensurable do
-    desc "Netapp Snap Reserve resource state. Valid values are: present, absent."
+    desc "Netapp Volume autosize resource state. Valid values are: present, absent."
     
     defaultto(:present)
     
@@ -12,9 +12,16 @@ Puppet::Type.newtype(:netapp_snap_reserve) do
       provider.create
     end
     
+    # Alias enabled onto present
+    aliasvalue(:enabled, :present)
+    
     newvalue(:absent) do 
       provider.destroy
     end
+    
+    # Alias disabled onto absent
+    aliasvalue(:disabled, :absent)
+    
   end
   
   newparam(:name, :namevar => true) do
