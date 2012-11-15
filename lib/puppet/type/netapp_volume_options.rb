@@ -17,9 +17,8 @@ Puppet::Type.newtype(:netapp_volume_options) do
     end
   end
   
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The volume name to set options against."
-    isnamevar
   end
   
   newparam(:options, :array_matching => :all) do

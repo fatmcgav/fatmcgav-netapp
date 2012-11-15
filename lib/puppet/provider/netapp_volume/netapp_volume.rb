@@ -6,6 +6,87 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   confine :feature => :posix
   defaultfor :feature => :posix
 
+  def self.instances
+    volumes = transport.invoke("volume-list-info")
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
+      return false
+    else 
+      # Pull list of volume-info blocks
+      volume_list = volumes.child_get("volumes")
+      volume_info = volume_list.children_get()
+      volume_info.each do |volume|
+        vol_name = volume.child_get_string("name")
+        new(:volume => vol_name)
+      end
+    end
+  end
+  
+  # volume getter/setter
+  def volume
+    result = {}
+      
+    volumes = transport.invoke("volume-list-info")
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
+      return false
+    else 
+      # Pull list of volume-info blocks
+      volume_list = volumes.child_get("volumes")
+      volume_info = volume_list.children_get()
+      volume_info.each do |volume|
+        vol_name = volume.child_get_string("name")
+        result[vol_name] = :present
+      end
+    end
+  end
+  
+  def options
+    current_options = {}
+    
+    # Pull list of volume-options
+    output = transport.invoke("volume-options-list-info", "volume", @resource[:name])
+    Puppet.debug("Puppet::Provider::netapp_volume: Vol Options: " + output.sprintf() + "\n")
+    if(output.results_status == "failed")
+      Puppet.debug("Puppet::Provider::netapp_volume: Volume option list failed due to #{output.results_reason}. \n")
+      return false
+    else
+      # Get the options list
+      options = output.child_get("options")
+
+      # Get volume-option-info children
+      volume_options = options.children_get()
+      volume_options.each do |volume_option|
+        # Extract values to put into options hash
+        name = volume_option.child_get_string("name")
+        value = volume_option.child_get_string("value")
+        # Construct hash of current options and corresponding value. 
+        current_options[name] = value
+      end
+    end
+    
+    current_options
+  end
+  
+  def options=(value)
+    
+    setoptions = value
+    setoptions.each do |setting,value|
+      # Itterate through each options pair. 
+      Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting = #{setting}, Value = #{value}")
+      # Call webservice.
+      result = transport.invoke("volume-set-option", "volume", @resource[:name], "option-name", setting, "option-value", value)
+      if(result.results_status == "failed")
+        Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}. \n")
+        raise Puppet::Error, "Puppet::Device::Netapp_volume_options: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}."
+        return false
+      else 
+        Puppet.debug("Puppet::Provider::Netapp_volume_options: Volume Option #{setting} set against Volume #{@resource[:name]}. \n")
+      end
+    end
+    
+  end
+  
   def create
     Puppet.debug("Puppet::Provider::Netapp_volume: creating Netapp Volume #{@resource[:name]} of initial size #{@resource[:initsize]} in Aggregate #{@resource[:aggregate]} using space reserve of #{@resource[:spaceres]}.")
     result = transport.invoke("volume-create", "volume", @resource[:name], "size", @resource[:initsize], "containing-aggr-name", @resource[:aggregate], "space-reserve", @resource[:spaceres])
