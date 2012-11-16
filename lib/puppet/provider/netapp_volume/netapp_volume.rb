@@ -102,7 +102,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   # Autoincrement setter
   def autoincrement=(value)
-    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: setting snap reservation value for Volume #{@resource[:name]}")
+    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: setting auto-increment for Volume #{@resource[:name]}")
     
     # Query Netapp to create qtree against volume. . 
     result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement])

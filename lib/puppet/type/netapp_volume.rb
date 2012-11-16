@@ -57,12 +57,12 @@ Puppet::Type.newtype(:netapp_volume) do
     end
   end
   
-  newproperty(:autoincrement) do 
+  newproperty(:autoincrement, :boolean => true) do 
     desc "Should volume size auto-increment be enabled? Defaults to `true`."
     
     newvalues(:true, :false)
     
-    defaultto :true
+    defaultto true
     
   end
   
