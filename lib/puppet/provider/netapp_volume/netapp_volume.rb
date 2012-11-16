@@ -65,7 +65,18 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       end
     end
     
-    current_options
+    # Pull out matching option name list
+    set_options = @resource[:options]
+    matched_options = set_options.keys & current_options.keys
+    
+    # Create new results array
+    result = {}
+    matched_options.each do |name|
+      Puppet.debug("Puppet::Provider::netapp_volume_options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
+      results[name] = [current_options[name]]
+    end
+    
+    result
   end
   
   def options=(value)
