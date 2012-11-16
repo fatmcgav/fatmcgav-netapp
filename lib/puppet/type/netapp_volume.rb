@@ -38,6 +38,13 @@ Puppet::Type.newtype(:netapp_volume) do
     
   end
   
+  newproperty(:snapreserve) do 
+    desc "The percentage of space to reserve for snapshots."
+    validate do |value|
+      raise Puppet::Error, "Puppet::Type::Netapp_volume: Reserved percentage must be between 0 and 100." unless value.to_i.between?(0,100)
+    end 
+  end
+  
   newproperty(:options, :array_matching => :all) do 
     desc "The volume options hash."
     validate do |value|

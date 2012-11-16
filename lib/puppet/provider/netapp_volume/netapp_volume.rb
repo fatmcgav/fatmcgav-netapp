@@ -41,6 +41,44 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
   end
   
+  # Snap reserve getter
+  def snapreserve
+    Puppet.debug("Puppet::Provider::Netapp_volume: checking current snap reservation value for Volume #{@resource[:name]}")
+    
+    # Pull back current snap-reserve value.
+    result = transport.invoke("snapshot-get-reserve", "volume", @resource[:name])
+    # Check result status. 
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume: snapshot-get-reserve failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume snapshot-get-reserve failed due to #{result.results_reason} \n."
+      return false
+    else 
+      # Get a list of qtrees
+      current_reserve = result.child_get_int("percent-reserved")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Current snap reserve is #{current_reserve}. \n")
+      
+      # Return current_reserve value
+      current_reserve
+    end
+  end
+  
+  # Snap reserve setter
+  def snapreserve=(value)
+    Puppet.debug("Puppet::Provider::Netapp_volume: setting snap reservation value for Volume #{@resource[:name]}")
+    
+    # Query Netapp to create qtree against volume. . 
+    result = transport.invoke("snapshot-set-reserve", "volume", @resource[:name], "percentage", @resource[:snapreserve])
+    # Check result status. 
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Setting of snap reserve for volume #{@resource[:name]} failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume: Setting of snap reserve for volume #{@resource[:name]} failed due to #{result.results_reason} \n."
+      return false
+    else 
+      Puppet.debug("Puppet::Provider::Netapp_volume: Snap reserve set succesfully for volume #{@resource[:name]}. \n")
+      return true
+    end
+  end
+  
   # Volume options getter
   def options
     Puppet.debug("Puppet::Provider::Netapp_volume: checking current volume options for Volume #{@resource[:name]}")
