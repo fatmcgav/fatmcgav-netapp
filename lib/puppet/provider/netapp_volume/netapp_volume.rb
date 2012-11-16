@@ -79,6 +79,44 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
   end
   
+  # Autoincremenet getter
+  def autoincrement
+    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement: checking current auto increment value for Volume #{@resource[:name]}")
+    
+    # Pull back current snap-reserve value.
+    result = transport.invoke("volume-autosize-get", "volume", @resource[:name])
+    # Check result status. 
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement: volume-autosize-get failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume volume-autosize-get failed due to #{result.results_reason} \n."
+      return false
+    else 
+      # Get a list of qtrees
+      autoincrement = result.child_get_string("is-enabled")
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement: Current autoincrement setting is #{autoincrement}. \n")
+      
+      # Return current_reserve value
+      autoincrement
+    end
+  end
+  
+  # Autoincrement setter
+  def autoincrement=(value)
+    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: setting snap reservation value for Volume #{@resource[:name]}")
+    
+    # Query Netapp to create qtree against volume. . 
+    result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement])
+    # Check result status. 
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Setting of auto-increment for volume #{@resource[:name]} failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume autoincrement=: Setting of auto-increment for volume #{@resource[:name]} failed due to #{result.results_reason} \n."
+      return false
+    else 
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Auto-increment set succesfully for volume #{@resource[:name]}. \n")
+      return true
+    end
+  end
+  
   # Volume options getter
   def options
     Puppet.debug("Puppet::Provider::Netapp_volume options: checking current volume options for Volume #{@resource[:name]}")
