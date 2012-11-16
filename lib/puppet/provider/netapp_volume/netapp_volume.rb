@@ -22,7 +22,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
   end
   
-  # volume getter/setter
+  # Volume info getter
   def volume
     result = {}
       
@@ -41,7 +41,11 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
   end
   
+  # Volume options getter
   def options
+    Puppet.debug("Puppet::Provider::Netapp_volume: checking current volume options for Volume #{@resource[:name]}")
+    
+    # Create hash for current_options
     current_options = {}
     
     # Pull list of volume-options
@@ -75,19 +79,20 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       Puppet.debug("Puppet::Provider::netapp_volume_options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
       result[name] = current_options[name] unless current_options[name] == set_options[name]
     end
-    Puppet.debug("Puppet::Provider::Netapp_volume: Result is a hash. \n") if result.is_a? Hash
-    Puppet.debug("Puppet::Provider::Netapp_volume: Returning result... \n")
+    Puppet.debug("Puppet::Provider::Netapp_volume: Returning result hash... \n")
     result
   end
   
+  # Volume options setter. 
   def options=(value)
     
     Puppet.debug("Puppet::Provider::Netapp_volume: Got to options= setter... \n")
+    # Value is an array, so pull out first value. 
     opts = value.first
     opts.each do |setting,value|
       # Itterate through each options pair. 
       Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting = #{setting}, Value = #{value}")
-      # Call webservice.
+      # Call webservice to set volume option.
       result = transport.invoke("volume-set-option", "volume", @resource[:name], "option-name", setting, "option-value", value)
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}. \n")
@@ -97,11 +102,15 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
         Puppet.debug("Puppet::Provider::Netapp_volume_options: Volume Option #{setting} set against Volume #{@resource[:name]}. \n")
       end
     end
+    # All volume options set successfully. 
+    Puppet.debug("Puppet::Provider::Netapp_volume_options: Volume Options set against Volume #{@resource[:name]}. \n")
+    return true
     
   end
   
   def create
     Puppet.debug("Puppet::Provider::Netapp_volume: creating Netapp Volume #{@resource[:name]} of initial size #{@resource[:initsize]} in Aggregate #{@resource[:aggregate]} using space reserve of #{@resource[:spaceres]}.")
+    # Call webservice to create volume. 
     result = transport.invoke("volume-create", "volume", @resource[:name], "size", @resource[:initsize], "containing-aggr-name", @resource[:aggregate], "space-reserve", @resource[:spaceres])
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} creation failed due to #{result.results_reason}. \n")
@@ -110,7 +119,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     else 
       Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} created successfully. Setting options... \n")
       self.options = @resource[:options]
-      #return true
+      return true
     end
   end
   
@@ -148,8 +157,10 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
 
   def exists?
     Puppet.debug("Puppet::Provider::Netapp_volume: checking existance of Netapp Volume #{@resource[:name]}")
+    # Call webservice to list volume info
     result = transport.invoke("volume-list-info", "volume", @resource[:name])
     Puppet.debug("Puppet::Provider::Netapp_volume: Vol Info: " + result.sprintf() + "\n")
+    # Check response status. 
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume: Volume doesn't exist. \n")
       return false
