@@ -46,7 +46,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     
     # Pull list of volume-options
     output = transport.invoke("volume-options-list-info", "volume", @resource[:name])
-    Puppet.debug("Puppet::Provider::netapp_volume: Vol Options: " + output.sprintf() + "\n")
+    Puppet.debug("Puppet::Provider::Netapp_volume: Vol Options: " + output.sprintf() + "\n")
     if(output.results_status == "failed")
       Puppet.debug("Puppet::Provider::netapp_volume: Volume option list failed due to #{output.results_reason}. \n")
       return false
@@ -66,23 +66,25 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
     
     # Pull out matching option name list
-    set_options = @resource[:options]
+    set_options = @resource[:options].first
     matched_options = set_options.keys & current_options.keys
     
-    # Create new results array
+    # Create new results hash 
     result = {}
     matched_options.each do |name|
       Puppet.debug("Puppet::Provider::netapp_volume_options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
-      results[name] = [current_options[name]]
+      result[name] = current_options[name] unless current_options[name] == set_options[name]
     end
-    
+    Puppet.debug("Puppet::Provider::Netapp_volume: Result is a hash. \n") if result.is_a? Hash
+    Puppet.debug("Puppet::Provider::Netapp_volume: Returning result... \n")
     result
   end
   
   def options=(value)
     
-    setoptions = value
-    setoptions.each do |setting,value|
+    Puppet.debug("Puppet::Provider::Netapp_volume: Got to options= setter... \n")
+    opts = value.first
+    opts.each do |setting,value|
       # Itterate through each options pair. 
       Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting = #{setting}, Value = #{value}")
       # Call webservice.
@@ -106,8 +108,9 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} creation failed due to #{result.results_reason} \n."
       return false
     else 
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} created successfully. \n")
-      return true
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} created successfully. Setting options... \n")
+      self.options = @resource[:options]
+      #return true
     end
   end
   
