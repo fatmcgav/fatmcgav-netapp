@@ -43,19 +43,19 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   # Snap reserve getter
   def snapreserve
-    Puppet.debug("Puppet::Provider::Netapp_volume: checking current snap reservation value for Volume #{@resource[:name]}")
+    Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: checking current snap reservation value for Volume #{@resource[:name]}")
     
     # Pull back current snap-reserve value.
     result = transport.invoke("snapshot-get-reserve", "volume", @resource[:name])
     # Check result status. 
     if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: snapshot-get-reserve failed due to #{result.results_reason}. \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: snapshot-get-reserve failed due to #{result.results_reason}. \n")
       raise Puppet::Error, "Puppet::Provider::Netapp_volume snapshot-get-reserve failed due to #{result.results_reason} \n."
       return false
     else 
       # Get a list of qtrees
       current_reserve = result.child_get_int("percent-reserved")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Current snap reserve is #{current_reserve}. \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: Current snap reserve is #{current_reserve}. \n")
       
       # Return current_reserve value
       current_reserve
@@ -64,24 +64,24 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   # Snap reserve setter
   def snapreserve=(value)
-    Puppet.debug("Puppet::Provider::Netapp_volume: setting snap reservation value for Volume #{@resource[:name]}")
+    Puppet.debug("Puppet::Provider::Netapp_volume snapreserve=: setting snap reservation value for Volume #{@resource[:name]}")
     
     # Query Netapp to create qtree against volume. . 
     result = transport.invoke("snapshot-set-reserve", "volume", @resource[:name], "percentage", @resource[:snapreserve])
     # Check result status. 
     if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Setting of snap reserve for volume #{@resource[:name]} failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Provider::Netapp_volume: Setting of snap reserve for volume #{@resource[:name]} failed due to #{result.results_reason} \n."
+      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve=: Setting of snap reserve for volume #{@resource[:name]} failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume snapreserve=: Setting of snap reserve for volume #{@resource[:name]} failed due to #{result.results_reason} \n."
       return false
     else 
-      Puppet.debug("Puppet::Provider::Netapp_volume: Snap reserve set succesfully for volume #{@resource[:name]}. \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve=: Snap reserve set succesfully for volume #{@resource[:name]}. \n")
       return true
     end
   end
   
   # Volume options getter
   def options
-    Puppet.debug("Puppet::Provider::Netapp_volume: checking current volume options for Volume #{@resource[:name]}")
+    Puppet.debug("Puppet::Provider::Netapp_volume options: checking current volume options for Volume #{@resource[:name]}")
     
     # Create hash for current_options
     current_options = {}
@@ -90,7 +90,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     output = transport.invoke("volume-options-list-info", "volume", @resource[:name])
     Puppet.debug("Puppet::Provider::Netapp_volume: Vol Options: " + output.sprintf() + "\n")
     if(output.results_status == "failed")
-      Puppet.debug("Puppet::Provider::netapp_volume: Volume option list failed due to #{output.results_reason}. \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume options: Volume option list failed due to #{output.results_reason}. \n")
       return false
     else
       # Get the options list
@@ -114,34 +114,34 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     # Create new results hash 
     result = {}
     matched_options.each do |name|
-      Puppet.debug("Puppet::Provider::netapp_volume_options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
+      Puppet.debug("Puppet::Provider::Netapp_volume options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
       result[name] = current_options[name]
     end
-    Puppet.debug("Puppet::Provider::Netapp_volume: Returning result hash... \n")
+    Puppet.debug("Puppet::Provider::Netapp_volume options: Returning result hash... \n")
     result
   end
   
   # Volume options setter. 
   def options=(value)
     
-    Puppet.debug("Puppet::Provider::Netapp_volume: Got to options= setter... \n")
+    Puppet.debug("Puppet::Provider::Netapp_volume options=: Got to options= setter... \n")
     # Value is an array, so pull out first value. 
     opts = value.first
     opts.each do |setting,value|
       # Itterate through each options pair. 
-      Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting = #{setting}, Value = #{value}")
+      Puppet.debug("Puppet::Provider::Netapp_volume options=: Setting = #{setting}, Value = #{value}")
       # Call webservice to set volume option.
       result = transport.invoke("volume-set-option", "volume", @resource[:name], "option-name", setting, "option-value", value)
       if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_volume_options: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_volume_options: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}."
+        Puppet.debug("Puppet::Provider::Netapp_volume options=: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}. \n")
+        raise Puppet::Error, "Puppet::Device::Netapp_volume options=: Setting of Volume Option #{setting} to #{value} failed against volume #{@resource[:name]} due to #{result.results_reason}."
         return false
       else 
-        Puppet.debug("Puppet::Provider::Netapp_volume_options: Volume Option #{setting} set against Volume #{@resource[:name]}. \n")
+        Puppet.debug("Puppet::Provider::Netapp_volume  options=: Volume Option #{setting} set against Volume #{@resource[:name]}. \n")
       end
     end
     # All volume options set successfully. 
-    Puppet.debug("Puppet::Provider::Netapp_volume_options: Volume Options set against Volume #{@resource[:name]}. \n")
+    Puppet.debug("Puppet::Provider::Netapp_volume options=: Volume Options set against Volume #{@resource[:name]}. \n")
     return true
     
   end
