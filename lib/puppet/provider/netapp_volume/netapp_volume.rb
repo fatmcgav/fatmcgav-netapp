@@ -77,7 +77,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     result = {}
     matched_options.each do |name|
       Puppet.debug("Puppet::Provider::netapp_volume_options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
-      result[name] = current_options[name] unless current_options[name] == set_options[name]
+      result[name] = current_options[name]
     end
     Puppet.debug("Puppet::Provider::Netapp_volume: Returning result hash... \n")
     result
