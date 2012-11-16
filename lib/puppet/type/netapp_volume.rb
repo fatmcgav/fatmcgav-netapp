@@ -34,14 +34,5 @@ Puppet::Type.newtype(:netapp_volume) do
     desc "The space reservation mode."
   end
   
-  newproperty(:options, :array_matching => :all) do 
-    desc "The volume options hash."
-    validate do |value|
-      raise Puppet::Error, "Puppet::Type::Netapp_volume: options property must be a hash." unless value.is_a? Hash
-    end
-    
-    def insync?(is)
-      
-    end
-  end
+
 end
