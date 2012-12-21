@@ -33,6 +33,12 @@ Puppet::Type.newtype(:netapp_volume) do
     
   end
   
+  newparam(:languagecode) do
+    desc "The language code this volume should use."
+    defaultto "en" 
+    
+  end
+  
   newparam(:spaceres) do
     desc "The space reservation mode."
     
