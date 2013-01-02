@@ -204,7 +204,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       # Get the schedule information list
       keys.each do |key|
           # Get the value for key. 
-          value = out.child_get_int(key)
+          value = output.child_get_int(key)
           Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Key = #{key} Value = #{value.to_s} \n")
           current_schedule[key] = value
       end
