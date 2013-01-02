@@ -17,7 +17,7 @@
     "lib\\puppet\\type\\netapp_export.rb": "978b71aa0ed641749d8eb5024401e12c",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "13c8471e0bc8fe648073750cb5cc5d6c",
-    "lib\\puppet\\type\\netapp_volume.rb": "b893c587300c5d7060dd1ba8403eede4",
+    "lib\\puppet\\type\\netapp_volume.rb": "2472a526b5a5a2b25c890bdac71e02a3",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -114,7 +114,7 @@
       ],
       "properties": [
         {
-          "name": "volume",
+          "name": "name",
           "doc": "The volume name."
         },
         {

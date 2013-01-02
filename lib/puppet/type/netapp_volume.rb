@@ -17,7 +17,7 @@ Puppet::Type.newtype(:netapp_volume) do
     end
   end
   
-  newproperty(:volume, :namevar => true) do
+  newproperty(:name) do
     desc "The volume name."
   end
 
