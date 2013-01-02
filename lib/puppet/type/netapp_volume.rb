@@ -17,17 +17,20 @@ Puppet::Type.newtype(:netapp_volume) do
     end
   end
   
-  newproperty(:name) do
+  newparam(:name) do
     desc "The volume name."
+    isnamevar
   end
 
   newparam(:initsize) do
     desc "The initial volume size."
     defaultto "1g"
+     
   end
   
   newparam(:aggregate) do
     desc "The aggregate this volume should be created in." 
+    
   end
   
   newparam(:languagecode) do
@@ -38,6 +41,7 @@ Puppet::Type.newtype(:netapp_volume) do
   
   newparam(:spaceres) do
     desc "The space reservation mode."
+    
   end
   
   newproperty(:snapreserve) do 

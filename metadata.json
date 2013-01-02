@@ -14,10 +14,10 @@
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "dbc0054ebfbd573a18228ac6a56dd2b2",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "35c9bece66bfcb4cc61315fd91889610",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "de43b37c41513dcec0c4a8f5476e6dea",
-    "lib\\puppet\\type\\netapp_export.rb": "978b71aa0ed641749d8eb5024401e12c",
+    "lib\\puppet\\type\\netapp_export.rb": "d044a807690a3aab0260d8652f0d1d27",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
-    "lib\\puppet\\type\\netapp_qtree.rb": "13c8471e0bc8fe648073750cb5cc5d6c",
-    "lib\\puppet\\type\\netapp_volume.rb": "2472a526b5a5a2b25c890bdac71e02a3",
+    "lib\\puppet\\type\\netapp_qtree.rb": "daa4dd461422f98b5d903468a7ba48a4",
+    "lib\\puppet\\type\\netapp_volume.rb": "d2926b7aae3b422d70f7c88a59111904",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -96,6 +96,10 @@
     {
       "parameters": [
         {
+          "name": "name",
+          "doc": "The volume name."
+        },
+        {
           "name": "initsize",
           "doc": "The initial volume size."
         },
@@ -113,10 +117,6 @@
         }
       ],
       "properties": [
-        {
-          "name": "name",
-          "doc": "The volume name."
-        },
         {
           "name": "snapreserve",
           "doc": "The percentage of space to reserve for snapshots."
