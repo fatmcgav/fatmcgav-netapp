@@ -14,13 +14,10 @@
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "dbc0054ebfbd573a18228ac6a56dd2b2",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "35c9bece66bfcb4cc61315fd91889610",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "de43b37c41513dcec0c4a8f5476e6dea",
-    "lib\\puppet\\provider\\netapp_volume_autosize\\netapp_volume_autosize.rb": "fc3b97815cd483b81c604e8389ce7016",
     "lib\\puppet\\type\\netapp_export.rb": "978b71aa0ed641749d8eb5024401e12c",
-    "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "13c8471e0bc8fe648073750cb5cc5d6c",
     "lib\\puppet\\type\\netapp_volume.rb": "b893c587300c5d7060dd1ba8403eede4",
-    "lib\\puppet\\type\\netapp_volume_autosize.rb": "f382f899735e291119dc6af1cc925fcc",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -56,22 +53,6 @@
       ],
       "name": "netapp_export",
       "doc": "Manage Netapp NFS Export creation, modification and deletion."
-    },
-    {
-      "parameters": [
-        {
-          "name": "path",
-          "doc": "The export path."
-        }
-      ],
-      "properties": [
-        {
-          "name": "definition",
-          "doc": "The export definition"
-        }
-      ],
-      "name": "netapp_nfs",
-      "doc": "Manage Netapp NFS exports"
     },
     {
       "parameters": [
@@ -156,20 +137,6 @@
       ],
       "name": "netapp_volume",
       "doc": "Manage Netapp Volume creation, modification and deletion."
-    },
-    {
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "The volume name."
-        },
-        {
-          "name": "reserved",
-          "doc": "The snap reserve percentage for volume."
-        }
-      ],
-      "name": "netapp_volume_autosize",
-      "doc": "Manage Netapp Volume Autosize settings."
     }
   ],
   "dependencies": []
