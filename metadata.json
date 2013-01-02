@@ -13,17 +13,14 @@
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "dbc0054ebfbd573a18228ac6a56dd2b2",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "35c9bece66bfcb4cc61315fd91889610",
-    "lib\\puppet\\provider\\netapp_snap_reserve\\netapp_snap_reserve.rb": "fc3b97815cd483b81c604e8389ce7016",
-    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "87685a62c54554748ca030cfdebcbe9d",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "de43b37c41513dcec0c4a8f5476e6dea",
     "lib\\puppet\\provider\\netapp_volume_autosize\\netapp_volume_autosize.rb": "fc3b97815cd483b81c604e8389ce7016",
-    "lib\\puppet\\provider\\netapp_volume_options\\netapp_volume_options.rb": "2686cc010dc9535a9daafadc782d2743",
     "lib\\puppet\\type\\netapp_export.rb": "978b71aa0ed641749d8eb5024401e12c",
     "lib\\puppet\\type\\netapp_nfs.rb": "64baf693457862f6661c7e496f5a7f31",
+    "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "13c8471e0bc8fe648073750cb5cc5d6c",
-    "lib\\puppet\\type\\netapp_snap_reserve.rb": "92fec30eaa1cc2e46beb13b1fc024e6a",
-    "lib\\puppet\\type\\netapp_volume.rb": "bc02777c34a5f316b413bfedeff54f88",
+    "lib\\puppet\\type\\netapp_volume.rb": "b893c587300c5d7060dd1ba8403eede4",
     "lib\\puppet\\type\\netapp_volume_autosize.rb": "f382f899735e291119dc6af1cc925fcc",
-    "lib\\puppet\\type\\netapp_volume_options.rb": "eb33798e6776f518f18cd5a9b1456840",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -79,6 +76,26 @@
     {
       "parameters": [
         {
+          "name": "withpath",
+          "doc": "Whether to show the full object path. Defaults to false."
+        },
+        {
+          "name": "name",
+          "doc": "An arbitrary tag for your own reference; the name of the message."
+        }
+      ],
+      "properties": [
+        {
+          "name": "message",
+          "doc": "The message to be sent to the log."
+        }
+      ],
+      "name": "netapp_notify",
+      "doc": "Sends an arbitrary message to the agent run-time log."
+    },
+    {
+      "parameters": [
+        {
           "name": "name",
           "doc": "The qtree name."
         },
@@ -98,31 +115,16 @@
     {
       "parameters": [
         {
-          "name": "name",
-          "doc": "The volume name."
-        },
-        {
-          "name": "reserved",
-          "doc": "The snap reserve percentage for volume."
-        }
-      ],
-      "providers": [
-        {
-          "name": "netapp_snap_reserve"
-        }
-      ],
-      "name": "netapp_snap_reserve",
-      "doc": "Manage Netapp Snap Reserve percentage setting."
-    },
-    {
-      "parameters": [
-        {
           "name": "initsize",
           "doc": "The initial volume size."
         },
         {
           "name": "aggregate",
           "doc": "The aggregate this volume should be created in."
+        },
+        {
+          "name": "languagecode",
+          "doc": "The language code this volume should use."
         },
         {
           "name": "spaceres",
@@ -133,6 +135,18 @@
         {
           "name": "volume",
           "doc": "The volume name."
+        },
+        {
+          "name": "snapreserve",
+          "doc": "The percentage of space to reserve for snapshots."
+        },
+        {
+          "name": "autoincrement",
+          "doc": "Should volume size auto-increment be enabled? Defaults to `true`."
+        },
+        {
+          "name": "options",
+          "doc": "The volume options hash."
         }
       ],
       "providers": [
@@ -156,25 +170,6 @@
       ],
       "name": "netapp_volume_autosize",
       "doc": "Manage Netapp Volume Autosize settings."
-    },
-    {
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "The volume name to set options against."
-        },
-        {
-          "name": "options",
-          "doc": "Hash of options to be applied to this volume."
-        }
-      ],
-      "providers": [
-        {
-          "name": "netapp_volume_options"
-        }
-      ],
-      "name": "netapp_volume_options",
-      "doc": "Manage Netapp Volume Option modification."
     }
   ],
   "dependencies": []
