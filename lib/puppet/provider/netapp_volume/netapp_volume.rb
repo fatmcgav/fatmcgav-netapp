@@ -253,7 +253,21 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       return false
     else 
       Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} created successfully. Setting options... \n")
-      self.options = @resource[:options]
+      
+      # Update other attributes after resource creation. 
+      methods = [
+        'autoincrement',
+        'options',
+        'snapreserve',
+        'snapschedule'
+        ]
+      
+      # Itterate through methods. 
+      methods.each do |method|
+        self.send("#{method}=", resource[method.to_sym]) if resource[method.to_sym]
+      end
+      #self.options = @resource[:options]
+      
       return true
     end
   end

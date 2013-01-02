@@ -100,9 +100,9 @@ Puppet::Type.newtype(:netapp_volume) do
   end
   
   newproperty(:snapschedule, :array_matching=> :all) do 
-    desc "The volume snapshot scheudle."
+    desc "The volume snapshot schedule."
     validate do |value|
-      raise Puppet::Error, "Puppet::Type::Netapp_volume: options property must be a hash." unless value.is_a? Hash
+      raise Puppet::Error, "Puppet::Type::Netapp_volume: snapschedule property must be a hash." unless value.is_a? Hash
     end
     
     def insync?(is)
