@@ -184,6 +184,65 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     
   end
   
+  # Snapshot schedule getter.
+  def snapschedule
+    Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: checking current volume snapshot schedule for Volume #{@resource[:name]}")
+        
+    # Create hash for current_options
+    current_schedule = {}
+      
+    # Create array of schedule keys we're interested in. 
+    keys = ['minutes', 'hours', 'days', 'weeks']
+    
+    # Pull list of volume-options
+    output = transport.invoke("snapshot-get-schedule", "volume", @resource[:name])
+    Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Vol Snapshot Schedule: " + output.sprintf() + "\n")
+    if(output.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Volume snapshot schedule get failed due to #{output.results_reason}. \n")
+      return false
+    else
+      # Get the schedule information list
+      keys.each do |key|
+          # Get the value for key. 
+          value = out.child_get_int(key)
+          Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Key = #{key} Value = #{value.to_s} \n")
+          current_schedule[key] = value
+      end
+    end
+    
+    # Return current_schedule hash. 
+    current_schedule
+  end
+  
+# Snapshot schedule setter.
+  def snapschedule=(value)
+    Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Got to snapschedule= setter... \n")
+    # Value is an array, so pull out first value. 
+    snapschedule = value.first
+    
+    # Create a new NaElement object
+    opts = NaElement.new('snapshot-set-schedule')
+    opts.child_add_string('volume', @resource[:name])
+    
+    # Itterate through snapschedule hash
+    snapschedule.each do |key,value|
+      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Key = #{key}, Value = #{value}. \n")
+      opts.child_add_string(key, value.to_s)
+    end
+    
+    # Call webservice to set schedule. 
+    results = transport.invoke_elem(opts)
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Setting of Snapschedule failed for volume #{@resource[:name]} due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Device::Netapp_volume snapschedule=: Setting of Snapschedule failed for volume #{@resource[:name]} due to #{result.results_reason}."
+      return false
+    else 
+      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Snapshedule successfully set against Volume #{@resource[:name]}. \n")
+    end
+    return true
+  end
+  
+  # Volume create. 
   def create
     Puppet.debug("Puppet::Provider::Netapp_volume: creating Netapp Volume #{@resource[:name]} of initial size #{@resource[:initsize]} in Aggregate #{@resource[:aggregate]} using space reserve of #{@resource[:spaceres]}.")
     # Call webservice to create volume. 
