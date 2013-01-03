@@ -231,7 +231,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
     
     # Call webservice to set schedule. 
-    results = transport.invoke_elem(opts)
+    result = transport.invoke_elem(opts)
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Setting of Snapschedule failed for volume #{@resource[:name]} due to #{result.results_reason}. \n")
       raise Puppet::Error, "Puppet::Device::Netapp_volume snapschedule=: Setting of Snapschedule failed for volume #{@resource[:name]} due to #{result.results_reason}."
