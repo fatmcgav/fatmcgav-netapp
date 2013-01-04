@@ -59,6 +59,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       
       # Return volume_size value
       volume_size
+    end
   end
   
   # Volume initsize setter
