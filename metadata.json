@@ -17,7 +17,7 @@
     "lib\\puppet\\type\\netapp_export.rb": "d044a807690a3aab0260d8652f0d1d27",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "daa4dd461422f98b5d903468a7ba48a4",
-    "lib\\puppet\\type\\netapp_volume.rb": "05ed2c2858d47b661fbf12193a43e4a6",
+    "lib\\puppet\\type\\netapp_volume.rb": "9f9f128c75d898f46f4e49198feec200",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -100,10 +100,6 @@
           "doc": "The volume name."
         },
         {
-          "name": "initsize",
-          "doc": "The initial volume size."
-        },
-        {
           "name": "aggregate",
           "doc": "The aggregate this volume should be created in."
         },
@@ -117,6 +113,10 @@
         }
       ],
       "properties": [
+        {
+          "name": "initsize",
+          "doc": "The initial volume size."
+        },
         {
           "name": "snapreserve",
           "doc": "The percentage of space to reserve for snapshots."

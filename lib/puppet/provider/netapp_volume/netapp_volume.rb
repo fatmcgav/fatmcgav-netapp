@@ -41,6 +41,43 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
   end
   
+  # Volume initsize getter
+  def initsize
+    Puppet.debug("Puppet::Provider::Netapp_volume initsize: checking current size for Volume #{@resource[:name]}")
+        
+    # Pull back current volume-size.
+    result = transport.invoke("volume-size", "volume", @resource[:name])
+    # Check result status. 
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume initsize: volume-size failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume volume-size failed due to #{result.results_reason} \n."
+      return false
+    else 
+      # Get the volume_size value. 
+      volume_size = result.child_get_string("volume-size")
+      Puppet.debug("Puppet::Provider::Netapp_volume initsize: Current volume size is #{volume_size}. \n")
+      
+      # Return volume_size value
+      volume_size
+  end
+  
+  # Volume initsize setter
+  def initsize=(value)
+    Puppet.debug("Puppet::Provider::Netapp_volume initsize=: setting volume size for Volume #{@resource[:name]}")
+        
+    # Query Netapp to update volume size. 
+    result = transport.invoke("volume-size", "volume", @resource[:name], "new-size", @resource[:initsize])
+    # Check result status. 
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume initsize=: Setting of volume size for volume #{@resource[:name]} failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume initsize=: Setting of volume size for volume #{@resource[:name]} failed due to #{result.results_reason} \n."
+      return false
+    else 
+      Puppet.debug("Puppet::Provider::Netapp_volume initsize=: Volume size set succesfully for volume #{@resource[:name]}. \n")
+      return true
+    end
+  end
+  
   # Snap reserve getter
   def snapreserve
     Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: checking current snap reservation value for Volume #{@resource[:name]}")
@@ -53,7 +90,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       raise Puppet::Error, "Puppet::Provider::Netapp_volume snapshot-get-reserve failed due to #{result.results_reason} \n."
       return false
     else 
-      # Get a list of qtrees
+      # Get the current precent-reserved value. 
       current_reserve = result.child_get_int("percent-reserved")
       Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: Current snap reserve is #{current_reserve}. \n")
       
@@ -66,7 +103,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   def snapreserve=(value)
     Puppet.debug("Puppet::Provider::Netapp_volume snapreserve=: setting snap reservation value for Volume #{@resource[:name]}")
     
-    # Query Netapp to create qtree against volume. . 
+    # Query Netapp to set snap-reserve value. 
     result = transport.invoke("snapshot-set-reserve", "volume", @resource[:name], "percentage", @resource[:snapreserve])
     # Check result status. 
     if(result.results_status == "failed")
@@ -83,7 +120,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   def autoincrement
     Puppet.debug("Puppet::Provider::Netapp_volume autoincrement: checking current auto increment value for Volume #{@resource[:name]}")
     
-    # Pull back current snap-reserve value.
+    # Pull back current autosize status. 
     result = transport.invoke("volume-autosize-get", "volume", @resource[:name])
     # Check result status. 
     if(result.results_status == "failed")
@@ -91,11 +128,11 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       raise Puppet::Error, "Puppet::Provider::Netapp_volume volume-autosize-get failed due to #{result.results_reason} \n."
       return false
     else 
-      # Get a list of qtrees
+      # Get the current autoincrement status. 
       autoincrement = result.child_get_string("is-enabled")
       Puppet.debug("Puppet::Provider::Netapp_volume autoincrement: Current autoincrement setting is #{autoincrement}. \n")
       
-      # Return current_reserve value
+      # Return autoincrement value. 
       autoincrement
     end
   end
@@ -104,7 +141,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   def autoincrement=(value)
     Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: setting auto-increment for Volume #{@resource[:name]}")
     
-    # Query Netapp to create qtree against volume. . 
+    # Query Netapp to set autosize status. 
     result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement])
     # Check result status. 
     if(result.results_status == "failed")

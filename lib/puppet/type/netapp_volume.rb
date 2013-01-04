@@ -22,7 +22,7 @@ Puppet::Type.newtype(:netapp_volume) do
     isnamevar
   end
 
-  newparam(:initsize) do
+  newproperty(:initsize) do
     desc "The initial volume size."
     defaultto "1g"
      
