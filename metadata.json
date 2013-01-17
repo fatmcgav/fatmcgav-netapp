@@ -13,7 +13,7 @@
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "dbc0054ebfbd573a18228ac6a56dd2b2",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "35c9bece66bfcb4cc61315fd91889610",
-    "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "2f8f38fb17f13f849d9ff97f54ac672d",
+    "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "640537dd292a0655649ab2681876746a",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "f09be0ac43ee5002e7c661fc8243022e",
     "lib\\puppet\\type\\netapp_export.rb": "d044a807690a3aab0260d8652f0d1d27",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
