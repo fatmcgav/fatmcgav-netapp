@@ -19,7 +19,6 @@ Puppet::Type.newtype(:netapp_snapmirror) do
   
   newparam(:source_location) do
     desc "The source location."
-    isnamevar
   end
 
   newparam(:source_snapshot) do
@@ -28,6 +27,7 @@ Puppet::Type.newtype(:netapp_snapmirror) do
   
   newparam(:destination_location) do
     desc "The destination location."
+    isnamevar
   end
   
   newparam(:destination_snapshot) do
