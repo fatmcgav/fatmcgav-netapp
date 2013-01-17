@@ -187,7 +187,7 @@ Puppet::Type.newtype(:netapp_snapmirror_schedule) do
       Can be single value between 0 and 59, 
       comma seperated list (1,7,14), 
       range (2-10),
-      range with divider (1-24/3),
+      range with divider (1-59/3),
       * to match all
       or - to match none. "
   end
@@ -230,14 +230,13 @@ Puppet::Type.newtype(:netapp_snapmirror_schedule) do
   
   newparam(:restart) do
     desc "The restart mode to use when transfer interrupted. Allowed values are: always, never and restart."
-    newvalues(:always, :never, :restart)
-    defaultto "restart"
+    newvalues(:always, :never, :default)
+    defaultto "default"
   end
   
   newparam(:connection_mode) do
     desc "The connection mode to use between source and destination."
     newvalues(:inet, :inet6)
-    defaultto "inet"
   end
   
 end

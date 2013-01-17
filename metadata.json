@@ -14,13 +14,13 @@
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "dbc0054ebfbd573a18228ac6a56dd2b2",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "35c9bece66bfcb4cc61315fd91889610",
     "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "640537dd292a0655649ab2681876746a",
-    "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "66ecb4b99c982fed19234ee28e2a9726",
+    "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "2e15b5ecf6ce2b79d957bbd5fe9b8117",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "f09be0ac43ee5002e7c661fc8243022e",
     "lib\\puppet\\type\\netapp_export.rb": "d044a807690a3aab0260d8652f0d1d27",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "daa4dd461422f98b5d903468a7ba48a4",
     "lib\\puppet\\type\\netapp_snapmirror.rb": "51dd69ce451bc955279872a53682ab9d",
-    "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "0142748192fc52336a55b615676b7f6e",
+    "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "8da7d3bece515d2bb88a87ce62e99148",
     "lib\\puppet\\type\\netapp_volume.rb": "9f9f128c75d898f46f4e49198feec200",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
@@ -144,7 +144,7 @@
         },
         {
           "name": "minutes",
-          "doc": "The minutes in the hour for schedule to be set.\n      Can be single value between 0 and 59, \n      comma seperated list (1,7,14), \n      range (2-10),\n      range with divider (1-24/3),\n      * to match all\n      or - to match none. "
+          "doc": "The minutes in the hour for schedule to be set.\n      Can be single value between 0 and 59, \n      comma seperated list (1,7,14), \n      range (2-10),\n      range with divider (1-59/3),\n      * to match all\n      or - to match none. "
         },
         {
           "name": "hours",

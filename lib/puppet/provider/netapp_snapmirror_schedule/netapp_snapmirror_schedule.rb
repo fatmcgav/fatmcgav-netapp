@@ -91,7 +91,7 @@ Puppet::Type.type(:netapp_snapmirror_schedule).provide(:netapp_snapmirror_schedu
         
           if (source_location == @resource[:source_location] && destination_location == @resource[:destination_location])
             Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: schedule exists for destination_location #{@resource[:destination_location]} and source_location #{@resource[:source_location]}. Checking schedule. ")
-            if (minutes == @resource[:minutes] && hours == @resource[:hours] && dow == @resource[:days_of_week] && dom == @resource[:days_of_month])
+            if (minutes == @resource[:minutes].to_s && hours == @resource[:hours].to_s && dow == @resource[:days_of_week].to_s && dom == @resource[:days_of_month].to_s)
               Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: schedule matches for #{@resource[:destination_location]}.")
               return true
             end
