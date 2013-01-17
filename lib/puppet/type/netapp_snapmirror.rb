@@ -22,19 +22,19 @@ Puppet::Type.newtype(:netapp_snapmirror) do
     isnamevar
   end
 
-  newproperty(:source_snapshot) do
+  newparam(:source_snapshot) do
     desc "The source snapshot name"
   end
   
-  newproperty(:destination_location) do
+  newparam(:destination_location) do
     desc "The destination location."
   end
   
-  newproperty(:destination_snapshot) do
+  newparam(:destination_snapshot) do
     desc "The destination snapshot."
   end
   
-  newproperty(:max_transfer_rate) do 
+  newparam(:max_transfer_rate) do 
     desc "The max transfer rate, in KB/s. Defaults to unlimited."
   end
   
