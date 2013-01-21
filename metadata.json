@@ -58,9 +58,9 @@
     "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "d01dd57e163b2476c5c969fdaef1f05c"
     "spec\\spec_helper.rb": "368c4ee7c8bacf6b8ae4126e8c0f19d5",
     "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
-    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "ec1f7373653d0db6c387b51945871ed4",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "48baa04d9c4855f134aa04b3e34a0b6c",
     "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "566eb5c05754769a762ec2d059af933c",
-    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "d01dd57e163b2476c5c969fdaef1f05c"
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "e3d92043d60fac19d5e3a552e826481d"
   },
   "types": [
     {

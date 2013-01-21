@@ -37,14 +37,14 @@ describe res_type do
       :default  => "aggr1",
     },
     :languagecode => {
-      :valid    => ["en", "en_US"],
+      :valid    => [:en, :en_US],
       :invalid  => "test",
-      :default  => "en",
+      :default  => :en,
     },
     :spaceres => {
-      :valid    => ["none", "file", "volume"],
+      :valid    => [:none, :file, :volume],
       :invalid  => "invalid",
-      :default  => "none",
+      :default  => :none,
     }
   }
   it_should_behave_like "a puppet type", parameter_tests, res_type_name, res_name

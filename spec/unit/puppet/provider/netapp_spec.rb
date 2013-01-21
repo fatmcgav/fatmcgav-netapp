@@ -7,8 +7,7 @@ describe Puppet::Provider::Netapp do
   describe "transport method" do
       it "with uninitialized device and no url should return error" do
         expect { netapp_prov_obj.transport }.to(
-          raise_error(Puppet::Error, "Puppet::Util::NetworkDevice::Netapp: device " \
-          "not initialized.")
+          raise_error(Puppet::Error, /^Puppet::Util::NetworkDevice::Netapp: device not initialized/)
         )
       end
   
