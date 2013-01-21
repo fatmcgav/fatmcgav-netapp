@@ -24,6 +24,7 @@ describe res_type do
     res_type.key_attributes.should == [:name]
   end
 
+  # Simple parameter tests
   parameter_tests = {
     :name => {
       :valid	=> ["/vol/v_volume/q_volume", "/vol/v_test/q_test"],
