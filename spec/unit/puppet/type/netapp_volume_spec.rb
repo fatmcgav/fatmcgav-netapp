@@ -1,8 +1,8 @@
 require 'spec_helper'
  
-res_type_name = :netapp_export
+res_type_name = :netapp_volume
 res_type = Puppet::Type.type(res_type_name)
-res_name = '/vol/v_test/q_test'
+res_name = 'test_volume'
 
 describe res_type do
 
@@ -27,19 +27,24 @@ describe res_type do
   # Simple parameter tests
   parameter_tests = {
     :name => {
-      :valid    => ["/vol/v_volume/q_volume", "/vol/v_test/q_test"],
-      :invalid 	=> ["test","/vol/v_volume/q_volume#"],
-      :default 	=> "/vol/v_test/q_test", 
+      :valid    => ["test_volume", "volume01"],
+      :invalid  => "invalid_volume#",
+      :default  => "test_volume", 
     },
-    :persistent => {
-      :valid    => [:true, :false],
-      :invalid	=> "test",
-      :default 	=> :true,
+    :aggregate => {
+      :valid    => ["aggr1", "aggr01"],
+      :invalid  => "aggr#",
+      :default  => "aggr1",
     },
-    :path => {
-      :valid    => ["/vol/v_volume/q_volume", "/vol/v_test/q_test"],
-      :invalid 	=> ["test","/vol/v_volume/q_volume#"],
-      :default 	=> "/vol/v_test/q_test",
+    :languagecode => {
+      :valid    => ["en", "en_US"],
+      :invalid  => "test",
+      :default  => "en",
+    },
+    :spaceres => {
+      :valid    => ["none", "file", "volume"],
+      :invalid  => "invalid",
+      :default  => "none",
     }
   }
   it_should_behave_like "a puppet type", parameter_tests, res_type_name, res_name

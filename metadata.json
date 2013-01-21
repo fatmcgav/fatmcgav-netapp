@@ -1,15 +1,16 @@
 {
   "name": "fatmcgav-netapp",
   "author": "fatmcgav",
-  "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nCurrently supported fuctions:\n* Volume creation and deletion\n* Qtree creation and deletion",
-  "license": "UNKNOWN",
+  "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nCurrently supported fuctions:\n* Volume creation and deletion\n* Qtree creation and deletion\n* Export creation and deletion\n* Snapmirror creation and deletion\n* Snapmirror schedule creation and deletion. ",
+  "license": "Apache License, version 2.0",
   "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
-  "source": "https://github.com/fatmcgav/fatmcgav-netapp",
-  "summary": "NetApp Puppet Network Device support",
+  "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
+  "summary": "NetApp Network Device support for Puppet",
   "version": "0.1.0",
   "checksums": {
-    "Modulefile": "d3f3dea22ef920fbc73a39a680b2d23d",
+    "Modulefile": "c9334380f7754177ebc11ae1cf08c791",
     "README.markdown": "ee4534ce8cb32e5213e7380cbd04ad3c",
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "75544fe3f3669b413ada6473d1c1e806",
     "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "a9f02c8aae5fd4d36445dc5db3f03bcb",
@@ -19,15 +20,19 @@
     "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
     "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "c31ce47f9b8cc1e2d9231bd9fa17b9fb",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "f09be0ac43ee5002e7c661fc8243022e",
-    "lib\\puppet\\type\\netapp_export.rb": "d044a807690a3aab0260d8652f0d1d27",
+    "lib\\puppet\\type\\netapp_export.rb": "54b1626d110e79cb39ca5b16beee01c6",
     "lib\\puppet\\type\\netapp_group.rb": "2927db3a66e9caf7dc268a8062dffb12",
+    "lib\\puppet\\type\\netapp_export.rb": "54b1626d110e79cb39ca5b16beee01c6",
+    "lib\\puppet\\type\\netapp_export.rb": "54b1626d110e79cb39ca5b16beee01c6",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "daa4dd461422f98b5d903468a7ba48a4",
     "lib\\puppet\\type\\netapp_role.rb": "3896c5db5a20e4dd34a9ff467003dfba",
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
     "lib\\puppet\\type\\netapp_user.rb": "7ab7ebfa33900eaf4ab77f6262342901",
-    "lib\\puppet\\type\\netapp_volume.rb": "9f9f128c75d898f46f4e49198feec200",
+    "lib\\puppet\\type\\netapp_volume.rb": "4cda8d25c2277c54f283febd72985179",
+    "lib\\puppet\\type\\netapp_volume.rb": "4cda8d25c2277c54f283febd72985179",
+    "lib\\puppet\\type\\netapp_volume.rb": "4cda8d25c2277c54f283febd72985179",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -37,23 +42,40 @@
     "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "b0c912dc663d5251219bbad895455834",
     "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
     "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
-    "spec\\spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
-    "tests\\init.pp": "3c8aceec6c350bd5d1904f5002261cb1"
+    "spec\\spec_helper.rb": "368c4ee7c8bacf6b8ae4126e8c0f19d5",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "566eb5c05754769a762ec2d059af933c",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "b6a4f8acf71ff1e2fcb786af0377dac4"
+    "spec\\spec_helper.rb": "368c4ee7c8bacf6b8ae4126e8c0f19d5",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "ec1f7373653d0db6c387b51945871ed4",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "566eb5c05754769a762ec2d059af933c",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "d01dd57e163b2476c5c969fdaef1f05c"
+    "spec\\spec_helper.rb": "368c4ee7c8bacf6b8ae4126e8c0f19d5",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "ec1f7373653d0db6c387b51945871ed4",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "566eb5c05754769a762ec2d059af933c",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "d01dd57e163b2476c5c969fdaef1f05c"
+    "spec\\spec_helper.rb": "368c4ee7c8bacf6b8ae4126e8c0f19d5",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "ec1f7373653d0db6c387b51945871ed4",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "566eb5c05754769a762ec2d059af933c",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "d01dd57e163b2476c5c969fdaef1f05c"
   },
   "types": [
     {
       "parameters": [
         {
           "name": "name",
-          "doc": "The export name."
+          "doc": "The export name. Valid format is /vol/[volume_name](/[qtree_name])."
         },
         {
           "name": "persistent",
-          "doc": "Persistent export?"
+          "doc": "Should this be a persistent export? Defaults to true."
         },
         {
           "name": "path",
-          "doc": "The filer path to export."
+          "doc": "The filer path to export. If not specified, uses :name value"
         }
       ],
       "providers": [
@@ -274,7 +296,7 @@
       "parameters": [
         {
           "name": "name",
-          "doc": "The volume name."
+          "doc": "The volume name. Valid characters are a-z, 1-9 \u0026 underscore."
         },
         {
           "name": "aggregate",
@@ -292,7 +314,7 @@
       "properties": [
         {
           "name": "initsize",
-          "doc": "The initial volume size."
+          "doc": "The initial volume size. Valid format is 1-9(kmgt)."
         },
         {
           "name": "snapreserve",
