@@ -1,5 +1,5 @@
-Puppet::Type.newtype(:netapp_user) do 
-  @doc = "Manage Netapp User creation, modification and deletion."
+Puppet::Type.newtype(:netapp_group) do 
+  @doc = "Manage Netapp Group creation, modification and deletion."
   
   apply_to_device
   
