@@ -28,7 +28,12 @@ Puppet::Type.newtype(:netapp_user) do
   end
   
   newparam(:password) do
-    desc "The user password."
+    desc "The user password. Minimum length is 8 characters, must contain atleast one number."
+    validate do |value|
+      unless value =~ /^\S{8,}$/
+	raise ArgumentError, "%s is not a valid password." % value
+      end
+    end
   end
   
   newparam(:fullname) do
@@ -43,7 +48,7 @@ Puppet::Type.newtype(:netapp_user) do
   newparam(:comment) do
     desc "User comment"
     validate do |value|
-      unless value =~ /^[\w\s]+$/
+      unless value =~ /^[\w\s\.]+$/
          raise ArgumentError, "%s is not a valid comment." % value
       end
     end
@@ -51,7 +56,7 @@ Puppet::Type.newtype(:netapp_user) do
   
   newparam(:passminage) do
     desc "Number of days that this user's password must be active before the user can change it. Default value is 0. "
-    defaultto 0
+    defaultto '0'
     validate do |value|
       unless value =~ /^\d+$/
          raise ArgumentError, "%s is not a valid password minimum age." % value

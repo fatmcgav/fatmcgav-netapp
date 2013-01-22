@@ -42,7 +42,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     user_groups = NaElement.new("useradmin-groups")
     
     # Split the :groups value into array and itterate populating user_groups element.
-    groups = @resource[:name].split(",")
+    groups = @resource[:groups].split(",")
     groups.each do |group|
       group_info = NaElement.new("useradmin-group-info")
       group_info.child_add_string("name", group)
