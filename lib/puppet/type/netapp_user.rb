@@ -31,7 +31,7 @@ Puppet::Type.newtype(:netapp_user) do
     desc "The user password. Minimum length is 8 characters, must contain atleast one number."
     validate do |value|
       unless value =~ /^\S{8,}$/
-	raise ArgumentError, "%s is not a valid password." % value
+        raise ArgumentError, "%s is not a valid password." % value
       end
     end
   end
