@@ -30,7 +30,7 @@ Puppet::Type.newtype(:netapp_group) do
   newparam(:comment) do
     desc "Group comment"
     validate do |value|
-      unless value =~ /^[\w\s]+$/
+      unless value =~ /^[\w\s\.]+$/
          raise ArgumentError, "%s is not a valid comment." % value
       end
     end
