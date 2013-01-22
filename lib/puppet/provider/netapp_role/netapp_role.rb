@@ -12,6 +12,8 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     # Start to construct request
     cmd = NaElement.new("useradmin-role-add")
     
+    # Add useradmin-user container
+    role = NaElement.new("useradmin-role")
     # Construct useradmin-role-info
     role_info = NaElement.new("useradmin-role-info")
     # Add values
@@ -34,7 +36,8 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     
     # Put it all togeather
     role_info.child_add(role_capabilities)
-    cmd.child_add(role_info)
+    role.child_add(role_info)
+    cmd.child_add(role)
     
     # Invoke the constructed request
     result = transport.invoke_elem(cmd)

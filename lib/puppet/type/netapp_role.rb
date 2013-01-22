@@ -30,7 +30,7 @@ Puppet::Type.newtype(:netapp_role) do
   newparam(:comment) do
     desc "Role comment"
     validate do |value|
-      unless value =~ /^[\w\s]+$/
+      unless value =~ /^[\w\s\.]+$/
          raise ArgumentError, "%s is not a valid comment." % value
       end
     end
