@@ -60,7 +60,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     # Check result status
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} creation failed due to #{result.results_reason} \n."
+      raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} creation failed due to #{result.results_reason}. \n."
       return false
     else
       # Passed above, therefore must of worked. 
@@ -70,13 +70,13 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   end
   
   def destroy
-    Puppet.debug("Puppet::Provider::Netapp_user: destroying Netapp export rule #{@resource[:username]} against path #{@resource[:path]}")
+    Puppet.debug("Puppet::Provider::Netapp_user: destroying Netapp user #{@resource[:username]}. \n")
     # Query Netapp to remove export against path. 
     result = transport.invoke("useradmin-user-delete", "user-name", @resource[:username])
     # Check result returned. 
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} wasn't deleted due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} wasn't deleted due to #{result.results_reason} \n."
+      raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} wasn't deleted due to #{result.results_reason}. \n."
       return false
     else 
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} deleted successfully. \n")
@@ -85,7 +85,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   end
 
   def exists?
-    Puppet.debug("Puppet::Provider::Netapp_user: checking existance of Netapp user account #{@resource[:username]}.")
+    Puppet.debug("Puppet::Provider::Netapp_user: checking existance of Netapp user account #{@resource[:username]}. \n")
     # Query Netapp for export-list against path. 
     result = transport.invoke("useradmin-user-list", "user-name", @resource[:username])
     # Check result status. 
