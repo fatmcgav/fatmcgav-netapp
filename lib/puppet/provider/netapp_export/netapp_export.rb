@@ -48,7 +48,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
         return false
       end
       # Passed above, therefore must of worked. 
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} created successfully on path #{@resource[:path]}. \n Response was: #{result.sprintf()} \n")
+      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} created successfully on path #{@resource[:path]}. \n")
       return true
     end
   end
@@ -59,8 +59,8 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
     result = transport.invoke("nfs-exportfs-delete-rules", "pathnames", "pathname", @resource[:name], "persistent", @resource[:persistent])
     # Check result returned. 
     if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} wasn't destroyed due to #{destroy_result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} destroy failed due to #{destroy_result.results_reason} \n."
+      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} wasn't destroyed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} destroy failed due to #{result.results_reason} \n."
       return false
     else 
       Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} destroyed successfully. \n")
