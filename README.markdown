@@ -1,21 +1,53 @@
-# netapp module
-Warning: This is not yet functional, don't bother downloading it. :)
+# NetApp network device module
+Warning: This project is work in progress, therefore some functions may not work as expected. 
+
+## Overview 
+The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.
+
+The Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode. 
+However it may well be compatible with other OnTap versions. 
+
+## Features
+The following items are supported:
+* Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.
+* Creation, modification and deletion of QTrees. 
+* Creation, modification and deletion of NFS Exports. 
+* Creation, modification and deletion of users, groups and roles. 
+* Creation of snapmirror relationships. 
+* Creation of snapmirror schedules. 
+
+## Requirements
+Since we can not directly install a puppet agent on the NetApp filers, it can either be managed from the Puppet Master server, 
+or through an intermediate proxy system running a puppet agent. The requirement for the proxy system:
+
+* Puppet 2.7.+
+* NetApp Manageability SDK Ruby libraries
+
+### NetApp Manageability SDK
+The NetApp Ruby libraries are contained within the NetApp Manageability SDK, currently at v5.0, which is available to download directly from [NetApp](http://support.netapp.com/NOW/cgi-bin/software?product=NetApp+Manageability+SDK&platform=All+Platforms). 
+Please note you need a NetApp NOW account in order to be able to download the SDK.  
+
+Once you have downloaded and extracted the SDK, the following files need to be copied onto your Puppet Master:
+../lib/ruby/NetApp > fatmcgav-netapp/lib/puppet/util/network_device/netapp/
+
+## Usage
+
+TBC
 
 ## TODO
+The following items are yet to be implemented:
 
-The following items encapsulate most of my use case
-* Support adding/deleting/modifying nfs exports
-* Support creating/deleting/updating volumes and qtrees
-* quota support
-
-Currently depending on the ruby libraries from Netapp Manageability SDK, which are not redistributable.
-
-It shouldn't be too hard to add other features if there's a demand
+* Quota support
 * Data Fabric Manager support
 * Support adding/deleting/modifying cifs shares
-* Local user support
 * LDAP and/or AD configuration
 * ???
 
-Structure, layout and basic concepts shamelessly stolen from the [puppetlabs/f5](https://github.com/puppetlabs/puppetlabs-f5) module
+## Development
 
+The following section applies to developers of this module only.
+
+### Testing
+
+You will need to install the NetApp Manageability SDK Ruby libraries for most of the tests to work.
+How to obtain these files is detailed in the NetApp Manageability SDK section above. 
