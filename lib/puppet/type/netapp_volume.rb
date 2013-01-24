@@ -55,6 +55,7 @@ Puppet::Type.newtype(:netapp_volume) do
   newparam(:spaceres) do
     desc "The space reservation mode."
     newvalues(:none, :file, :volume)
+    defaultto :none
   end
   
   newproperty(:snapreserve) do 
