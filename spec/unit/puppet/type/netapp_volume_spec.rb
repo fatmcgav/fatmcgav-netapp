@@ -34,7 +34,6 @@ describe res_type do
     :aggregate => {
       :valid    => ["aggr1", "aggr01"],
       :invalid  => "aggr#",
-      :default  => "aggr1",
     },
     :languagecode => {
       :valid    => [:en, :en_US],

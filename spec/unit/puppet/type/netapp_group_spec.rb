@@ -8,7 +8,7 @@ describe res_type do
 
   let(:provider) {
     prov = stub 'provider'
-    prov.stubs(:name).returns(res_type_name)
+    prov.stubs(:groupname).returns(res_type_name)
     prov
   }
   let(:res_type) {
@@ -17,11 +17,11 @@ describe res_type do
     val
   }
   let(:resource) {
-    res_type.new({:name => res_name})
+    res_type.new({:groupname => res_name})
   }
 
-  it 'should have :name be its namevar' do
-    res_type.key_attributes.should == [:name]
+  it 'should have :groupname be its namevar' do
+    res_type.key_attributes.should == [:groupname]
   end
 
   # Simple parameter tests
