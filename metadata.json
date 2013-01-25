@@ -32,7 +32,7 @@
     "lib\\puppet\\util\\network_device\\netapp\\device.rb": "b0534810097b5120485f7a9aafbc117a",
     "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "b0c912dc663d5251219bbad895455834",
     "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
-    "manifests\\volume.pp": "fde2acebad0935a69646a83a56d294af",
+    "manifests\\vqe.pp": "c7b3bc5bcea73944ac078fb58157162d",
     "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
     "spec\\spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
     "tests\\init.pp": "3c8aceec6c350bd5d1904f5002261cb1"
