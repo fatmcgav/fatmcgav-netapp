@@ -9,7 +9,7 @@
   "version": "0.1.0",
   "checksums": {
     "Modulefile": "d3f3dea22ef920fbc73a39a680b2d23d",
-    "README.markdown": "f4db69dc9ca1c40a400af19dc153a033",
+    "README.markdown": "fe5625d266c58f69c0c2041abdba3d9b",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "75544fe3f3669b413ada6473d1c1e806",
     "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "a9f02c8aae5fd4d36445dc5db3f03bcb",
