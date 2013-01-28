@@ -114,7 +114,7 @@ Puppet::Type.newtype(:netapp_volume) do
   end
   
   newproperty(:snapschedule, :array_matching=> :all) do 
-    desc "The volume snapshot schedule."
+    desc "The volume snapshot schedule, in a hash format. Valid keys are: 'minutes', 'hours', 'days', 'weeks', 'which-hours', 'which-minutes'. "
     validate do |value|
       raise Puppet::Error, "Puppet::Type::Netapp_volume: snapschedule property must be a hash." unless value.is_a? Hash
     end

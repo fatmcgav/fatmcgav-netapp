@@ -230,7 +230,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     current_schedule = {}
       
     # Create array of schedule keys we're interested in. 
-    keys = ['minutes', 'hours', 'days', 'weeks']
+    keys = ['minutes', 'hours', 'days', 'weeks', 'which-hours', 'which-days']
     
     # Pull list of volume-options
     output = transport.invoke("snapshot-get-schedule", "volume", @resource[:name])
@@ -242,8 +242,8 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       # Get the schedule information list
       keys.each do |key|
           # Get the value for key. 
-          value = output.child_get_int(key)
-          Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Key = #{key} Value = #{value.to_s} \n")
+          value = output.child_get_string(key)
+          Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Key = #{key} Value = #{value} \n")
           current_schedule[key] = value
       end
     end

@@ -19,7 +19,7 @@
     "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
     "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
     "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "c31ce47f9b8cc1e2d9231bd9fa17b9fb",
-    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "f09be0ac43ee5002e7c661fc8243022e",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "02ebde96ac0488bcf7bf2a32fdba1630",
     "lib\\puppet\\type\\netapp_export.rb": "54b1626d110e79cb39ca5b16beee01c6",
     "lib\\puppet\\type\\netapp_group.rb": "2927db3a66e9caf7dc268a8062dffb12",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
@@ -28,7 +28,7 @@
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
     "lib\\puppet\\type\\netapp_user.rb": "7ab7ebfa33900eaf4ab77f6262342901",
-    "lib\\puppet\\type\\netapp_volume.rb": "c0ebd6d920f62c00e087ae4654b4f046",
+    "lib\\puppet\\type\\netapp_volume.rb": "8d4090a0e2e138f97d05fdf732599efd",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
@@ -317,7 +317,7 @@
         },
         {
           "name": "snapschedule",
-          "doc": "The volume snapshot schedule."
+          "doc": "The volume snapshot schedule, in a hash format. Valid keys are: \u0027minutes\u0027, \u0027hours\u0027, \u0027days\u0027, \u0027weeks\u0027, \u0027which-hours\u0027, \u0027which-minutes\u0027. "
         }
       ],
       "providers": [
