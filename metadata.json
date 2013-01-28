@@ -1,14 +1,14 @@
 {
   "name": "fatmcgav-netapp",
   "author": "fatmcgav",
-  "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nCurrently supported fuctions:\n* Volume creation and deletion\n* Qtree creation and deletion\n* Export creation and deletion\n* Snapmirror creation and deletion\n* Snapmirror schedule creation and deletion. ",
+  "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nOverview:\nThe NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.\n\nThe Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode. \nHowever it may well be compatible with other OnTap versions. \n\nFeatures:\nThe following items are supported:\n* Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.\n* Creation, modification and deletion of QTrees. \n* Creation, modification and deletion of NFS Exports. \n* Creation, modification and deletion of users, groups and roles. \n* Creation of snapmirror relationships. \n* Creation of snapmirror schedules. ",
   "license": "Apache License, version 2.0",
   "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
   "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
   "summary": "NetApp Network Device support for Puppet",
   "version": "0.1.0",
   "checksums": {
-    "Modulefile": "606c8fb628c93e255699cb5a135e1f06",
+    "Modulefile": "c989a4263b28a4c53b1df2b7edaa686c",
     "README.markdown": "fe5625d266c58f69c0c2041abdba3d9b",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
