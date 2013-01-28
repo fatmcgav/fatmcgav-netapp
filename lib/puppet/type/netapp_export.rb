@@ -18,19 +18,29 @@ Puppet::Type.newtype(:netapp_export) do
   end
   
   newparam(:name) do
-    desc "The export name."
+    desc "The export name. Valid format is /vol/[volume_name](/[qtree_name])."
     isnamevar
+    validate do |value|
+    	unless value =~ /^(\/[\w]+){2,3}$/
+        	raise ArgumentError, "%s is not a valid export name." % value
+        end
+    end
   end
 
   newparam(:persistent) do
-    desc "Persistent export?"
+    desc "Should this be a persistent export? Defaults to true."
     newvalues(:true, :false)
     defaultto(:true)
   end
   
   newparam(:path) do
-    desc "The filer path to export."
+    desc "The filer path to export. If not specified, uses :name value"
     defaultto { @resource[:name] }
+    validate do |value|
+    	unless value =~ /^(\/[\w]+){2,3}$/
+        	raise ArgumentError, "%s is not a valid export filer path." % value
+        end
+    end
   end
   
 end

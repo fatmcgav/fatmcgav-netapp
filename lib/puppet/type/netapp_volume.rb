@@ -18,30 +18,44 @@ Puppet::Type.newtype(:netapp_volume) do
   end
   
   newparam(:name) do
-    desc "The volume name."
+    desc "The volume name. Valid characters are a-z, 1-9 & underscore."
     isnamevar
+    validate do |value|
+      unless value =~ /^\w+$/
+        raise ArgumentError, "%s is not a valid volume name." % value
+      end
+    end
   end
 
   newproperty(:initsize) do
-    desc "The initial volume size."
+    desc "The initial volume size. Valid format is 1-9(kmgt)."
     defaultto "1g"
-     
+    validate do |value|
+      unless value =~ /^\d+[kmgt]$/
+         raise ArgumentError, "%s is not a valid initial volume size." % value
+      end
+    end
   end
   
   newparam(:aggregate) do
     desc "The aggregate this volume should be created in." 
-    
+    validate do |value|
+      unless value =~ /^\w+$/
+        raise ArgumentError, "%s is not a valid aggregate name." % value
+      end
+    end
   end
   
   newparam(:languagecode) do
     desc "The language code this volume should use."
     defaultto "en" 
-    
+    newvalues(:C, :ar, :cs, :da, :de, :en, :en_US, :es, :fi, :fr, :he, :hr, :hu, :it, :ja, :ja_v1, :ko, :no, :nl, :pl, :pt, :ro, :ru, :sk, :sl, :sv, :tr, :zh, :zh_TW)
   end
   
   newparam(:spaceres) do
     desc "The space reservation mode."
-    
+    newvalues(:none, :file, :volume)
+    defaultto :none
   end
   
   newproperty(:snapreserve) do 
