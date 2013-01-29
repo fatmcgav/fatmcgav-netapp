@@ -35,7 +35,43 @@ Replace the line: *require 'NaElement'* with *require File.dirname(__FILE__) + "
 
 ## Usage
 
-TBC
+### Device Setup
+In order to configure a NetApp network device, the device *type* should be `netapp`. 
+You can either configure the device within */etc/puppet/device.conf* or, preferrably, create an individual config file for each device within a subfolder. 
+This is preferred as it allows you to run puppet against individual devices, rather than all devices configured... 
+
+In order to run puppet against a single device, you can use the following command:
+    puppet device --deviceconfig /etc/puppet/device/[device].conf
+
+This module uses a further config file containing a suitable device username and password, which should reside within the *$confdir* for the appropriate device. 
+The config file should be called *netapp.yml*, and should be structured as follows: 
+    [device name]:
+     :user: [username]
+     :password: [password]
+
+If you attempt to run *puppet device* without this conf file, you will likely see the following error:
+   puppet device --deviceconfig test-nactl01.conf -v
+   ...
+   Error: Can't load netapp for test-nactl01: No such file or directory - /var/lib/puppet/devices/test-nactl01/netapp.yml
+
+### NetApp operations
+As part of this module, there is a defined type called 'netapp::vqe', which can be used to create a volume, add a qtree and create an NFS export. 
+An example of this is: 
+    netapp::vqe { 'volume_name':
+      ensure         => present,
+      size           => '1t',
+      aggr           => 'aggr2',
+      spaceres       => 'volume',
+      snapresv       => 20,
+      autoincrement  => true,
+      persistent     => true
+    }
+This will create a NetApp volume called 'v_volume_name' with a qtree called 'q_volume_name'.
+The volume will have an initial size of 1 Terabyte in Aggregate aggr2. 
+The space reservation mode will be set to volume, and snapshot space reserve will be set to 20%. 
+The volume will be able to auto increment, and the NFS export will be persistent.  
+
+You can also use any of the types individually, or create new defined types as required. 
 
 ## TODO
 The following items are yet to be implemented:
