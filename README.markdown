@@ -54,9 +54,9 @@ The config file should be called *netapp.yml*, and should be structured as follo
 
 If you attempt to run *puppet device* without this conf file, you will likely see the following error:
 
-   puppet device --deviceconfig test-nactl01.conf -v
-   ...
-   Error: Can't load netapp for test-nactl01: No such file or directory - /var/lib/puppet/devices/test-nactl01/netapp.yml
+    puppet device --deviceconfig test-nactl01.conf -v
+    ...
+    Error: Can't load netapp for test-nactl01: No such file or directory - /var/lib/puppet/devices/test-nactl01/netapp.yml
 
 ### NetApp operations
 As part of this module, there is a defined type called 'netapp::vqe', which can be used to create a volume, add a qtree and create an NFS export. 
