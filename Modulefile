@@ -1,5 +1,5 @@
 name 'fatmcgav-netapp'
-version '0.1.0'
+version '0.1.1'
 
 author 'fatmcgav'
 license 'Apache License, version 2.0'
