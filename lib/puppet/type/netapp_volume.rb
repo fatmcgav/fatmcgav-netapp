@@ -105,6 +105,8 @@ Puppet::Type.newtype(:netapp_volume) do
     end
     
     def should_to_s(newvalue)
+      # Newvalue is an array, but we're only interested in first record. 
+      newvalue = newvalue.first
       newvalue.inspect
     end
 
@@ -132,6 +134,8 @@ Puppet::Type.newtype(:netapp_volume) do
     end
     
     def should_to_s(newvalue)
+      # Newvalue is an array, but we're only interested in first record. 
+      newvalue = newvalue.first
       newvalue.inspect
     end
 

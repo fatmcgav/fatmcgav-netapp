@@ -230,7 +230,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     current_schedule = {}
       
     # Create array of schedule keys we're interested in. 
-    keys = ['minutes', 'hours', 'days', 'weeks', 'which-hours', 'which-days']
+    keys = ['minutes', 'hours', 'days', 'weeks', 'which-hours', 'which-minutes']
     
     # Pull list of volume-options
     output = transport.invoke("snapshot-get-schedule", "volume", @resource[:name])
