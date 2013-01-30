@@ -21,7 +21,7 @@ Puppet::Type.newtype(:netapp_user) do
     desc "The user username."
     isnamevar
     validate do |value|
-      unless value =~ /^\w+$/
+      unless value =~ /^[\w-]+$/
          raise ArgumentError, "%s is not a valid username." % value
       end
     end
@@ -48,7 +48,7 @@ Puppet::Type.newtype(:netapp_user) do
   newparam(:comment) do
     desc "User comment"
     validate do |value|
-      unless value =~ /^[\w\s\.]+$/
+      unless value =~ /^[\w\s\-\.]+$/
          raise ArgumentError, "%s is not a valid comment." % value
       end
     end

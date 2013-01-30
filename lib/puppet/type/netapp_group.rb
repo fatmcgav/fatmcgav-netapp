@@ -4,7 +4,7 @@ Puppet::Type.newtype(:netapp_group) do
   apply_to_device
   
   ensurable do
-    desc "Netapp User resource state. Valid values are: present, absent."
+    desc "Netapp Group resource state. Valid values are: present, absent."
     
     defaultto(:present)
     
@@ -21,7 +21,7 @@ Puppet::Type.newtype(:netapp_group) do
     desc "The group username."
     isnamevar
     validate do |value|
-      unless value =~ /^\w+$/
+      unless value =~ /^[\w-]+$/
          raise ArgumentError, "%s is not a valid group name." % value
       end
     end
@@ -30,7 +30,7 @@ Puppet::Type.newtype(:netapp_group) do
   newparam(:comment) do
     desc "Group comment"
     validate do |value|
-      unless value =~ /^[\w\s\.]+$/
+      unless value =~ /^[\w\s\-\.]+$/
          raise ArgumentError, "%s is not a valid comment." % value
       end
     end

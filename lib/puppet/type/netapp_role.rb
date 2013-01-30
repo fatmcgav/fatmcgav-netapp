@@ -4,7 +4,7 @@ Puppet::Type.newtype(:netapp_role) do
   apply_to_device
   
   ensurable do
-    desc "Netapp User resource state. Valid values are: present, absent."
+    desc "Netapp Role resource state. Valid values are: present, absent."
     
     defaultto(:present)
     
@@ -18,11 +18,11 @@ Puppet::Type.newtype(:netapp_role) do
   end
   
   newparam(:rolename) do
-    desc "The role username."
+    desc "The role name."
     isnamevar
     validate do |value|
-      unless value =~ /^\w+$/
-         raise ArgumentError, "%s is not a valid rolename." % value
+      unless value =~ /^[\w-]+$/
+         raise ArgumentError, "%s is not a valid role name." % value
       end
     end
   end
@@ -30,7 +30,7 @@ Puppet::Type.newtype(:netapp_role) do
   newparam(:comment) do
     desc "Role comment"
     validate do |value|
-      unless value =~ /^[\w\s\.]+$/
+      unless value =~ /^[\w\s\-\.]+$/
          raise ArgumentError, "%s is not a valid comment." % value
       end
     end
