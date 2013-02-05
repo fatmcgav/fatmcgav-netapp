@@ -30,7 +30,7 @@
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
     "lib\\puppet\\type\\netapp_user.rb": "af004f55aecee56dec04ac8441b796c3",
-    "lib\\puppet\\type\\netapp_volume.rb": "a2c668245ac21a5fa8be02868177227d",
+    "lib\\puppet\\type\\netapp_volume.rb": "05b1885760fc9f42e83e5b63a3343d8e",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
     "lib\\puppet\\util\\network_device\\netapp\\device.rb": "b0534810097b5120485f7a9aafbc117a",
     "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "b0c912dc663d5251219bbad895455834",

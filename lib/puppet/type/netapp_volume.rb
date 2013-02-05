@@ -128,7 +128,9 @@ Puppet::Type.newtype(:netapp_volume) do
       # Comparison of hashes
       return false unless is.class == Hash and should.class == Hash
       should.each do |k,v|
-        return false unless is[k] == should[k]
+        # Skip record if is is " " and should is "0"
+        next if is[k] == " " and should[k] == "0"
+        return false unless is[k] == should[k].to_s
       end
       true
     end
