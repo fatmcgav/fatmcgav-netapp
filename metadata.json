@@ -6,11 +6,11 @@
   "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
   "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
   "summary": "NetApp Network Device support for Puppet",
-  "version": "0.1.1",
+  "version": "0.2.x",
   "checksums": {
     "CHANGELOG": "dfddff09d9c37359eea191b2835e3c8b",
     "LICENSE": "2180042ca176b660becdef4fc29225e1",
-    "Modulefile": "153c9ca05b8ca59e9dcede52e2c34266",
+    "Modulefile": "20350a8255770166924630068eb6c01b",
     "README.markdown": "017166db9466c7b5b929ab9932586585",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
