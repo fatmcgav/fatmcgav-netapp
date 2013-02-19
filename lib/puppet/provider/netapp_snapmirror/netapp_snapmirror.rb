@@ -6,6 +6,22 @@ Puppet::Type.type(:netapp_snapmirror).provide(:netapp_snapmirror, :parent => Pup
   confine :feature => :posix
   defaultfor :feature => :posix
   
+  def self.instances
+    result = transport.invoke('snapmirror-get-status')
+    if(result.results_status == "failed")
+      Puppet.debug("Puppet::Provider::Netapp_volume: Snapmirror-get-status failed. \n")
+      return false
+    else 
+      # Pull list of snapmirror-status blocks
+      snapmirror_list = result.child_get('snapmirror-status')
+      snapmirror_info = snapmirror_list.children_get()
+      snapmirror_info.each do |snapmirror|
+        destination_location = snapmirror.child_get_string('destination-location')
+        new(:destination_location => destination_location)
+      end
+    end
+  end
+  
   def create
     Puppet.debug("Puppet::Provider::Netapp_snapmirror: creating Netapp SnapMirror relationship for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
     
