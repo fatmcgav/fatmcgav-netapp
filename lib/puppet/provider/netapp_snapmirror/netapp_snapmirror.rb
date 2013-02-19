@@ -22,6 +22,11 @@ Puppet::Type.type(:netapp_snapmirror).provide(:netapp_snapmirror, :parent => Pup
     end
   end
   
+  def progress
+    Puppet.debug("Puppet::Provider::Netapp_snapmirror: checking progress of Netapp SnapMirror relationship for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
+    
+  end
+  
   def create
     Puppet.debug("Puppet::Provider::Netapp_snapmirror: creating Netapp SnapMirror relationship for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
     
