@@ -14,24 +14,28 @@
     "README.markdown": "017166db9466c7b5b929ab9932586585",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
-    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "75544fe3f3669b413ada6473d1c1e806",
+    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "df3fc8c6641d8ba05da269807d71d303",
     "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "a9f02c8aae5fd4d36445dc5db3f03bcb",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "35c9bece66bfcb4cc61315fd91889610",
     "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "02bbb3dc11ad41f0f8f2ae66400677c8",
     "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
     "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
     "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "c31ce47f9b8cc1e2d9231bd9fa17b9fb",
-    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "02ebde96ac0488bcf7bf2a32fdba1630",
-    "lib\\puppet\\type\\netapp_export.rb": "54b1626d110e79cb39ca5b16beee01c6",
-    "lib\\puppet\\type\\netapp_group.rb": "2927db3a66e9caf7dc268a8062dffb12",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "3a9e889d3f0cab5757c7f28702c684c3",
+    "lib\\puppet\\type\\netapp_export.rb": "cb445cd4c9880305b7821a18c7a29fb9",
+    "lib\\puppet\\type\\netapp_group.rb": "92cf0e4e8825d37b13ef56bcf76c7a9d",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "800a707b9ac898e16d220a5de27dadfb",
-    "lib\\puppet\\type\\netapp_role.rb": "3896c5db5a20e4dd34a9ff467003dfba",
+    "lib\\puppet\\type\\netapp_role.rb": "9346073414e5874618371307666c0eb4",
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
-    "lib\\puppet\\type\\netapp_user.rb": "7ab7ebfa33900eaf4ab77f6262342901",
-    "lib\\puppet\\type\\netapp_volume.rb": "8d4090a0e2e138f97d05fdf732599efd",
+    "lib\\puppet\\type\\netapp_user.rb": "af004f55aecee56dec04ac8441b796c3",
+    "lib\\puppet\\type\\netapp_volume.rb": "c8ded9e0a0f90a585bc58063e94bf8f5",
     "lib\\puppet\\util\\network_device\\netapp.rb": "f42f117178e3174e00b916e8dc1c2c56",
+    "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
+    "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
+    "lib\\puppet\\util\\network_device\\netapp\\NaErrno.rb": "f39ce8c746c6284cac04820e9a609259",
+    "lib\\puppet\\util\\network_device\\netapp\\NaServer.rb": "0ede800393481ab75d216c52f88a1096",
     "lib\\puppet\\util\\network_device\\netapp\\device.rb": "b0534810097b5120485f7a9aafbc117a",
     "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "b0c912dc663d5251219bbad895455834",
     "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
@@ -52,7 +56,7 @@
       "parameters": [
         {
           "name": "name",
-          "doc": "The export name. Valid format is /vol/[volume_name](/[qtree_name])."
+          "doc": "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
         },
         {
           "name": "persistent",
@@ -61,6 +65,20 @@
         {
           "name": "path",
           "doc": "The filer path to export. If not specified, uses :name value"
+        }
+      ],
+      "properties": [
+        {
+          "name": "anon",
+          "doc": "Should the export support anonymous root access."
+        },
+        {
+          "name": "readonly",
+          "doc": "Export read-only hosts."
+        },
+        {
+          "name": "readwrite",
+          "doc": "Export read-write hosts. Defaults to \u0027all_hosts\u0027."
         }
       ],
       "providers": [
@@ -137,7 +155,7 @@
       "parameters": [
         {
           "name": "rolename",
-          "doc": "The role username."
+          "doc": "The role name."
         },
         {
           "name": "comment",
