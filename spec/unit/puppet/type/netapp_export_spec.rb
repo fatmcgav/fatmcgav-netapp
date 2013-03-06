@@ -40,6 +40,19 @@ describe res_type do
       :valid    => ["/vol/v_volume/q_volume", "/vol/v_test/q_test"],
       :invalid 	=> ["test","/vol/v_volume/q_volume#"],
       :default 	=> "/vol/v_test/q_test",
+    },
+    :anon => {
+      :valid    => ['0','100','user'],
+      :invalid  => [{'hash' => 'true'}],
+      :default  => '0'
+    },
+    :readonly => {
+      :valid    => [['all_hosts'], ['192.168.1.1', '192.168.1.2', 'hostname']],
+      :default  => nil
+    },
+    :readwrite => {
+      :valid    => [['all_hosts'], ['192.168.1.1', '192.168.1.2', 'hostname']],
+      :default  => ['all_hosts']
     }
   }
   it_should_behave_like "a puppet type", parameter_tests, res_type_name, res_name
