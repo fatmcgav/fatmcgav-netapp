@@ -10,7 +10,7 @@
   "checksums": {
     "CHANGELOG": "e9896b58b23fdb0eb69cd5c02ce44aaa",
     "LICENSE": "2180042ca176b660becdef4fc29225e1",
-    "Modulefile": "e0916b7f7bd8e013dfca377a3469cbcf",
+    "Modulefile": "9996c226cdb24b947a1f2c4404d4e535",
     "README.markdown": "e7738f2d73acabafabfbb016afdf2db5",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
