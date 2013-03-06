@@ -62,7 +62,7 @@ Puppet::Type.newtype(:netapp_volume) do
     desc "The percentage of space to reserve for snapshots."
 
     validate do |value|
-      raise Puppet::Error, "Puppet::Type::Netapp_volume: Reserved percentage must be between 0 and 100." unless value.to_i.between?(0,100)
+      raise ArgumentError, "Puppet::Type::Netapp_volume: Reserved percentage must be between 0 and 100." unless value.to_i.between?(0,100)
     end 
     
     munge do |value|
@@ -89,7 +89,7 @@ Puppet::Type.newtype(:netapp_volume) do
   newproperty(:options, :array_matching => :all) do 
     desc "The volume options hash."
     validate do |value|
-      raise Puppet::Error, "Puppet::Type::Netapp_volume: options property must be a hash." unless value.is_a? Hash
+      raise ArgumentError, "Puppet::Type::Netapp_volume: options property must be a hash." unless value.is_a? Hash
     end
     
     def insync?(is)
@@ -118,7 +118,7 @@ Puppet::Type.newtype(:netapp_volume) do
   newproperty(:snapschedule, :array_matching=> :all) do 
     desc "The volume snapshot schedule, in a hash format. Valid keys are: 'minutes', 'hours', 'days', 'weeks', 'which-hours', 'which-minutes'. "
     validate do |value|
-      raise Puppet::Error, "Puppet::Type::Netapp_volume: snapschedule property must be a hash." unless value.is_a? Hash
+      raise ArgumentError, "Puppet::Type::Netapp_volume: snapschedule property must be a hash." unless value.is_a? Hash
     end
     
     def insync?(is)
