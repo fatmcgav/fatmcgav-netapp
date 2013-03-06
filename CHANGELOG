@@ -1,6 +1,13 @@
-0.1.1 2012-1-30 Gavin Williams <fatmcgav@gmail.com>
+0.2.0 2013-03-06 Gavin Williams <fatmcgav@gmail.com>
+* (#19) Fix Netapp_qtree handling of missing volume. 
+* (#12) Add support for NetApp NFS export security. 
+
+0.1.2 2013-02-06 Gavin Williams <fatmcgav@gmail.com>
+* (#14) Fix Snapschedule bug with which-days and nil versus 0
+
+0.1.1 2013-01-30 Gavin Williams <fatmcgav@gmail.com>
 * (#9) Updated netapp_user, netapp_group and netapp_role name input validation to support '-'.
 * (#10) Updated netapp_volume type/provider to fix snapschedule property bug.
 
-0.1.0 2012-1-12 Gavin Williams <fatmcgav@gmail.com>
+0.1.0 2013-01-12 Gavin Williams <fatmcgav@gmail.com>
 * Initial release.

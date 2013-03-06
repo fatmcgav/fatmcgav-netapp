@@ -1,5 +1,5 @@
 name 'fatmcgav-netapp'
-version '0.2.x'
+version '0.2.0'
 
 author 'fatmcgav'
 license 'Apache License, version 2.0'
@@ -18,7 +18,7 @@ Features:
 The following items are supported:
 * Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.
 * Creation, modification and deletion of QTrees. 
-* Creation, modification and deletion of NFS Exports. 
+* Creation, modification and deletion of NFS Exports, including NFS Export security. 
 * Creation, modification and deletion of users, groups and roles. 
 * Creation of snapmirror relationships. 
 * Creation of snapmirror schedules. '

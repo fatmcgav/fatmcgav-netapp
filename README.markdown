@@ -11,7 +11,7 @@ However it may well be compatible with other OnTap versions.
 The following items are supported:
 * Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.
 * Creation, modification and deletion of QTrees. 
-* Creation, modification and deletion of NFS Exports. 
+* Creation, modification and deletion of NFS Exports, including NFS export security. 
 * Creation, modification and deletion of users, groups and roles. 
 * Creation of snapmirror relationships. 
 * Creation of snapmirror schedules. 
