@@ -289,8 +289,11 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
     
     # Add Pathnames container
     paths = NaElement.new("pathnames")
-    paths.child_add_string("pathname", @resource[:name])
+    pathnames = NaElement.new("pathname-info")
+    pathnames.child_add_string("name", @resource[:name])
+    paths.child_add(pathnames)
     cmd.child_add(paths)
+    Puppet.debug("Destroy command xml looks like: \n #{cmd.sprintf()}")
     
     # Invoke the constructed request
     result = transport.invoke_elem(cmd)
