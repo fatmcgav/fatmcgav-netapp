@@ -324,7 +324,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
 
   def exists?
     Puppet.debug("Puppet::Provider::Netapp_export: checking existance of Netapp export rule #{@resource[:name]}.")
-    @property_hash[:ensure] != :absent
+    @property_hash[:ensure] == :present
   end
 
   
