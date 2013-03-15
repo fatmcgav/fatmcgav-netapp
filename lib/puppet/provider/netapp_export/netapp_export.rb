@@ -112,83 +112,120 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
   end
 
   def flush
-    Puppet.debug("Puppet::Provider::Netapp_export: Got to flush.")
+    Puppet.debug("Puppet::Provider::Netapp_export: Got to flush for resource #{@resource[:name]}.")
     
-    # Query Netapp to create export against path.
-    # Start to construct request
-    cmd = NaElement.new("nfs-exportfs-modify-rule-2")
-    cmd.child_add_string("persistent", @resource[:persistent].to_s)
+    # Check required resource state
+    Puppet.debug("Property_hash ensure = #{@property_hash[:ensure]}")
+    case @property_hash[:ensure]
+    when :absent
+      Puppet.debug("Puppet::Provider::Netapp_export: Ensure is absent.")
       
-    # Add Rules container
-    rule = NaElement.new("rule")
-    # Construct rule list
-    rule_list = NaElement.new("exports-rule-info-2")
-    rule_list.child_add_string("pathname", @resource[:name])
-    rule_list.child_add_string("actual-pathname", @resource[:path]) unless @resource[:path].nil?
+      # Query Netapp to remove export against path. 
+      cmd = NaElement.new("nfs-exportfs-delete-rules")
+      cmd.child_add_string("persistent", @resource[:persistent].to_s)
+      
+      # Add Pathnames container
+      paths = NaElement.new("pathnames")
+      pathnames = NaElement.new("pathname-info")
+      pathnames.child_add_string("name", @resource[:name])
+      paths.child_add(pathnames)
+      cmd.child_add(paths)
+      Puppet.debug("Destroy command xml looks like: \n #{cmd.sprintf()}")
+      
+      # Invoke the constructed request
+      result = transport.invoke_elem(cmd)
+  
+      # Check result returned. 
+      if(result.results_status == "failed")
+        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} wasn't destroyed due to #{result.results_reason}. \n")
+        raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} destroy failed due to #{result.results_reason} \n."
+        return false
+      else 
+        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} destroyed successfully. \n")
+        return true
+      end
     
-    # Add Security container
-    security = NaElement.new("security-rules")
-    # Construct security rule list
-    security_rules = NaElement.new("security-rule-info")
-    # Exports must support anon for SMO. Add option to be configurable?
-    security_rules.child_add_string("anon", @resource[:anon])
+    when :present
+    
+      Puppet.debug("Puppet::Provider::Netapp_export: Ensure is present.")
       
-    # Add host security if required
-    # Read-write
-    unless @resource[:readwrite].nil?
-      readwrite = NaElement.new("read-write")
-      Puppet.debug("Got a readwrite array. Checking if all_hosts... First record = #{@resource[:readwrite].first} \n")
-      if @resource[:readwrite].first == 'all_hosts'
-        hostname_info = NaElement.new("exports-hostname-info")
-        hostname_info.child_add_string("all-hosts", "true")
-        readwrite.child_add(hostname_info)
-      else
-        @resource[:readwrite].each do |host|
+      # Query Netapp to create export against path.
+      # Start to construct request
+      cmd = NaElement.new("nfs-exportfs-modify-rule-2")
+      cmd.child_add_string("persistent", @resource[:persistent].to_s)
+        
+      # Add Rules container
+      rule = NaElement.new("rule")
+      # Construct rule list
+      rule_list = NaElement.new("exports-rule-info-2")
+      rule_list.child_add_string("pathname", @resource[:name])
+      rule_list.child_add_string("actual-pathname", @resource[:path]) unless @resource[:path].nil?
+      
+      # Add Security container
+      security = NaElement.new("security-rules")
+      # Construct security rule list
+      security_rules = NaElement.new("security-rule-info")
+      # Exports must support anon for SMO. Add option to be configurable?
+      security_rules.child_add_string("anon", @resource[:anon])
+        
+      # Add host security if required
+      # Read-write
+      unless @resource[:readwrite].nil?
+        readwrite = NaElement.new("read-write")
+        Puppet.debug("Got a readwrite array. Checking if all_hosts... First record = #{@resource[:readwrite].first} \n")
+        if @resource[:readwrite].first == 'all_hosts'
           hostname_info = NaElement.new("exports-hostname-info")
-          hostname_info.child_add_string("name", host)
+          hostname_info.child_add_string("all-hosts", "true")
           readwrite.child_add(hostname_info)
+        else
+          @resource[:readwrite].each do |host|
+            hostname_info = NaElement.new("exports-hostname-info")
+            hostname_info.child_add_string("name", host)
+            readwrite.child_add(hostname_info)
+          end
         end
+        security_rules.child_add(readwrite)
       end
-      security_rules.child_add(readwrite)
-    end
-    # Read-only
-    unless @resource[:readonly].nil?
-      readonly = NaElement.new("read-only")
-      Puppet.debug("Got a readonly array. Checking if all_hosts... First record = #{@resource[:readonly].first} \n")
-      if @resource[:readonly].first == 'all_hosts'
-        hostname_info = NaElement.new("exports-hostname-info")
-        hostname_info.child_add_string("all-hosts", "true")
-        readonly.child_add(hostname_info)
-      else
-        @resource[:readonly].each do |host|
+      # Read-only
+      unless @resource[:readonly].nil?
+        readonly = NaElement.new("read-only")
+        Puppet.debug("Got a readonly array. Checking if all_hosts... First record = #{@resource[:readonly].first} \n")
+        if @resource[:readonly].first == 'all_hosts'
           hostname_info = NaElement.new("exports-hostname-info")
-          hostname_info.child_add_string("name", host)
+          hostname_info.child_add_string("all-hosts", "true")
           readonly.child_add(hostname_info)
+        else
+          @resource[:readonly].each do |host|
+            hostname_info = NaElement.new("exports-hostname-info")
+            hostname_info.child_add_string("name", host)
+            readonly.child_add(hostname_info)
+          end
         end
+        security_rules.child_add(readonly)
       end
-      security_rules.child_add(readonly)
-    end
-    
-    # Put it all togeather
-    security.child_add(security_rules)
-    rule_list.child_add(security)
-    rule.child_add(rule_list)
-    cmd.child_add(rule)
-    Puppet.debug("Modify command xml looks like: \n #{cmd.sprintf()}")
-    
-    # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
-
-    # Check result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modification failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} modification failed due to #{result.results_reason} \n."
-      return false
-    else
-      # Passed above, therefore must of worked.
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modified successfully on path #{@resource[:path]}. \n")
-      return true
-    end
+      
+      # Put it all togeather
+      security.child_add(security_rules)
+      rule_list.child_add(security)
+      rule.child_add(rule_list)
+      cmd.child_add(rule)
+      Puppet.debug("Modify command xml looks like: \n #{cmd.sprintf()}")
+      
+      # Invoke the constructed request
+      result = transport.invoke_elem(cmd)
+  
+      # Check result status
+      if(result.results_status == "failed")
+        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modification failed due to #{result.results_reason}. \n")
+        raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} modification failed due to #{result.results_reason} \n."
+        return false
+      else
+        # Passed above, therefore must of worked.
+        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modified successfully on path #{@resource[:path]}. \n")
+        return true
+      end
+      
+    end #EOC
   end
   
   def create
@@ -282,31 +319,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
   
   def destroy
     Puppet.debug("Puppet::Provider::Netapp_export: destroying Netapp export rule #{@resource[:name]} against path #{@resource[:path]}")
-    
-    # Query Netapp to remove export against path. 
-    cmd = NaElement.new("nfs-exportfs-delete-rules")
-    cmd.child_add_string("persistent", @resource[:persistent].to_s)
-    
-    # Add Pathnames container
-    paths = NaElement.new("pathnames")
-    pathnames = NaElement.new("pathname-info")
-    pathnames.child_add_string("name", @resource[:name])
-    paths.child_add(pathnames)
-    cmd.child_add(paths)
-    Puppet.debug("Destroy command xml looks like: \n #{cmd.sprintf()}")
-    
-    # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
-
-    # Check result returned. 
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} wasn't destroyed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} destroy failed due to #{result.results_reason} \n."
-      return false
-    else 
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} destroyed successfully. \n")
-      return true
-    end
+    @property_hash[:ensure] = :absent
   end
 
   def exists?
