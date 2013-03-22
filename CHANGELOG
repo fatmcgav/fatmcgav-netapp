@@ -1,3 +1,6 @@
+0.2.3 2013-03-22 Gavin Williams <fatmcgav@gmail.com>
+* (#13) Updated Netapp_volume to adjust the auto-increment settings when resizing a volume. 
+
 0.2.2 2013-03-15 Gavin Williams <fatmcgav@gmail.com>
 * (#24) Updated Netapp_export provider to fix a destroy bug. 
 
