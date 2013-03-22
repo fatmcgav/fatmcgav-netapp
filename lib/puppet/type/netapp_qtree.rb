@@ -36,4 +36,10 @@ Puppet::Type.newtype(:netapp_qtree) do
     end   
   end
   
+  newparam(:security_style) do
+    desc "The security model to use."
+    newvalues(:unix, :ntfs, :mixed)
+    defaultto :unix
+  end
+  
 end
