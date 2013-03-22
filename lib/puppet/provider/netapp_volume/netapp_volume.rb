@@ -75,6 +75,8 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       return false
     else 
       Puppet.debug("Puppet::Provider::Netapp_volume initsize=: Volume size set succesfully for volume #{@resource[:name]}. \n")
+      # Trigger and autoincrement run.
+      self.send('autoincrement=', resource['autoincrement'.to_sym]) if resource['autoincrement'.to_sym]
       return true
     end
   end
@@ -141,9 +143,18 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   # Autoincrement setter
   def autoincrement=(value)
     Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: setting auto-increment for Volume #{@resource[:name]}")
-    
-    # Query Netapp to set autosize status. 
-    result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement])
+
+    # Need to work out a sensible auto-increment size
+    # Max growth of 20%, increment of 5%
+    size, unit = @resource[:initsize].match(/^(\d+)([A-Z])$/i).captures
+
+    # Set max-size
+    maxsize = (size.to_i*1.2).to_i
+    incrsize = (size.to_i*0.05).to_i
+
+    # Query Netapp to set autosize status.
+    result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement], "maximum-size", maxsize.to_s + unit, "increment-size", incrsize.to_s + unit)
+
     # Check result status. 
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Setting of auto-increment for volume #{@resource[:name]} failed due to #{result.results_reason}. \n")
