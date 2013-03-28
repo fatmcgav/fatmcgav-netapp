@@ -6,6 +6,8 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
   confine :feature => :posix
   defaultfor :feature => :posix
 
+  mk_resource_methods
+  
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_qtree: got to self.instances.")
     qtree_instances = Array.new
@@ -65,8 +67,6 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
       Puppet.debug("Prov.name = #{resources[prov.name]}. ")
       if resource = resources[prov.name]
         resource.provider = prov
-      #else
-      #  resource.provider = new(:nil, :ensure => :absent)
       end
     end
   end
