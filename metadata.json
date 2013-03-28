@@ -21,7 +21,7 @@
     "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
     "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
     "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "c31ce47f9b8cc1e2d9231bd9fa17b9fb",
-    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "8e7cbd118153735acb3cd517f08f101a",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "9c7a16835ff32cb670d3a8a95456103c",
     "lib\\puppet\\type\\netapp_export.rb": "b7893d1b5774b28f1564c643b5698873",
     "lib\\puppet\\type\\netapp_group.rb": "92cf0e4e8825d37b13ef56bcf76c7a9d",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",

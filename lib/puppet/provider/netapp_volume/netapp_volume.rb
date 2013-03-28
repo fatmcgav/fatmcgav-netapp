@@ -7,39 +7,116 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   defaultfor :feature => :posix
 
   def self.instances
-    volumes = transport.invoke("volume-list-info")
+    Puppet.debug("Puppet::Provider::Netapp_volume: got to self.instances.")
+    volumes = Array.new
+    
+    # Get a list of volumes
+    result = transport.invoke("volume-list-info")
+    # Check the result status
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
       return false
     else 
       # Pull list of volume-info blocks
-      volume_list = volumes.child_get("volumes")
+      volume_list = result.child_get("volumes")
       volume_info = volume_list.children_get()
+      # Itterate through each 'volume-info' block
       volume_info.each do |volume|
         vol_name = volume.child_get_string("name")
-        new(:volume => vol_name)
+        # Construct required information
+        volume_hash = { :name => vol_name,
+                        :ensure => :present }
+
+        # Get volume initsize
+        volume_hash[:initsize] = initsize
+        # Get volume snapreserve
+        volume_hash[:snapreserve] = snapreserve
+        # Get autoincrement setting
+        volume_hash[:autoincrement] = autoincrement
+        # Get volume options
+        volume_hash[:options] = options
+        # Get volume snapschedule
+        volume_hash[:snapschedule] = options
+        
+        Puppet.debug("Puppet::Provider::Netapp_volume self.instances: Constructed volume_hash for volume #{name}.")
+        
+        # Create the instance and add to volumes array.
+        volumes << new(volume_hash)
+      end
+    end
+    
+    Puppet.debug("Returning volumes array.")
+    volumes
+  end
+  
+  def self.prefetch(resources)
+    Puppet.debug("Puppet::Provider::Netapp_volume: Got to self.prefetch.")
+    # Itterate instances and match provider where relevant.
+    instances.each do |prov|
+      Puppet.debug("Prov.name = #{resources[prov.name]}. ")
+      if resource = resources[prov.name]
+        resource.provider = prov
       end
     end
   end
   
-  # Volume info getter
-  def volume
-    result = {}
-      
-    volumes = transport.invoke("volume-list-info")
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
-      return false
-    else 
-      # Pull list of volume-info blocks
-      volume_list = volumes.child_get("volumes")
-      volume_info = volume_list.children_get()
-      volume_info.each do |volume|
-        vol_name = volume.child_get_string("name")
-        result[vol_name] = :present
+  def flush
+    Puppet.debug("Puppet::Provider::Netapp_volume: Got to flush for resource #{@resource[:name]}.")
+    
+    # Check required resource state
+    Puppet.debug("Property_hash ensure = #{@property_hash[:ensure]}")
+    if @property_hash[:ensure] == :absent
+      # Check if volume is online. 
+      vi_result = transport.invoke("volume-list-info", "volume", @resource[:name])
+      if(vi_result.results_status == "passed")
+        volumes = vi_result.child_get("volumes")
+        volume_info = volumes.child_get("volume-info")
+        state = volume_info.child_get_string("state")
+        if(state == "online")
+          Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
+          off_result = transport.invoke("volume-offline", "name", @resource[:name])
+          if(off_result.results_status == "failed")
+            Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} offline failed due to #{off_result.results_reason}. \n")
+            raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} offline failed due to #{off_result.results_reason} \n."
+            return false
+          else 
+            Puppet.debug("Puppet::Provider::Netapp_volume: Volume taken offline successfully. \n")
+          end
+        end
+      end
+      destroy_result = transport.invoke("volume-destroy", "name", @resource[:name])
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroy output: " + destroy_result.sprintf() + "\n")
+      if(destroy_result.results_status == "failed")
+        Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} wasn't destroyed due to #{destroy_result.results_reason}. \n")
+        raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} destroy failed due to #{destroy_result.results_reason} \n."
+        return false
+      else 
+        Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
+        return true
       end
     end
+    
+    @property_hash.clear
   end
+  
+  # Volume info getter
+  #def volume
+  #  result = {}
+  #    
+  #  volumes = transport.invoke("volume-list-info")
+  #  if(result.results_status == "failed")
+  #    Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
+  #    return false
+  #  else 
+  #    # Pull list of volume-info blocks
+  #    volume_list = volumes.child_get("volumes")
+  #    volume_info = volume_list.children_get()
+  #    volume_info.each do |volume|
+  #      vol_name = volume.child_get_string("name")
+  #      result[vol_name] = :present
+  #    end
+  #  end
+  #end
   
   # Volume initsize getter
   def initsize
@@ -334,50 +411,13 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   def destroy
     Puppet.debug("Puppet::Provider::Netapp_volume: destroying Netapp Volume #{@resource[:name]}")
-    # Check if volume is online. 
-    vi_result = transport.invoke("volume-list-info", "volume", @resource[:name])
-    if(vi_result.results_status == "passed")
-      volumes = vi_result.child_get("volumes")
-      volume_info = volumes.child_get("volume-info")
-      state = volume_info.child_get_string("state")
-      if(state == "online")
-        Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
-        off_result = transport.invoke("volume-offline", "name", @resource[:name])
-        if(off_result.results_status == "failed")
-          Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} offline failed due to #{off_result.results_reason}. \n")
-          raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} offline failed due to #{off_result.results_reason} \n."
-          return false
-        else 
-          Puppet.debug("Puppet::Provider::Netapp_volume: Volume taken offline successfully. \n")
-        end
-      end
-    end
-    destroy_result = transport.invoke("volume-destroy", "name", @resource[:name])
-    Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroy output: " + destroy_result.sprintf() + "\n")
-    if(destroy_result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} wasn't destroyed due to #{destroy_result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} destroy failed due to #{destroy_result.results_reason} \n."
-      return false
-    else 
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
-      return true
-    end
+    @property_hash[:ensure] = :absent
   end
 
   def exists?
     Puppet.debug("Puppet::Provider::Netapp_volume: checking existance of Netapp Volume #{@resource[:name]}")
-    # Call webservice to list volume info
-    result = transport.invoke("volume-list-info", "volume", @resource[:name])
-    Puppet.debug("Puppet::Provider::Netapp_volume: Vol Info: " + result.sprintf() + "\n")
-    # Check response status. 
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume doesn't exist. \n")
-      return false
-    else 
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume exists. \n")
-      return true
-    end
-
+    Puppet.debug("Value = #{@property_hash[:ensure]}")
+    @property_hash[:ensure] == :present
   end
   
 end
