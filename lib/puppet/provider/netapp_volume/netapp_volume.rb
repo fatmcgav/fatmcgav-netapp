@@ -148,12 +148,23 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     # Max growth of 20%, increment of 5%
     size, unit = @resource[:initsize].match(/^(\d+)([A-Z])$/i).captures
 
+    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Volume size = #{size}, unit = #{unit}.")
+
+    # Need to convert size into MB... 
+    if unit == 'g'
+      size = size.to_i * 1024
+    elsif unit == 't'
+      size = size.to_i * 1024 * 1024
+    end
+    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Volume size in m = #{size}.")
+
     # Set max-size
     maxsize = (size.to_i*1.2).to_i
     incrsize = (size.to_i*0.05).to_i
+    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Maxsize = #{maxsize}, incrsize = #{incrsize}.")
 
     # Query Netapp to set autosize status.
-    result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement], "maximum-size", maxsize.to_s + unit, "increment-size", incrsize.to_s + unit)
+    result = transport.invoke("volume-autosize-set", "volume", @resource[:name], "is-enabled", @resource[:autoincrement], "maximum-size", maxsize.to_s + "m", "increment-size", incrsize.to_s + "m")
 
     # Check result status. 
     if(result.results_status == "failed")
