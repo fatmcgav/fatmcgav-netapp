@@ -34,7 +34,6 @@ Puppet::Type.newtype(:netapp_export) do
   
   newparam(:path) do
     desc "The filer path to export. If not specified, uses :name value"
-    defaultto { @resource[:name] }
     validate do |value|
     	unless value =~ /^(\/[\w]+){2,3}$/
         raise ArgumentError, "%s is not a valid export filer path." % value
