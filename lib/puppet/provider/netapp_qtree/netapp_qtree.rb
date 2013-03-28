@@ -8,7 +8,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
 
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_qtree: got to self.instances.")
-    qtrees = Array.new
+    qtree_instances = Array.new
 
     # Query Netapp for qtree-list against volume. 
     result = transport.invoke("qtree-list")
@@ -29,9 +29,6 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
 
       # Itterate through each 'qtree-info' block. 
       qtrees.each do |qtree_info|
-        # Check if it is a NaElement
-        #TODO: Fix this work-around, as shouldn't be required. 
-        next unless qtree_info.respond_to?(:child_get_string)
  
         # Pull out the qtree name.
         name = qtree_info.child_get_string("qtree")
@@ -50,7 +47,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
 
         # Create the instance and add to exports array.
         Puppet.debug("Creating instance for '#{name}'. \n")
-        qtrees << new(qtree_hash)
+        qtree_instances << new(qtree_hash)
       end
       
       Puppet.debug("Processed all qtree instances. ")
@@ -58,7 +55,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
   
     # Return the final exports array. 
     Puppet.debug("Returning qtrees array. ")
-    qtrees
+    qtree_instances
   end
   
   def self.prefetch(resources)
