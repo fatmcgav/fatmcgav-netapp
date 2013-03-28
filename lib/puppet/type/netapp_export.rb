@@ -17,8 +17,9 @@ Puppet::Type.newtype(:netapp_export) do
     end
   end
   
-  newparam(:name, :namevar => :true) do
+  newparam(:name) do
     desc "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
+    isnamevar
     validate do |value|
     	unless value =~ /^(\/[\w]+){2,3}$/
         raise ArgumentError, "%s is not a valid export name." % value
