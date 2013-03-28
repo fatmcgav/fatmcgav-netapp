@@ -1,4 +1,5 @@
 require 'puppet/provider/netapp'
+require 'ap'
 
 Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provider::Netapp) do
   @doc = "Manage Netapp Qtree creation, modification and deletion."
@@ -21,26 +22,46 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
     else 
       # Get a list of qtrees
       qtree_list = result.child_get("qtrees")
+      Puppet.debug("Qtree_list looks like:")
+      Puppet.debug("#{qtree_list.sprintf()}")
       qtrees = qtree_list.children_get
+      Puppet.debug("Qtrees looks like: ")
+      ap qtrees
       # Itterate through each 'qtree-info' block. 
-      qtrees.each do |qtree|
-        name = qtree.child_get_string("qtree")
-        Puppet.debug("Puppet::Provider::Netapp_qtree.prefetch: Processing rule for qtree #{name}.")
+      qtrees.each_with_index do |qtree_info, i|
+        Puppet.debug("Index = #{i}")
+        Puppet.debug("Processing qtree: ")
+        ap qtree_info
+
+        # Check if it is a NaElement
+        next unless qtree_info.respond_to?(:child_get_string)
+ 
+        # Pull out the qtree name.
+        name = qtree_info.child_get_string("qtree")
+        # Skip record is 'name' is empty, as it's not actually a qtree. 
+        Puppet.debug("Puppet::Provider::Netapp_qtree.prefetch: Checking if this is an actual qtree, not a volume. ")
+        next if name.empty?
+        Puppet.debug("Puppet::Provider::Netapp_qtree.prefetch: Processing rule for qtree '#{name}'.")
         
         # Construct an export hash for rule
-        qtree_info = { :name => name,
+        qtree_hash = { :name => name,
                        :ensure => :present }
         
         # Add the volume details               
-        qtree_info[:volume] = qtree.child_get_string("volume") unless qtree.child_get_string("volume").nil?
+        qtree_hash[:volume] = qtree_info.child_get_string("volume") unless qtree_info.child_get_string("volume").empty?
+        Puppet.debug("Puppet::Provider::Netapp_qtree.prefetch: Volume for '#{name}' is '#{qtree_info.child_get_string("volume")}'.")
         
         # Add security style.   
-        qtree_info[:security_style] = qtree.child_get_string("security-style") unless qtree.child_get_string("security-style").nil?
+        #qtree_info[:security_style] = qtree.child_get_string("security-style") unless qtree.child_get_string("security-style").nil?
             
+        Puppet.debug("Qtree_hash looks like: ")
+        #ap qtree_hash
+
         # Create the instance and add to exports array.
-        Puppet.debug("Creating instance for #{name}. \n")
-        qtrees << new(qtree_info)
+        Puppet.debug("Creating instance for '#{name}'. \n")
+        qtrees << new(qtree_hash)
       end
+      Puppet.debug("Processed all qtree instances. ")
     end
   
     # Return the final exports array. 
@@ -55,6 +76,8 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
       Puppet.debug("Prov.name = #{resources[prov.name]}. ")
       if resource = resources[prov.name]
         resource.provider = prov
+      #else
+      #  resource.provider = new(:nil, :ensure => :absent)
       end
     end
   end
@@ -88,9 +111,33 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
     
     when :present
       Puppet.debug("Puppet::Provider::Netapp_qtree: Ensure is present.")
-      
+     
+      #if @properties[:ensure] && @properties[:ensure] == :absent
+      Puppet.debug("@properties[:ensure] - Nil = #{@properties[:ensure].nil?}. Value = #{@properties[:ensure]}.")
+ 
       # Query Netapp to create qtree against volume. . 
-      result = transport.invoke("qtree-create", "qtree", @resource[:name], "volume", @resource[:volume], "security-style", @resource[:security_style])
+      #result = transport.invoke("qtree-create", "qtree", @resource[:name], "volume", @resource[:volume])
+      # Check result status. 
+      #if(result.results_status == "failed")
+      #  Puppet.debug("Puppet::Provider::Netapp_qtree: Qtree #{@resource[:name]} creation failed due to #{result.results_reason}. \n")
+      #  raise Puppet::Error, "Puppet::Device::Netapp Qtree #{@resource[:name]} creation failed due to #{result.results_reason} \n."
+      #  return false
+      #else 
+      #  Puppet.debug("Puppet::Provider::Netapp_qtree: Qtree #{@resource[:name]} created successfully on volume #{@resource[:volume]}. \n")
+      #  return true
+      #end
+
+      #end
+      
+    end #EOC
+  end
+  
+  def create
+    Puppet.debug("Puppet::Provider::Netapp_qtree: creating Netapp Qtree #{@resource[:name]} on volume #{@resource[:volume]}.")
+
+
+      # Query Netapp to create qtree against volume. . 
+      result = transport.invoke("qtree-create", "qtree", @resource[:name], "volume", @resource[:volume])
       # Check result status. 
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_qtree: Qtree #{@resource[:name]} creation failed due to #{result.results_reason}. \n")
@@ -100,13 +147,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
         Puppet.debug("Puppet::Provider::Netapp_qtree: Qtree #{@resource[:name]} created successfully on volume #{@resource[:volume]}. \n")
         return true
       end
-      
-    end #EOC
-  end
-  
-  def create
-    Puppet.debug("Puppet::Provider::Netapp_qtree: creating Netapp Qtree #{@resource[:name]} on volume #{@resource[:volume]}.")
-    @property_hash[:ensure] = :present
+    #@property_hash[:ensure] = :present
   end
   
   def destroy
@@ -116,6 +157,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
 
   def exists?
     Puppet.debug("Puppet::Provider::Netapp_qtree: checking existance of Netapp qtree #{@resource[:name]} against volume #{@resource[:volume]}")
+    Puppet.debug("Value = #{@property_hash[:ensure]}")
     @property_hash[:ensure] == :present
   end
   
