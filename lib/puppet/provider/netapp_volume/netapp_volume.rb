@@ -1,49 +1,78 @@
 require 'puppet/provider/netapp'
+require 'ap'
 
 Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Provider::Netapp) do
   @doc = "Manage Netapp Volume creation, modification and deletion."
   
   confine :feature => :posix
   defaultfor :feature => :posix
+ 
+  mk_resource_methods
 
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_volume: got to self.instances.")
     volumes = Array.new
     
     # Get a list of volumes
-    result = transport.invoke("volume-list-info")
+    #result = transport.invoke("volume-list-info")
     # Check the result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
-      return false
-    else 
+    #if(result.results_status == "failed")
+    #  Puppet.debug("Puppet::Provider::Netapp_volume: Volume-list-info failed. \n")
+    #  return false
+    #else 
       # Pull list of volume-info blocks
-      volume_list = result.child_get("volumes")
-      volume_info = volume_list.children_get()
+     # volume_list = result.child_get("volumes")
+      #volume_info = volume_list.children_get()
+
+      # Get init-size details
+      volume_info = get_volinfo
+
+      # Get snap-reserve details
+      #volume_snap_reserve = get_snapreserve
+
       # Itterate through each 'volume-info' block
       volume_info.each do |volume|
-        vol_name = volume.child_get_string("name")
+        vol_name = volume[:name]
         # Construct required information
         volume_hash = { :name => vol_name,
                         :ensure => :present }
 
-        # Get volume initsize
-        volume_hash[:initsize] = initsize
+        # Get volume info
+        #vol_info = volume_info.detect { |i| i[:name] = vol_name }
+        # Initsize
+        # Need to convert from bytes to biggest possible unit
+        vol_size_bytes = volume[:size_bytes]
+        vol_size_mb = vol_size_bytes / 1024 / 1024
+        if vol_size_mb % 1024 == 0
+          vol_size_gb = vol_size_mb / 1024
+          if vol_size_gb % 1024 == 0
+            vol_size_tb = vol_size_gb / 1024
+            vol_size = vol_size_tb.to_s + "t"
+          else
+            vol_size = vol_size_gb.to_s + "g"
+          end
+        else 
+          vol_size = vol_size_mb.to_s + "m"
+        end
+        volume_hash[:initsize] = vol_size
         # Get volume snapreserve
-        volume_hash[:snapreserve] = snapreserve
+        #volume_sr_details = volume_snap_reserve.detect { |i| i[:name] = vol_name }
+        #vol_snap_res = volume_sr_details[:reserve]
+        volume_hash[:snapreserve] = volume[:snap_reserve]
         # Get autoincrement setting
-        volume_hash[:autoincrement] = autoincrement
+        volume_hash[:autoincrement] = volume[:auto_size]
         # Get volume options
-        volume_hash[:options] = options
+        volume_hash[:options] = self.get_options(vol_name)
         # Get volume snapschedule
-        volume_hash[:snapschedule] = options
+        volume_hash[:snapschedule] = self.get_snapschedule(vol_name) 
         
-        Puppet.debug("Puppet::Provider::Netapp_volume self.instances: Constructed volume_hash for volume #{name}.")
+        Puppet.debug("Puppet::Provider::Netapp_volume self.instances: Constructed volume_hash for volume #{vol_name}.")
+        #ap volume_hash
         
         # Create the instance and add to volumes array.
         volumes << new(volume_hash)
       end
-    end
+    #end
     
     Puppet.debug("Returning volumes array.")
     volumes
@@ -119,23 +148,46 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   #end
   
   # Volume initsize getter
-  def initsize
-    Puppet.debug("Puppet::Provider::Netapp_volume initsize: checking current size for Volume #{@resource[:name]}")
+  def self.get_volinfo
+    Puppet.debug("Puppet::Provider::Netapp_volume get_volinfo: getting volume info for all volumes.")
         
     # Pull back current volume-size.
-    result = transport.invoke("volume-size", "volume", @resource[:name])
+    result = transport.invoke("volume-list-info", "verbose", "true")
     # Check result status. 
     if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume initsize: volume-size failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Provider::Netapp_volume volume-size failed due to #{result.results_reason} \n."
+      Puppet.debug("Puppet::Provider::Netapp_volume get_volinfo: volume-list-info failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume get_volinfo: volume-list-info failed due to #{result.results_reason} \n."
       return false
     else 
+      Puppet.debug("Puppet::Provider::Netapp_volume get_volinfo: Pulling back volumes array. \n")
+      volume_info = Array.new
       # Get the volume_size value. 
-      volume_size = result.child_get_string("volume-size")
-      Puppet.debug("Puppet::Provider::Netapp_volume initsize: Current volume size is #{volume_size}. \n")
+      volumes = result.child_get("volumes")
+      volumes_info = volumes.children_get()
       
-      # Return volume_size value
-      volume_size
+      volumes_info.each do |volume|
+	vol_name = volume.child_get_string("name")
+        vol_size_bytes = volume.child_get_int("size-total")
+        vol_snap_reserve = volume.child_get_int("snapshot-percent-reserved")
+        # Get Auto size settings.
+        vol_auto_size = volume.child_get("autosize")
+        vol_auto_size = vol_auto_size.child_get("autosize-info")
+        vol_auto_size = vol_auto_size.child_get_string("is-enabled")
+        
+        Puppet.debug("Vol_name = #{vol_name}, vol_size_bytes = #{vol_size_bytes}, vol_snap_reserve = #{vol_snap_reserve}, vol_auto_size = #{vol_auto_size}.")
+
+        # Construct hash
+        vol_info = { :name => vol_name, 
+                     :size_bytes => vol_size_bytes,
+                     :snap_reserve => vol_snap_reserve,
+                     :auto_size => vol_auto_size }
+
+        # Add to array
+        volume_info << vol_info
+      end
+      Puppet.debug("Processed all volumes. Returning info array.")
+      # Return volume_info array
+      volume_info
     end
   end
   
@@ -159,23 +211,41 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   end
   
   # Snap reserve getter
-  def snapreserve
-    Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: checking current snap reservation value for Volume #{@resource[:name]}")
+  def self.get_snapreserve
+    Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: getting snap reservation values for all volumes")
     
     # Pull back current snap-reserve value.
-    result = transport.invoke("snapshot-get-reserve", "volume", @resource[:name])
+    result = transport.invoke("snapshot-reserve-list-info")
     # Check result status. 
     if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: snapshot-get-reserve failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Provider::Netapp_volume snapshot-get-reserve failed due to #{result.results_reason} \n."
+      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: snapshot-reserve-list-info failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_volume snapshot-reserve-list-info failed due to #{result.results_reason} \n."
       return false
     else 
-      # Get the current precent-reserved value. 
-      current_reserve = result.child_get_int("percent-reserved")
-      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: Current snap reserve is #{current_reserve}. \n")
+      # Create empty array to hold hashes
+      snapreserve_details = Array.new
+
+      Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: getting snapshot-reserve-details block")
+      sr_details = result.child_get("snapshot-reserve-details")
+      sr_details = sr_details.children_get()
+
+      sr_details.each do |volume_snap_res|
+
+        vol_name = volume_snap_res.child_get_string("volume")
+        current_reserve = volume_snap_res.child_get_int("percent")
+        Puppet.debug("Puppet::Provider::Netapp_volume snapreserve: Current snap reserve is #{current_reserve} for volume #{vol_name}. \n")
+
+        # Create a hash of details
+        vol_snap_details = { :name => vol_name,
+                         :reserve => current_reserve }
+
+        # Add the hash to snapreserve_details
+        snapreserve_details << vol_snap_details
+
+      end
       
-      # Return current_reserve value
-      current_reserve
+      # Return snapreserve_details
+      snapreserve_details
     end
   end
   
@@ -255,14 +325,14 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   end
   
   # Volume options getter
-  def options
-    Puppet.debug("Puppet::Provider::Netapp_volume options: checking current volume options for Volume #{@resource[:name]}")
+  def self.get_options(name)
+    Puppet.debug("Puppet::Provider::Netapp_volume options: checking current volume options for Volume #{name}")
     
     # Create hash for current_options
     current_options = {}
     
     # Pull list of volume-options
-    output = transport.invoke("volume-options-list-info", "volume", @resource[:name])
+    output = transport.invoke("volume-options-list-info", "volume", name)
     Puppet.debug("Puppet::Provider::Netapp_volume: Vol Options: " + output.sprintf() + "\n")
     if(output.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume options: Volume option list failed due to #{output.results_reason}. \n")
@@ -283,17 +353,19 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     end
     
     # Pull out matching option name list
-    set_options = @resource[:options].first
-    matched_options = set_options.keys & current_options.keys
+    #set_options = @resource[:options].first
+    #matched_options = set_options.keys & current_options.keys
     
     # Create new results hash 
-    result = {}
-    matched_options.each do |name|
-      Puppet.debug("Puppet::Provider::Netapp_volume options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
-      result[name] = current_options[name]
-    end
-    Puppet.debug("Puppet::Provider::Netapp_volume options: Returning result hash... \n")
-    result
+    #result = {}
+    #matched_options.each do |name|
+    #  Puppet.debug("Puppet::Provider::Netapp_volume options: Matched Name #{name}. Current value = #{[current_options[name]]}. New value = #{[set_options[name]]} \n")
+    #  result[name] = current_options[name]
+    #end
+    #Puppet.debug("Puppet::Provider::Netapp_volume options: Returning result hash... \n")
+    #result
+    #
+    current_options
   end
   
   # Volume options setter. 
@@ -322,8 +394,8 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   end
   
   # Snapshot schedule getter.
-  def snapschedule
-    Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: checking current volume snapshot schedule for Volume #{@resource[:name]}")
+  def self.get_snapschedule(name)
+    Puppet.debug("Puppet::Provider::Netapp_volume get_snapschedule: checking current volume snapshot schedule for Volume #{name}.")
         
     # Create hash for current_options
     current_schedule = {}
@@ -332,7 +404,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     keys = ['minutes', 'hours', 'days', 'weeks', 'which-hours', 'which-minutes']
     
     # Pull list of volume-options
-    output = transport.invoke("snapshot-get-schedule", "volume", @resource[:name])
+    output = transport.invoke("snapshot-get-schedule", "volume", name)
     Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Vol Snapshot Schedule: " + output.sprintf() + "\n")
     if(output.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_volume snapschedule: Volume snapshot schedule get failed due to #{output.results_reason}. \n")
