@@ -9,6 +9,7 @@ However it may well be compatible with other OnTap versions.
 
 ## Features
 The following items are supported:
+
  * Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.
  * Creation, modification and deletion of QTrees. 
  * Creation, modification and deletion of NFS Exports, including NFS export security. 
@@ -82,11 +83,11 @@ You can also use any of the types individually, or create new defined types as r
 ## TODO
 The following items are yet to be implemented:
 
-* Quota support
-* Data Fabric Manager support
-* Support adding/deleting/modifying cifs shares
-* LDAP and/or AD configuration
-* ???
+ * Quota support
+ * Data Fabric Manager support
+ * Support adding/deleting/modifying cifs shares
+ * LDAP and/or AD configuration
+ * ???
 
 ## Development
 
