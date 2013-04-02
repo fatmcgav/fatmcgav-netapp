@@ -29,7 +29,7 @@ The NetApp Ruby libraries are contained within the NetApp Manageability SDK, cur
 Please note you need a NetApp NOW account in order to be able to download the SDK.  
 
 Once you have downloaded and extracted the SDK, the following files need to be copied onto your Puppet Master:
-`../lib/ruby/NetApp > fatmcgav-netapp/lib/puppet/util/network_device/netapp/`
+`../lib/ruby/NetApp > [module dir]/netapp/lib/puppet/util/network_device/netapp/`
 
 Once the files have been copied into place on your Puppet Master, a minor edit is required in *NaServer.rb*:
 Replace the line: `require 'NaElement'` with `require File.dirname(__FILE__) + "/NaElement"`. 
