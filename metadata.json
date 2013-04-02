@@ -8,10 +8,10 @@
   "summary": "NetApp Network Device support for Puppet",
   "version": "0.3.x",
   "checksums": {
-    "CHANGELOG": "15c78845f85a2a483540a2f722710f80",
+    "CHANGELOG": "19e93daad4e372278c38a6afdc5e970a",
     "LICENSE": "2180042ca176b660becdef4fc29225e1",
     "Modulefile": "1ba087d5363d94745e0f84b90cfe1b96",
-    "README.markdown": "e7738f2d73acabafabfbb016afdf2db5",
+    "README.markdown": "893813d99fb90bb286e2cb1be7bc81d9",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "3449e4ec2f67afada6f2049e30590bd8",
