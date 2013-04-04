@@ -54,33 +54,55 @@ Puppet::Type.newtype(:netapp_user) do
     end
   end
   
-  newparam(:passminage) do
+  newproperty(:passminage) do
     desc "Number of days that this user's password must be active before the user can change it. Default value is 0. "
     defaultto '0'
     validate do |value|
-      unless value =~ /^\d+$/
-         raise ArgumentError, "%s is not a valid password minimum age." % value
+      raise ArgumentError, "%s is not a valid password minimum age." % value unless value =~ /^\d+$/
+      raise ArgumentError, "Passmaxage must be between 0 and 4294967295." unless value.to_i.between?(0,4294967295)
+    end
+    
+    munge do |value|
+      case value
+      when String
+        if value =~ /^[-0-9]+$/
+          value = Integer(value)
+        end
       end
+
+      return value
     end
   end
   
-  newparam(:passmaxage) do
+  newproperty(:passmaxage) do
     desc "Number of days that this user's password can be active before the user must change it. Default value is 2^31-1 days. "
+    defaultto '4294967295'
     validate do |value|
-      unless value =~ /^\d+$/
-         raise ArgumentError, "%s is not a valid password maximum age." % value
+      raise ArgumentError, "%s is not a valid password maximum age." % value unless value =~ /^\d+$/
+      raise ArgumentError, "Passmaxage must be between 0 and 4294967295." unless value.to_i.between?(0,4294967295)
+    end
+    
+    munge do |value|
+      case value
+      when String
+        if value =~ /^[-0-9]+$/
+          value = Integer(value)
+        end
       end
+
+      return value
     end
   end
   
-  newparam(:status) do
+  newproperty(:status) do
     desc "Status of user account. Valid values are: enabled, disabled and expired. "
     newvalues(:enabled, :disabled, :expired)
     defaultto(:enabled)
   end
   
-  newparam(:groups) do
+  newproperty(:groups) do
     desc "List of groups for this user account. Comma seperate multiple values. "
   end
   
 end
+
