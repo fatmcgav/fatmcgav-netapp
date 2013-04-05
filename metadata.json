@@ -20,7 +20,7 @@
     "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "02bbb3dc11ad41f0f8f2ae66400677c8",
     "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
     "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
-    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "c31ce47f9b8cc1e2d9231bd9fa17b9fb",
+    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "7419429f1479748c4e0c926fc67a81ab",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "e9590a7c2385c2bcb2da81d6b2ae15b1",
     "lib\\puppet\\type\\netapp_export.rb": "b7893d1b5774b28f1564c643b5698873",
     "lib\\puppet\\type\\netapp_group.rb": "92cf0e4e8825d37b13ef56bcf76c7a9d",
@@ -29,7 +29,7 @@
     "lib\\puppet\\type\\netapp_role.rb": "9346073414e5874618371307666c0eb4",
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
-    "lib\\puppet\\type\\netapp_user.rb": "af004f55aecee56dec04ac8441b796c3",
+    "lib\\puppet\\type\\netapp_user.rb": "574694f277bcfd31edb86b0fec6aba2b",
     "lib\\puppet\\type\\netapp_volume.rb": "cf68bae48fe9413b9f3d309ac071c5ee",
     "lib\\puppet\\util\\network_device\\netapp.rb": "ddf62939ce81fa9d42430fabb7624c52",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
@@ -37,7 +37,7 @@
     "lib\\puppet\\util\\network_device\\netapp\\NaErrno.rb": "f39ce8c746c6284cac04820e9a609259",
     "lib\\puppet\\util\\network_device\\netapp\\NaServer.rb": "0ede800393481ab75d216c52f88a1096",
     "lib\\puppet\\util\\network_device\\netapp\\device.rb": "b0534810097b5120485f7a9aafbc117a",
-    "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "b0c912dc663d5251219bbad895455834",
+    "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "69d7a42291873c88c908c93b4f98419c",
     "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
     "manifests\\vqe.pp": "c7b3bc5bcea73944ac078fb58157162d",
     "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
@@ -269,7 +269,9 @@
         {
           "name": "comment",
           "doc": "User comment"
-        },
+        }
+      ],
+      "properties": [
         {
           "name": "passminage",
           "doc": "Number of days that this user\u0027s password must be active before the user can change it. Default value is 0. "

@@ -21,10 +21,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       Puppet.debug("Puppet::Provider::Netapp_user: useradmin-user-list failed due to #{result.results_reason}. \n")
       raise Puppet::Error, "Puppet::Device::Netapp Qtree-list failed due to #{result.results_reason}. \n."
       return false
-    else 
-      # Result returned
-      # TODO: Need to work out a way of comparing is user config to should user config.  
-      
+    else       
       # Get a list of all users into array
       user_list = result.child_get("useradmin-users")
       users = user_list.children_get()
@@ -107,7 +104,67 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       end
       
     when :present
-	Puppet.debug("Puppet::Provider::Netapp_user: Ensure is present.")
+      Puppet.debug("Puppet::Provider::Netapp_user: modifying Netapp user account for #{@resource[:username]}.")
+      
+      # Start to construct request
+      cmd = NaElement.new("useradmin-user-modify")
+        
+      # Add useradmin-user container
+      user = NaElement.new("useradmin-user")
+      
+      # Construct useradmin-user-info
+      user_info = NaElement.new("useradmin-user-info")
+      # Add values
+      user_info.child_add_string("name", @resource[:username])
+      user_info.child_add_string("status", @resource[:status])
+      
+        # Add the full-name tag if populated. 
+      user_info.child_add_string("full-name", @resource[:fullname]) if @resource[:fullname]
+      
+      # Add the comment tag if populated. 
+      user_info.child_add_string("comment", @resource[:comment]) if @resource[:comment]
+      
+      # Add the password-minimum-age tag if populated. 
+      user_info.child_add_string("password-minimum-age", @resource[:passminage]) if @resource[:passminage]
+      
+      # Add the password-maximum-age tag if populated. 
+      user_info.child_add_string("password-maximum-age", @resource[:passmaxage]) if @resource[:passmaxage]
+      
+      # Create useradmin-groups container
+      user_groups = NaElement.new("useradmin-groups")
+      
+      # Split the :groups value into array and itterate populating user_groups element.
+      groups = @resource[:groups].split(",")
+      groups.each do |group|
+        group_info = NaElement.new("useradmin-group-info")
+        group_info.child_add_string("name", group)
+        user_groups.child_add(group_info)
+      end
+      
+      # Put it all togeather
+      user_info.child_add(user_groups)
+      user.child_add(user_info)
+      cmd.child_add(user)
+      
+      # Invoke the constructed request
+      result = transport.invoke_elem(cmd)
+      
+      # Check result status
+      if(result.results_status == "failed")
+        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n")
+        raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} modification failed due to #{result.results_reason}. \n."
+        return false
+      else
+        # Passed above, therefore must of worked. 
+        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modified successfully. \n")
+        return true
+      end
+      
+    end 
+  end
+  
+  def create
+    Puppet.debug("Puppet::Provider::Netapp_user: creating Netapp user account for #{@resource[:username]}. \n")
     # Start to construct request
     cmd = NaElement.new("useradmin-user-add")
     cmd.child_add_string("password", @resource[:password])
@@ -162,12 +219,6 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")
       return true
     end
-    end 
-  end
-  
-  def create
-    Puppet.debug("Puppet::Provider::Netapp_user: creating Netapp user account for #{@resource[:username]}. \n")
-    @property_hash[:ensure] = :present 
   end
   
   def destroy
