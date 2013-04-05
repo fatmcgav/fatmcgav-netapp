@@ -15,21 +15,21 @@
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "3449e4ec2f67afada6f2049e30590bd8",
-    "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "a9f02c8aae5fd4d36445dc5db3f03bcb",
+    "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "43eb5474cb7b8d3ecfc6520258ef8916",
     "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "3279a7f1afc7b196c0fb52c0dbd5927c",
     "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "02bbb3dc11ad41f0f8f2ae66400677c8",
     "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
     "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
-    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "695c70cba61a87a129d07faa15d88c37",
+    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "b679941f69f2427a369de054dca99fb7",
     "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "e9590a7c2385c2bcb2da81d6b2ae15b1",
     "lib\\puppet\\type\\netapp_export.rb": "b7893d1b5774b28f1564c643b5698873",
-    "lib\\puppet\\type\\netapp_group.rb": "92cf0e4e8825d37b13ef56bcf76c7a9d",
+    "lib\\puppet\\type\\netapp_group.rb": "3a70b3d78adc4ac767d1a81ebf6c941a",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "800a707b9ac898e16d220a5de27dadfb",
     "lib\\puppet\\type\\netapp_role.rb": "9346073414e5874618371307666c0eb4",
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
-    "lib\\puppet\\type\\netapp_user.rb": "49937315aa43edfde882ced2ff7273b9",
+    "lib\\puppet\\type\\netapp_user.rb": "1d705f22cce425096800ade146555cfb",
     "lib\\puppet\\type\\netapp_volume.rb": "cf68bae48fe9413b9f3d309ac071c5ee",
     "lib\\puppet\\util\\network_device\\netapp.rb": "ddf62939ce81fa9d42430fabb7624c52",
     "lib\\puppet\\util\\network_device\\netapp\\device.rb": "b0534810097b5120485f7a9aafbc117a",
@@ -94,10 +94,12 @@
         {
           "name": "comment",
           "doc": "Group comment"
-        },
+        }
+      ],
+      "properties": [
         {
           "name": "roles",
-          "doc": "List of roles for this group. Comma seperate multiple values. "
+          "doc": "List of roles for this group. Comma separate multiple values. "
         }
       ],
       "providers": [
@@ -256,7 +258,7 @@
         },
         {
           "name": "password",
-          "doc": "The user password. Minimum length is 8 characters, must contain atleast one number."
+          "doc": "The user password. Minimum length is 8 characters, must contain at-least one number."
         },
         {
           "name": "status",
@@ -282,7 +284,7 @@
         },
         {
           "name": "groups",
-          "doc": "List of groups for this user account. Comma seperate multiple values. "
+          "doc": "List of groups for this user account. Comma separate multiple values. "
         }
       ],
       "providers": [

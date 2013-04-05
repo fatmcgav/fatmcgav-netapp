@@ -19,7 +19,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     if(result.results_status == "failed")
       # Check failed, therefore the account doesn't exist. 
       Puppet.debug("Puppet::Provider::Netapp_user: useradmin-user-list failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp Qtree-list failed due to #{result.results_reason}. \n."
+      raise Puppet::Error, "Puppet::Device::Netapp useradmin-user-list failed due to #{result.results_reason}. \n."
       return false
     else       
       # Get a list of all users into array
@@ -92,9 +92,8 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     Puppet.debug("Property_hash ensure = #{@property_hash[:ensure]}")
     case @property_hash[:ensure] 
     when :absent
-      Puppet.debug("Puppet::Provider::Netapp_user: Ensure is absent.")
       Puppet.debug("Puppet::Provider::Netapp_user: destroying Netapp user #{@resource[:username]}.")
-      # Query Netapp to remove qtree against volume. 
+      # Query Netapp to remove user. 
       result = transport.invoke("useradmin-user-delete", "user-name", @resource[:username])
       # Check result returned. 
       if(result.results_status == "failed")
@@ -136,7 +135,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       # Create useradmin-groups container
       user_groups = NaElement.new("useradmin-groups")
       
-      # Split the :groups value into array and itterate populating user_groups element.
+      # Split the :groups value into array and iterate populating user_groups element.
       groups = @resource[:groups].split(",")
       groups.each do |group|
         group_info = NaElement.new("useradmin-group-info")
@@ -144,7 +143,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
         user_groups.child_add(group_info)
       end
       
-      # Put it all togeather
+      # Put it all together
       user_info.child_add(user_groups)
       user.child_add(user_info)
       cmd.child_add(user)
@@ -182,7 +181,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     user_info.child_add_string("name", @resource[:username])
     user_info.child_add_string("status", @resource[:status])
     
-      # Add the full-name tag if populated. 
+    # Add the full-name tag if populated. 
     user_info.child_add_string("full-name", @resource[:fullname]) if @resource[:fullname]
     
     # Add the comment tag if populated. 
@@ -197,7 +196,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     # Create useradmin-groups container
     user_groups = NaElement.new("useradmin-groups")
     
-    # Split the :groups value into array and itterate populating user_groups element.
+    # Split the :groups value into array and iterate populating user_groups element.
     groups = @resource[:groups].split(",")
     groups.each do |group|
       group_info = NaElement.new("useradmin-group-info")
@@ -205,7 +204,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       user_groups.child_add(group_info)
     end
     
-    # Put it all togeather
+    # Put it all together
     user_info.child_add(user_groups)
     user.child_add(user_info)
     cmd.child_add(user)

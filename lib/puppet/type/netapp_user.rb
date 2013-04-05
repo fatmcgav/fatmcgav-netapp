@@ -28,7 +28,7 @@ Puppet::Type.newtype(:netapp_user) do
   end
   
   newparam(:password) do
-    desc "The user password. Minimum length is 8 characters, must contain atleast one number."
+    desc "The user password. Minimum length is 8 characters, must contain at-least one number."
     validate do |value|
       unless value =~ /^\S{8,}$/
         raise ArgumentError, "%s is not a valid password." % value
@@ -101,7 +101,7 @@ Puppet::Type.newtype(:netapp_user) do
   end
   
   newproperty(:groups) do
-    desc "List of groups for this user account. Comma seperate multiple values. "
+    desc "List of groups for this user account. Comma separate multiple values. "
   end
   
 end
