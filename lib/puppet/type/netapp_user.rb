@@ -36,7 +36,7 @@ Puppet::Type.newtype(:netapp_user) do
     end
   end
   
-  newparam(:fullname) do
+  newproperty(:fullname) do
     desc "The user full name."
     validate do |value|
       unless value =~ /^\w+\s?\w+$/
@@ -45,7 +45,7 @@ Puppet::Type.newtype(:netapp_user) do
     end
   end
 
-  newparam(:comment) do
+  newproperty(:comment) do
     desc "User comment"
     validate do |value|
       unless value =~ /^[\w\s\-\.]+$/
@@ -94,7 +94,7 @@ Puppet::Type.newtype(:netapp_user) do
     end
   end
   
-  newproperty(:status) do
+  newparam(:status) do
     desc "Status of user account. Valid values are: enabled, disabled and expired. "
     newvalues(:enabled, :disabled, :expired)
     defaultto(:enabled)

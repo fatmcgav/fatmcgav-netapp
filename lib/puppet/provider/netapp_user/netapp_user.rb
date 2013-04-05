@@ -37,9 +37,12 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
         user_info = { :name => username,
                       :ensure => :present }
         
-        # Add fullname if required
+        # Add fullname if present
         user_info[:fullname] = user.child_get_string("full-name") unless user.child_get_string("full-name").nil?
         
+        # Add comment if present
+        user_info[:comment] = user.child_get_string("comment") unless user.child_get_string("comment").nil?
+
         # Password min and max ages
         user_info[:passminage] = user.child_get_int("password-minimum-age") unless user.child_get_int("password-minimum-age").nil?
         user_info[:passmaxage] = user.child_get_int("password-maximum-age") unless user.child_get_int("password-maximum-age").nil?
@@ -116,7 +119,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       user_info = NaElement.new("useradmin-user-info")
       # Add values
       user_info.child_add_string("name", @resource[:username])
-      user_info.child_add_string("status", @resource[:status])
+      user_info.child_add_string("status", @resource[:status].to_s)
       
         # Add the full-name tag if populated. 
       user_info.child_add_string("full-name", @resource[:fullname]) if @resource[:fullname]
@@ -125,10 +128,10 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       user_info.child_add_string("comment", @resource[:comment]) if @resource[:comment]
       
       # Add the password-minimum-age tag if populated. 
-      user_info.child_add_string("password-minimum-age", @resource[:passminage]) if @resource[:passminage]
+      user_info.child_add_string("password-minimum-age", @resource[:passminage].to_s) if @resource[:passminage]
       
       # Add the password-maximum-age tag if populated. 
-      user_info.child_add_string("password-maximum-age", @resource[:passmaxage]) if @resource[:passmaxage]
+      user_info.child_add_string("password-maximum-age", @resource[:passmaxage].to_s) if @resource[:passmaxage]
       
       # Create useradmin-groups container
       user_groups = NaElement.new("useradmin-groups")
@@ -146,6 +149,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       user.child_add(user_info)
       cmd.child_add(user)
       
+      Puppet.debug("Modification request xml looks like: \n #{cmd.sprintf()}")
       # Invoke the constructed request
       result = transport.invoke_elem(cmd)
       
@@ -217,6 +221,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     else
       # Passed above, therefore must of worked. 
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")
+      @property_hash.clear
       return true
     end
   end
