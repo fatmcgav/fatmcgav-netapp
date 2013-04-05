@@ -36,8 +36,8 @@ Puppet::Type.newtype(:netapp_group) do
     end
   end
   
-  newparam(:roles) do
-    desc "List of roles for this group. Comma seperate multiple values. "
+  newproperty(:roles) do
+    desc "List of roles for this group. Comma separate multiple values. "
   end
   
 end
