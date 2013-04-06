@@ -36,8 +36,8 @@ Puppet::Type.newtype(:netapp_role) do
     end
   end
   
-  newparam(:capabilities) do
-    desc "List of capabilities for this role. Comma seperate multiple values. "
+  newproperty(:capabilities) do
+    desc "List of capabilities for this role. Comma separate multiple values. "
   end
   
 end

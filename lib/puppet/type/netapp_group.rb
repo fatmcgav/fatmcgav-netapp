@@ -18,7 +18,7 @@ Puppet::Type.newtype(:netapp_group) do
   end
   
   newparam(:groupname) do
-    desc "The group username."
+    desc "The group name."
     isnamevar
     validate do |value|
       unless value =~ /^[\w-]+$/

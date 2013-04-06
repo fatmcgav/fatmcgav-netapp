@@ -13,13 +13,13 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
     
     group_instances = Array.new
     
-    # Query Netapp for export-list against path. 
+    # Query Netapp for user group list. 
     result = transport.invoke("useradmin-group-list")
     # Check result status. 
     if(result.results_status == "failed")
       # Check failed, therefore the account doesn't exist. 
-      Puppet.debug("Puppet::Provider::Netapp_user: useradmin-group-list failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp useradmin-group-list failed due to #{result.results_reason}. \n."
+      Puppet.debug("Puppet::Provider::Netapp_group: useradmin-group-list failed due to #{result.results_reason}. \n")
+      raise Puppet::Error, "Puppet::Device::Netapp_group: useradmin-group-list failed due to #{result.results_reason}. \n."
       return false
     else       
       # Get a list of all groups into array
@@ -39,7 +39,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
         
         # Get roles
         role_list = String.new
-        group_roles = user.child_get("useradmin-roles")
+        group_roles = group.child_get("useradmin-roles")
         group_roles_arr = group_roles.children_get
         group_roles_arr.each do |group_role|
           role_name = group_role.child_get_string("name")
@@ -55,14 +55,14 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
           
       end
       
-      # Return the final user array. 
+      # Return the final group array. 
       Puppet.debug("Returning group array. ")
       group_instances
     end
   end
   
   def self.prefetch(resources)
-    Puppet.debug("Puppet::Provider::Netapp_groups: Got to self.prefetch.")
+    Puppet.debug("Puppet::Provider::Netapp_group: Got to self.prefetch.")
     # Iterate instances and match provider where relevant.
     instances.each do |prov|
       Puppet.debug("Prov.name = #{resources[prov.name]}. ")
@@ -98,17 +98,17 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       # Add useradmin-group container
       group = NaElement.new("useradmin-group")
       
-      # Construct useradmin-user-info
+      # Construct useradmin-group-info
       group_info = NaElement.new("useradmin-group-info")
       # Add values
       group_info.child_add_string("name", @resource[:groupname])
       # Add the comment tag if populated. 
       group_info.child_add_string("comment", @resource[:comment]) if @resource[:comment]
       
-      # Create useradmin-groups container
+      # Create useradmin-roles container
       group_roles = NaElement.new("useradmin-roles")
       
-      # Split the :groups value into array and itterate populating user_groups element.
+      # Split the :groups value into array and iterate populating user_groups element.
       roles = @resource[:roles].split(",")
       roles.each do |role|
         role_info = NaElement.new("useradmin-role-info")
@@ -175,7 +175,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
     # Check result status
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n."
+      raise Puppet::Error, "Puppet::Device::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n."
       return false
     else
       # Passed above, therefore must of worked. 
@@ -191,7 +191,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
   end
   
   def exists?
-    Puppet.debug("Puppet::Provider::Netapp_groupr: checking existence of Netapp group #{@resource[:groupname]}.")
+    Puppet.debug("Puppet::Provider::Netapp_group: checking existence of Netapp group #{@resource[:groupname]}.")
     Puppet.debug("Value = #{@property_hash[:ensure]}")
     @property_hash[:ensure] == :present
   end

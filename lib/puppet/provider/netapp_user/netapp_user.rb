@@ -19,7 +19,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     if(result.results_status == "failed")
       # Check failed, therefore the account doesn't exist. 
       Puppet.debug("Puppet::Provider::Netapp_user: useradmin-user-list failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp useradmin-user-list failed due to #{result.results_reason}. \n."
+      raise Puppet::Error, "Puppet::Device::Netapp_user: useradmin-user-list failed due to #{result.results_reason}. \n."
       return false
     else       
       # Get a list of all users into array
@@ -155,7 +155,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       # Check result status
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} modification failed due to #{result.results_reason}. \n."
+        raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n."
         return false
       else
         # Passed above, therefore must of worked. 
@@ -215,7 +215,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     # Check result status
     if(result.results_status == "failed")
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} creation failed due to #{result.results_reason}. \n."
+      raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n."
       return false
     else
       # Passed above, therefore must of worked. 
