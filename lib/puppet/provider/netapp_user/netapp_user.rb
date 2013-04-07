@@ -13,7 +13,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     
     user_instances = Array.new
     
-    # Query Netapp for export-list against path. 
+    # Query Netapp for user list. 
     result = transport.invoke("useradmin-user-list", "verbose", "true")
     # Check result status. 
     if(result.results_status == "failed")
@@ -26,7 +26,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       user_list = result.child_get("useradmin-users")
       users = user_list.children_get()
       
-      # Itterate through each 'useradmin-user-info' block. 
+      # Iterate through each 'useradmin-user-info' block. 
       users.each do |user|
         
         # Pull out relevant info
@@ -76,7 +76,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   
   def self.prefetch(resources)
     Puppet.debug("Puppet::Provider::Netapp_user: Got to self.prefetch.")
-    # Itterate instances and match provider where relevant.
+    # Iterate instances and match provider where relevant.
     instances.each do |prov|
       Puppet.debug("Prov.name = #{resources[prov.name]}. ")
       if resource = resources[prov.name]
@@ -98,10 +98,10 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       # Check result returned. 
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} wasn't deleted due to #{destroy_result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp user #{@resource[:username]} deletion failed due to #{destroy_result.results_reason} \n."
+        raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} deletion failed due to #{destroy_result.results_reason} \n."
         return false
       else 
-        Puppet.debug("Puppet::Provider::Netapp_user: qtree #{@resource[:username]} destroyed successfully. \n")
+        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} deleted successfully. \n")
         return true
       end
       
@@ -235,5 +235,5 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     Puppet.debug("Value = #{@property_hash[:ensure]}")
     @property_hash[:ensure] == :present
   end
-end
 
+end

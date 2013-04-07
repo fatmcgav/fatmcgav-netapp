@@ -26,7 +26,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       group_list = result.child_get("useradmin-groups")
       groups = group_list.children_get()
       
-      # Itterate through each 'useradmin-group-info' block. 
+      # Iterate through each 'useradmin-group-info' block. 
       groups.each do |group|
         
         # Pull out relevant info
@@ -84,7 +84,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       # Check result returned. 
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} wasn't deleted due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp group #{@resource[:groupname]} wasn't deleted due to #{result.results_reason}. \n."
+        raise Puppet::Error, "Puppet::Device::Netapp_group: group #{@resource[:groupname]} wasn't deleted due to #{result.results_reason}. \n."
         return false
       else 
         Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} deleted successfully. \n")
@@ -127,7 +127,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       # Check result status
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n."
+        raise Puppet::Error, "Puppet::Device::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n."
         return false
       else
         # Passed above, therefore must of worked. 
