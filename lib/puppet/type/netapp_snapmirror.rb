@@ -9,11 +9,19 @@ Puppet::Type.newtype(:netapp_snapmirror) do
     defaultto(:present)
     
     newvalue(:present) do 
-      provider.create
+      unless provider.initialized?
+        provider.create
+      else
+        provider.progress
+      end
     end
     
     newvalue(:absent) do 
       provider.destroy
+    end
+    
+    newvalue(:initializing) do
+      provider.progress
     end
   end
   
