@@ -26,7 +26,7 @@
     "lib\\puppet\\type\\netapp_group.rb": "5635eaf2180b3c336f0018ff7479d498",
     "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
     "lib\\puppet\\type\\netapp_qtree.rb": "800a707b9ac898e16d220a5de27dadfb",
-    "lib\\puppet\\type\\netapp_role.rb": "f829b21debbd9d144bf186c67869b88d",
+    "lib\\puppet\\type\\netapp_role.rb": "631c4379d5f6e75bf6a50e216b6f6b93",
     "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
     "lib\\puppet\\type\\netapp_user.rb": "1d705f22cce425096800ade146555cfb",
