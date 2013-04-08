@@ -62,7 +62,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
         # Add groups to hash, removing trailing comma
         user_info[:groups] = group_list.chomp!(",")
         
-        # Create the instance and add to exports array.
+        # Create the instance and add to users array.
         Puppet.debug("Creating instance for '#{username}'. \n")
         user_instances << new(user_info)
           
@@ -231,7 +231,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   end
   
   def exists?
-    Puppet.debug("Puppet::Provider::Netapp_user: checking existance of Netapp user #{@resource[:username]}.")
+    Puppet.debug("Puppet::Provider::Netapp_user: checking existence of Netapp user #{@resource[:username]}.")
     Puppet.debug("Value = #{@property_hash[:ensure]}")
     @property_hash[:ensure] == :present
   end
