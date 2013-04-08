@@ -121,6 +121,9 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
       role.child_add(role_info)
       cmd.child_add(role)
       
+      # Invoke the constructed request
+      result = transport.invoke_elem(cmd)
+      
       # Check result status
       if(result.results_status == "failed")
         Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} modification failed due to #{result.results_reason}. \n")
