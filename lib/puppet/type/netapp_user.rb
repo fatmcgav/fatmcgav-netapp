@@ -102,6 +102,25 @@ Puppet::Type.newtype(:netapp_user) do
   
   newproperty(:groups) do
     desc "List of groups for this user account. Comma separate multiple values. "
+    
+    def insync?(is)
+      # @should is an Array. see lib/puppet/type.rb insync?
+      should = @should.first
+
+      # Split is and should into arrays on ,
+      should_arr = should.split(',')
+      is_arr = is.split(',')
+      
+      # Comparison of arrays
+      return false unless is_arr.class == Array and should_arr.class == Array
+      # Should is master, therefore any difference needs correction
+      unless (should_arr - is_arr).empty?
+        return false
+      end
+      # Got here, so must match
+      return true
+    end
+    
   end
   
 end
