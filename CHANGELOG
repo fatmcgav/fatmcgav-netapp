@@ -1,3 +1,14 @@
+0.3.0 2013-04-09 Gavin Williams <fatmcgav@gmail.com>
+Feature release incorporating 2 enhancements.
+* (#18) Improved device facts
+  Now gives more meaningful fact data.  
+* (#20) Convert to Prefetch/Flush style providers.
+  Large performance improvement by converting to a prefetch/flush model for providers.  
+Also improved Readme, and correct various typos and incorrect code comments. 
+
+0.2.4 2013-03-28 Gavin Williams <fatmcgav@gmail.com>
+* (#27) Updated netapp_volume autoincrement= to convert volume size into MB before calculating autoincrement sizes. 
+
 0.2.3 2013-03-22 Gavin Williams <fatmcgav@gmail.com>
 * (#13) Updated Netapp_volume to adjust the auto-increment settings when resizing a volume. 
 
