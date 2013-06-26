@@ -25,4 +25,8 @@ Puppet::Type.newtype(:netapp_qtree) do
       end
     end   
   end
+
+  autorequire(:netapp_volume) do
+    self[:volume]
+  end
 end

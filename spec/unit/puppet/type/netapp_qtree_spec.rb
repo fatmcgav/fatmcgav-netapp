@@ -76,4 +76,47 @@ describe Puppet::Type.type(:netapp_qtree) do
       end
     end
   end
+
+  describe "autorequiring" do
+    let :qtree do
+      described_class.new(
+        :name   => 'q1',
+        :ensure => :present,
+        :volume => 'vol1'
+      )
+    end
+
+    let :volumeprovider do
+      Puppet::Type.type(:netapp_volume).provide(:fake_netapp_volume_provider) { mk_resource_methods }
+    end
+
+    let :volume do
+      Puppet::Type.type(:netapp_volume).new(
+        :name   => 'vol1',
+        :ensure => :present,
+      )
+    end
+
+    let :catalog do
+      Puppet::Resource::Catalog.new
+    end
+
+    before :each do
+      Puppet::Type.type(:netapp_volume).stubs(:defaultprovider).returns volumeprovider
+    end
+
+    it "should not autorequire a volume when no matching volume can be found" do
+      catalog.add_resource qtree
+      qtree.autorequire.should be_empty
+    end
+
+    it "should autorequire a matching volume" do
+      catalog.add_resource qtree
+      catalog.add_resource volume
+      reqs = qtree.autorequire
+      reqs.size.should == 1
+      reqs[0].source.must == volume
+      reqs[0].target.must == qtree
+    end
+  end
 end
