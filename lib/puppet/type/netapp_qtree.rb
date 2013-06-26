@@ -1,3 +1,5 @@
+require 'puppet/util/network_device'
+
 Puppet::Type.newtype(:netapp_qtree) do 
   @doc = "Manage Netapp Qtree creation, modification and deletion."
   
@@ -35,5 +37,4 @@ Puppet::Type.newtype(:netapp_qtree) do
       end
     end   
   end
-  
 end
