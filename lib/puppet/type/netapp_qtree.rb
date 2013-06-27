@@ -5,19 +5,7 @@ Puppet::Type.newtype(:netapp_qtree) do
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp Qtree resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:name) do
     desc "The qtree name."
