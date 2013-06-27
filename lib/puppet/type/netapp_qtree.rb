@@ -1,21 +1,11 @@
+require 'puppet/util/network_device'
+
 Puppet::Type.newtype(:netapp_qtree) do 
   @doc = "Manage Netapp Qtree creation, modification and deletion."
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp Qtree resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:name) do
     desc "The qtree name."
@@ -35,5 +25,8 @@ Puppet::Type.newtype(:netapp_qtree) do
       end
     end   
   end
-  
+
+  autorequire(:netapp_volume) do
+    self[:volume]
+  end
 end
