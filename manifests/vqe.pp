@@ -98,7 +98,7 @@ define netapp::vqe (
 
   if $ensure == 'absent' {
     Netapp_export["/vol/v_${name}/q_${name}"]
-      -> Netapp_qtree["q_${name}"] ->
+      -> Netapp_qtree["q_${name}"]
       -> Netapp_volume["v_${name}"]
   }
   else {
