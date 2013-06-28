@@ -43,7 +43,6 @@ describe Puppet::Type.type(:netapp_qtree) do
       end
 
       it "should support hyphens" do
-        pending 'known bug'
         described_class.new(:name => 'abc-def', :ensure => :present)[:name].should == 'abc-def'
       end
 
@@ -93,7 +92,7 @@ describe Puppet::Type.type(:netapp_qtree) do
     let :volume do
       Puppet::Type.type(:netapp_volume).new(
         :name   => 'vol1',
-        :ensure => :present,
+        :ensure => :present
       )
     end
 
