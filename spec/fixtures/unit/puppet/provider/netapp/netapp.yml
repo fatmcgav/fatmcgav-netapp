@@ -1,0 +1,4 @@
+---
+filer.example.com:
+  :user: root
+  :password: secret
