@@ -22,6 +22,8 @@ class Puppet::Provider::Netapp < Puppet::Provider
     self.class.transport
   end
 
+  # Helper function for simplifying the execution of NetApp API commands, in a similar fashion to the commands function. 
+  # Arguments should be a hash of 'command name' => 'api command'.
   def self.netapp_commands(command_specs)
     command_specs.each do |name, apicommand|
       create_class_and_instance_method(name) do |*args|
@@ -33,6 +35,11 @@ class Puppet::Provider::Netapp < Puppet::Provider
         result
       end
     end
+  end
+  
+  # Define function using the class instance of self.netapp_commands. 
+  def netapp_commands(command_specs)
+    self.class.netapp_commands(command_specs)
   end
 
 end
