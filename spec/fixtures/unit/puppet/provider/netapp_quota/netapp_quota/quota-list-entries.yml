@@ -1,0 +1,175 @@
+--- !ruby/object:NaElement 
+attrkeys: 
+- status
+attrvals: 
+- passed
+children: 
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: 
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: 
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: /vol/FILER01P_vol1/some-share
+      name: quota-target
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: FILER01P_vol1
+      name: volume
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: ""
+      name: qtree
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: tree
+      name: quota-type
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: /vol/FILER01P_vol1/some-share   tree    5G      -       -       -       -
+      name: line
+    content: ""
+    name: quota-entry
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: 
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: /vol/vol3/some_other-share
+      name: quota-target
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: vol3
+      name: volume
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: ""
+      name: qtree
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: tree
+      name: quota-type
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: /vol/vol3/some_other-share   tree    200M      -       -       -       -
+      name: line
+    content: ""
+    name: quota-entry
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: 
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: bob
+      name: quota-target
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: home
+      name: volume
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: bob_h
+      name: qtree
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: user
+      name: quota-type
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: bob                 user@/vol/home/bob_h       100M  10K   90M   90M   9K
+      name: line
+    content: ""
+    name: quota-entry
+  content: ""
+  name: quota-entries
+content: ""
+name: results
