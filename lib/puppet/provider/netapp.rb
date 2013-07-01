@@ -36,10 +36,5 @@ class Puppet::Provider::Netapp < Puppet::Provider
       end
     end
   end
-  
-  # Define function using the class instance of self.netapp_commands. 
-  def netapp_commands(command_specs)
-    self.class.netapp_commands(command_specs)
-  end
 
 end
