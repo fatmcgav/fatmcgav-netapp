@@ -48,6 +48,14 @@ Puppet::Type.type(:netapp_quota).provide(:netapp_quota, :parent => Puppet::Provi
     instances
   end
 
+  def self.prefetch(resources)
+    instances.each do |prov|
+      if resource = resources[prov.name]
+        resource.provider = prov
+      end
+    end
+  end
+
   def exists?
     get(:ensure) != :absent
   end
