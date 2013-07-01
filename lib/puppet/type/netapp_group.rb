@@ -3,19 +3,7 @@ Puppet::Type.newtype(:netapp_group) do
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp Group resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:groupname) do
     desc "The group name."
@@ -39,6 +27,12 @@ Puppet::Type.newtype(:netapp_group) do
   newproperty(:roles) do
     desc "List of roles for this group. Comma separate multiple values. "
     
+    validate do |value|
+      unless value =~ /^[\w\s\-]+(,?[\w\s\-]*)*$/
+         raise ArgumentError, "%s is not a valid role list." % value
+      end
+    end
+    
     def insync?(is)
       # @should is an Array. see lib/puppet/type.rb insync?
       should = @should.first
@@ -57,6 +51,10 @@ Puppet::Type.newtype(:netapp_group) do
       return true
     end
     
+  end
+  
+  autorequire(:netapp_role) do 
+    self[:roles].split(',')
   end
   
 end
