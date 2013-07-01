@@ -35,7 +35,7 @@ describe Puppet::Type.type(:netapp_qtree) do
       end
 
       it "should not support a nested directory" do
-        expect { described_class.new(:name => 'dir1/dir2', :ensure => :present) }.to raise_error Puppet::Error, /dir1\/dir2 is not a valid qtree name/
+        expect { described_class.new(:name => 'dir1/dir2', :ensure => :present) }.to raise_error(Puppet::Error, /dir1\/dir2 is not a valid qtree name/)
       end
 
       it "should support underscores" do
@@ -47,7 +47,7 @@ describe Puppet::Type.type(:netapp_qtree) do
       end
 
       it "should not support spaces" do
-        expect { described_class.new(:name => 'qtree 1', :ensure => :present) }.to raise_error Puppet::Error, /qtree 1 is not a valid qtree name/
+        expect { described_class.new(:name => 'qtree 1', :ensure => :present) }.to raise_error(Puppet::Error, /qtree 1 is not a valid qtree name/)
       end
     end
 
@@ -61,7 +61,7 @@ describe Puppet::Type.type(:netapp_qtree) do
       end
 
       it "should not support other values" do
-        expect { described_class.new(:name => 'q1', :ensure => 'foo') }.to raise_error Puppet::Error, /Invalid value "foo"/
+        expect { described_class.new(:name => 'q1', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
       end
     end
 
@@ -71,7 +71,7 @@ describe Puppet::Type.type(:netapp_qtree) do
       end
 
       it "should not support spaces" do
-        expect { described_class.new(:name => 'q1', :volume => 'vol 1', :ensure => :present) }.to raise_error Puppet::Error, /vol 1 is not a valid volume name/
+        expect { described_class.new(:name => 'q1', :volume => 'vol 1', :ensure => :present) }.to raise_error(Puppet::Error, /vol 1 is not a valid volume name/)
       end
     end
   end
@@ -109,7 +109,7 @@ describe Puppet::Type.type(:netapp_qtree) do
       qtree.autorequire.should be_empty
     end
 
-    it "should autorequire a matching volume" do
+    it "should autorequire a matching group" do
       catalog.add_resource qtree
       catalog.add_resource volume
       reqs = qtree.autorequire
