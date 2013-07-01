@@ -81,7 +81,7 @@ You can also use any of the types individually, or create new defined types as r
 
 ## Contributors
 Thanks go out to the following users for their contributions to this project:
- * Stefan Schutle
+ * Stefan Schulte
 
 ## TODO
 The following items are yet to be implemented:
