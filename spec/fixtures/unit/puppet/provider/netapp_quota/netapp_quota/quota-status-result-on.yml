@@ -1,0 +1,44 @@
+--- !ruby/object:NaElement 
+attrkeys: 
+- status
+attrvals: 
+- passed
+children: 
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: "on"
+  name: status
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: none
+  name: substatus
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: "[quota: warning]: Total tree disk quota limit from /etc/quotas (3087360 MB) exceeds size of volume vol1 (2097152 MB)"
+  name: reason
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: "[quota: warning]: Total tree disk quota limit from /etc/quotas (3087360 MB) exceeds size of volume vol1 (2097152 MB)"
+  name: quota-errors
+content: ""
+name: results
