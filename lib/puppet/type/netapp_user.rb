@@ -3,19 +3,7 @@ Puppet::Type.newtype(:netapp_user) do
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp User resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:username) do
     desc "The user username."
@@ -59,7 +47,7 @@ Puppet::Type.newtype(:netapp_user) do
     defaultto '0'
     validate do |value|
       raise ArgumentError, "%s is not a valid password minimum age." % value unless value =~ /^\d+$/
-      raise ArgumentError, "Passmaxage must be between 0 and 4294967295." unless value.to_i.between?(0,4294967295)
+      raise ArgumentError, "Passminage must be between 0 and 4294967295." unless value.to_i.between?(0,4294967295)
     end
     
     munge do |value|
@@ -102,6 +90,12 @@ Puppet::Type.newtype(:netapp_user) do
   
   newproperty(:groups) do
     desc "List of groups for this user account. Comma separate multiple values. "
+    
+    validate do |value|
+      unless value =~ /^[\w\s\-]+(,?[\w\s\-]*)*$/
+         raise ArgumentError, "%s is not a valid group list." % value
+      end
+    end
     
     def insync?(is)
       # @should is an Array. see lib/puppet/type.rb insync?
