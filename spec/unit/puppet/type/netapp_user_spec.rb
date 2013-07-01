@@ -185,8 +185,51 @@ describe Puppet::Type.type(:netapp_user) do
       it "should not support special characters" do
         expect { described_class.new(:name => 'user1', :groups => 'group!') }.to raise_error Puppet::Error, /group! is not a valid group list/
       end
-      
     end
     
+  end
+  
+  describe "autorequiring" do
+    let :user do
+      described_class.new(
+        :name   => 'user1',
+        :ensure => :present,
+        :groups => 'puppetgroup,Users,Power Users'
+      )
+    end
+
+    let :groupprovider do
+      Puppet::Type.type(:netapp_group).provide(:fake_netapp_group_provider) { mk_resource_methods }
+    end
+
+    let :group do
+      Puppet::Type.type(:netapp_group).new(
+        :name   => 'puppetgroup',
+        :ensure => :present,
+        :roles  => 'power'
+      )
+    end
+
+    let :catalog do
+      Puppet::Resource::Catalog.new
+    end
+
+    before :each do
+      Puppet::Type.type(:netapp_group).stubs(:defaultprovider).returns groupprovider
+    end
+
+    it "should not autorequire a group when no matching group can be found" do
+      catalog.add_resource user
+      user.autorequire.should be_empty
+    end
+
+    it "should autorequire a matching group" do
+      catalog.add_resource user
+      catalog.add_resource group
+      reqs = user.autorequire
+      reqs.size.should == 1
+      reqs[0].source.must == group
+      reqs[0].target.must == user
+    end
   end
 end

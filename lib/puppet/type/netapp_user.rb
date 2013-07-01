@@ -117,5 +117,9 @@ Puppet::Type.newtype(:netapp_user) do
     
   end
   
+  autorequire(:netapp_group) do 
+    self[:groups].split(',')
+  end
+  
 end
 
