@@ -6,6 +6,8 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
   confine :feature => :posix
   defaultfor :feature => :posix
 
+  netapp_commands :rlist => 'useradmin-role-list', :rdel => 'useradmin-role-delete'
+  
   mk_resource_methods
     
   def self.instances
@@ -14,47 +16,39 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     role_instances = Array.new
     
     # Query Netapp for user role list. 
-    result = transport.invoke("useradmin-role-list")
-    # Check result status. 
-    if(result.results_status == "failed")
-      # Check failed, therefore the account doesn't exist. 
-      Puppet.debug("Puppet::Provider::Netapp_role: useradmin-role-list failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_role: useradmin-role-list failed due to #{result.results_reason}. \n."
-      return false
-    else       
-      # Get a list of all roles into array
-      role_list = result.child_get("useradmin-roles")
-      roles = role_list.children_get()
+    result = rlist
+     
+    # Get a list of all roles into array
+    role_list = result.child_get("useradmin-roles")
+    roles = role_list.children_get()
+    
+    # Iterate through each 'useradmin-role-info' block. 
+    roles.each do |role|
       
-      # Iterate through each 'useradmin-role-info' block. 
-      roles.each do |role|
-        
-        # Pull out relevant info
-        rolename = role.child_get_string("name")
-        Puppet.debug("Puppet::Provider::Netapp_role.prefetch: Processing role info block for #{rolename}.")          
-        
-        # Create base hash
-        role_info = { :name => rolename,
-                      :ensure => :present }
-        
-        # Get capabilites
-        capability_list = String.new
-        allowed_capabilities = role.child_get("allowed-capabilities")
-        allowed_capabilities_arr = allowed_capabilities.children_get
-        allowed_capabilities_arr.each do |allowed_capability|
-          capability = allowed_capability.child_get_string("name")
-          capability_list << capability + ","
-        end
-        
-        # Add capabilites to hash, removing trailing comma
-        role_info[:capabilities] = capability_list.chomp!(",")
-        
-        # Create the instance and add to role array.
-        Puppet.debug("Creating instance for '#{rolename}'. \n")
-        role_instances << new(role_info)
-          
+      # Pull out relevant info
+      rolename = role.child_get_string("name")
+      Puppet.debug("Puppet::Provider::Netapp_role.prefetch: Processing role info block for #{rolename}.")          
+      
+      # Create base hash
+      role_info = { :name => rolename,
+                    :ensure => :present }
+      
+      # Get capabilites
+      capability_list = String.new
+      allowed_capabilities = role.child_get("allowed-capabilities")
+      allowed_capabilities_arr = allowed_capabilities.children_get
+      allowed_capabilities_arr.each do |allowed_capability|
+        capability = allowed_capability.child_get_string("name")
+        capability_list << capability + ","
       end
       
+      # Add capabilites to hash, removing trailing comma
+      role_info[:capabilities] = capability_list.chomp!(",")
+      
+      # Create the instance and add to role array.
+      Puppet.debug("Creating instance for '#{rolename}'. \n")
+      role_instances << new(role_info)
+
       # Return the final role array. 
       Puppet.debug("Returning role array. ")
       role_instances
@@ -80,16 +74,10 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     case @property_hash[:ensure] 
     when :absent  
       # Query Netapp to remove role.
-      result = transport.invoke("useradmin-role-delete", "role-name", @resource[:rolename])
-      # Check result returned. 
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} wasn't deleted due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_role: role #{@resource[:rolename]} wasn't deleted due to #{result.results_reason}. \n."
-        return false
-      else 
-        Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} deleted successfully. \n")
-        return true
-      end
+      result = rdelete("role-name", @resource[:rolename])
+      
+      Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} deleted successfully. \n")
+      return true
     when :present
       # Query Netapp device to modify role. 
       # Start to construct request
