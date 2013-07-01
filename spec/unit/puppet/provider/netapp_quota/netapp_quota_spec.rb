@@ -313,4 +313,60 @@ describe Puppet::Type.type(:netapp_quota).provider(:netapp_quota) do
       end
     end
   end
+
+  describe "#flush" do
+
+    let :quota_on do
+      YAML.load_file(my_fixture('quota-status-result-on.yml'))
+    end
+
+    let :quota_off do
+      YAML.load_file(my_fixture('quota-status-result-off.yml'))
+    end
+
+    describe "when a complete reload is not necessary" do
+      it "should call resize if quota is activated for that volume" do
+        provider.set(:volume => 'vol01')
+        provider.expects(:status).with('volume', 'vol01').returns quota_on
+        provider.expects(:resize).with('volume', 'vol01')
+        provider.expects(:qoff).never
+        provider.expects(:qon).never
+        provider.flush
+      end
+
+      it "should do nothing if quota is deactivated for that volume" do
+        provider.set(:volume => 'vol01')
+        provider.expects(:status).with('volume', 'vol01').returns quota_off
+        provider.expects(:resize).never
+        provider.expects(:qoff).never
+        provider.expects(:qon).never
+        provider.flush
+      end
+    end
+
+    describe "when a complete reload is necessary" do
+      before :each do
+        provider.instance_variable_set(:@need_restart, true)
+      end
+
+      it "should turn quota off and back on if quota is activated for that volume" do
+        provider.set(:volume => 'vol01')
+        provider.expects(:status).with('volume', 'vol01').returns quota_on
+        provider.expects(:resize).never
+        seq = sequence 'restart quota'
+        provider.expects(:qoff).with('volume', 'vol01').in_sequence(seq)
+        provider.expects(:qon).with('volume', 'vol01').in_sequence(seq)
+        provider.flush
+      end
+
+      it "should do nothing if quota is deactivated for that volume" do
+        provider.set(:volume => 'vol01')
+        provider.expects(:status).with('volume', 'vol01').returns quota_off
+        provider.expects(:resize).never
+        provider.expects(:qoff).never
+        provider.expects(:qon).never
+        provider.flush
+      end
+    end
+  end
 end

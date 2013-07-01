@@ -5,6 +5,10 @@ Puppet::Type.type(:netapp_quota).provide(:netapp_quota, :parent => Puppet::Provi
   netapp_commands :add => 'quota-add-entry'
   netapp_commands :del => 'quota-delete-entry'
   netapp_commands :mod => 'quota-modify-entry'
+  netapp_commands :resize => 'quota-resize'
+  netapp_commands :qoff => 'quota-off'
+  netapp_commands :qon => 'quota-on'
+  netapp_commands :status => 'quota-status'
 
   def self.instances
     instances = []
@@ -100,6 +104,7 @@ Puppet::Type.type(:netapp_quota).provide(:netapp_quota, :parent => Puppet::Provi
     args << 'soft-file-limit' << limit_to_api(resource[:softfilelimit]) if resource[:softfilelimit]
     args << 'threshold' << limit_to_api(resource[:threshold], 'K') if resource[:threshold]
     add *args
+    @need_restart = true
   end
 
   def default_api_args
@@ -155,4 +160,26 @@ Puppet::Type.type(:netapp_quota).provide(:netapp_quota, :parent => Puppet::Provi
     mod *args
   end
 
+  # if we modify a quota it does not take effect immediatly: To actually change
+  # the quota we either have to run quota-resize (which does only work if the
+  # quota was already present) or deactivate and reactivate the quota if the
+  # quota was absent before
+  def flush
+    # if we know the volume of the current instance, we'll extract it from
+    # the property_hash. If the property_hash is absent (e.g. the volume has
+    # just been created and was not prefetched) use the should-value
+    volume = @property_hash[:volume] || resource[:volume]
+
+    # check the current state so we do not activate quotas on a
+    # volume that has quotas turned off.
+    if status('volume', volume).child_get_string('status') == 'on'
+      if @need_restart
+        qoff 'volume', volume
+        qon 'volume', volume
+        @need_restart = false
+      else
+        resize 'volume', volume
+      end
+    end
+  end
 end
