@@ -1,5 +1,4 @@
 # NetApp network device module
-Warning: This project is work in progress, therefore some functions may not work as expected. 
 
 ## Overview 
 The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.
@@ -79,6 +78,10 @@ The space reservation mode will be set to volume, and snapshot space reserve wil
 The volume will be able to auto increment, and the NFS export will be persistent.  
 
 You can also use any of the types individually, or create new defined types as required. 
+
+## Contributors
+Thanks go out to the following users for their contributions to this project:
+ * Stefan Schutle
 
 ## TODO
 The following items are yet to be implemented:
