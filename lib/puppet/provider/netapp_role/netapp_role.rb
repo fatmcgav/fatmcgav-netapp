@@ -48,11 +48,12 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
       # Create the instance and add to role array.
       Puppet.debug("Creating instance for '#{rolename}'. \n")
       role_instances << new(role_info)
-
-      # Return the final role array. 
-      Puppet.debug("Returning role array. ")
-      role_instances
     end
+      
+    # Return the final role array. 
+    Puppet.debug("Returning role array. ")
+    role_instances
+    
   end
   
   def self.prefetch(resources)

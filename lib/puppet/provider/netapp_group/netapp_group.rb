@@ -47,8 +47,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       
       # Create the instance and add to group array.
       Puppet.debug("Creating instance for '#{groupname}'. \n")
-      group_instances << new(group_info)
-        
+      group_instances << new(group_info)   
     end
     
     # Return the final group array. 

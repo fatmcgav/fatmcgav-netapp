@@ -16,7 +16,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     user_instances = Array.new
     
     # Query Netapp for user list. 
-    result = ulist "verbose", "true"
+    result = ulist("verbose", "true")
      
     # Get a list of all users into array
     user_list = result.child_get("useradmin-users")
@@ -61,11 +61,12 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       # Create the instance and add to users array.
       Puppet.debug("Creating instance for '#{username}'. \n")
       user_instances << new(user_info)
-      
-      # Return the final user array. 
-      Puppet.debug("Returning user array. ")
-      user_instances
-    end
+    end   
+    
+    # Return the final user array. 
+    Puppet.debug("Returning user array. ")
+    user_instances
+
   end
   
   def self.prefetch(resources)
@@ -88,7 +89,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     when :absent
       Puppet.debug("Puppet::Provider::Netapp_user: destroying Netapp user #{@resource[:username]}.")
       # Query Netapp to remove user. 
-      result = udel "user-name", @resource[:username]
+      result = udel("user-name", @resource[:username])
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} deleted successfully. \n")
       return true
       
