@@ -159,4 +159,82 @@ describe Puppet::Type.type(:netapp_export) do
     
   end
   
+  describe "autorequiring" do
+    let :export_vol do
+      described_class.new(
+        :name   => '/vol/volume',
+        :ensure => :present
+      )
+    end
+    
+    let :export_qtree do
+      described_class.new(
+        :name   => '/vol/volume/qtree',
+        :ensure => :present
+      )
+    end
+
+    let :volumeprovider do
+      Puppet::Type.type(:netapp_volume).provide(:fake_netapp_volume_provider) { mk_resource_methods }
+    end
+    
+    let :qtreeprovider do
+      Puppet::Type.type(:netapp_qtree).provide(:fake_netapp_qtree_provider) { mk_resource_methods }
+    end
+
+    let :volume do
+      Puppet::Type.type(:netapp_volume).new(
+        :name      => 'volume',
+        :ensure    => :present,
+        :initsize  => '20m',
+        :aggregate => 'aggr1'
+      )
+    end
+    
+    let :qtree do
+      Puppet::Type.type(:netapp_qtree).new(
+        :name   => 'qtree',
+        :ensure => :present,
+        :volume => 'volume'
+      )
+    end
+
+    let :catalog do
+      Puppet::Resource::Catalog.new
+    end
+
+    before :each do
+      Puppet::Type.type(:netapp_volume).stubs(:defaultprovider).returns volumeprovider
+      Puppet::Type.type(:netapp_qtree).stubs(:defaultprovider).returns qtreeprovider
+    end
+
+    it "should not autorequire a volume when no matching volume can be found" do
+      catalog.add_resource export_vol
+      export_vol.autorequire.should be_empty
+    end
+    
+    it "should not autorequire a qtree when no matching qtree can be found" do
+      catalog.add_resource export_qtree
+      export_qtree.autorequire.should be_empty
+    end
+
+    it "should autorequire a matching volume" do
+      catalog.add_resource export_vol
+      catalog.add_resource volume
+      reqs = export_vol.autorequire
+      reqs.size.should == 1
+      reqs[0].source.must == volume
+      reqs[0].target.must == export_vol
+    end
+    
+    it "should autorequire a matching qtree" do
+      catalog.add_resource export_qtree
+      catalog.add_resource qtree
+      reqs = export_qtree.autorequire
+      reqs.size.should == 1
+      reqs[0].source.must == qtree
+      reqs[0].target.must == export_qtree
+    end
+  end
+  
 end
