@@ -1,60 +1,162 @@
 require 'spec_helper'
  
-res_type_name = :netapp_export
-res_type = Puppet::Type.type(res_type_name)
-res_name = '/vol/v_test/q_test'
+describe Puppet::Type.type(:netapp_export) do
 
-describe res_type do
-
-  let(:provider) {
-    prov = stub 'provider'
-    prov.stubs(:name).returns(res_type_name)
-    prov
-  }
-  let(:res_type) {
-    val = res_type
-    val.stubs(:defaultprovider).returns provider
-    val
-  }
-  let(:resource) {
-    res_type.new({:name => res_name})
-  }
-
-  it 'should have :name be its namevar' do
-    res_type.key_attributes.should == [:name]
+  before :each do
+    described_class.stubs(:defaultprovider).returns providerclass
   end
 
-  # Simple parameter tests
-  parameter_tests = {
-    :name => {
-      :valid    => ["/vol/v_volume/q_volume", "/vol/v_test/q_test"],
-      :invalid 	=> ["test","/vol/v_volume/q_volume#"],
-      :default 	=> "/vol/v_test/q_test", 
-    },
-    :persistent => {
-      :valid    => [:true, :false],
-      :invalid	=> "test",
-      :default 	=> :true,
-    },
-    :path => {
-      :valid    => ["/vol/v_volume/q_volume", "/vol/v_test/q_test"],
-      :invalid 	=> ["test","/vol/v_volume/q_volume#"],
-      :default 	=> "/vol/v_test/q_test",
-    },
-    :anon => {
-      :valid    => ['0','100','user'],
-      :invalid  => [{'hash' => 'true'}],
-      :default  => '0'
-    },
-    :readonly => {
-      :valid    => [['all_hosts'], ['192.168.1.1', '192.168.1.2', 'hostname']],
-      :default  => nil
-    },
-    :readwrite => {
-      :valid    => [['all_hosts'], ['192.168.1.1', '192.168.1.2', 'hostname']],
-      :default  => ['all_hosts']
-    }
-  }
-  it_should_behave_like "a puppet type", parameter_tests, res_type_name, res_name
+  let :providerclass do
+    described_class.provide(:fake_netapp_export_provider) { mk_resource_methods }
+  end
 
+  it "should have :name be its namevar" do
+    described_class.key_attributes.should == [:name]
+  end
+
+  describe "when validating attributes" do
+    [:name, :provider, :persistent, :path].each do |param|
+      it "should have a #{param} parameter" do
+        described_class.attrtype(param).should == :param
+      end
+    end
+
+    [:ensure, :anon, :readonly, :readwrite].each do |prop|
+      it "should have a #{prop} property" do
+        described_class.attrtype(prop).should == :property
+      end
+    end
+  end
+
+  describe "when validating values" do
+    describe "for name" do
+      it "should support a valid volume export name" do
+        described_class.new(:name => '/vol/volume', :ensure => :present)[:name].should == '/vol/volume'
+      end
+
+      it "should support underscores" do
+        described_class.new(:name => '/vol/volume_a', :ensure => :present)[:name].should == '/vol/volume_a'
+      end
+
+      it "should support a valid qtree export name" do
+        described_class.new(:name => '/vol/volume/qtree', :ensure => :present)[:name].should == '/vol/volume/qtree'
+      end
+
+      it "should not support spaces" do
+        expect { described_class.new(:name => '/vol/volume a', :ensure => :present) }.to raise_error(Puppet::Error, /\/vol\/volume a is not a valid export name/)
+      end
+      
+      it "should not support an invalid volume/qtree name" do
+        expect { described_class.new(:name => '/vol/volume/qtree/a', :ensure => :present) }.to raise_error(Puppet::Error, /\/vol\/volume\/qtree\/a is not a valid export name/)
+      end
+    end
+
+    describe "for ensure" do
+      it "should support present" do
+        described_class.new(:name => '/vol/volume', :ensure => 'present')[:ensure].should == :present
+      end
+
+      it "should support absent" do
+        described_class.new(:name => '/vol/volume', :ensure => 'absent')[:ensure].should == :absent
+      end
+
+      it "should not support other values" do
+        expect { described_class.new(:name => '/vol/volume', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+      end
+      
+      it "should not have a default value" do
+        described_class.new(:name => '/vol/volume')[:ensure].should == nil
+      end
+    end
+
+    describe "for persistent" do
+      it "should support true" do
+        described_class.new(:name => '/vol/volume', :persistent => 'true')[:persistent].should == :true
+      end
+
+      it "should support false" do
+        described_class.new(:name => '/vol/volume', :persistent => 'false')[:persistent].should == :false
+      end
+
+      it "should not support other values" do
+        expect { described_class.new(:name => '/vol/volume', :persistent => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+      end
+      
+      it "should have a default value of true" do
+        described_class.new(:name => '/vol/volume')[:persistent].should == :true
+      end
+    end
+    
+    describe "for path" do
+      it "should support a valid volume path" do
+        described_class.new(:name => '/vol/volume', :path => '/vol/vexport')[:path].should == '/vol/vexport'
+      end
+
+      it "should support underscores" do
+        described_class.new(:name => '/vol/volume', :path => '/vol/vol_export')[:path].should == '/vol/vol_export'
+      end
+
+      it "should support a valid qtree path" do
+        described_class.new(:name => '/vol/volume', :path => '/vol/volume/qtreeexport')[:path].should == '/vol/volume/qtreeexport'
+      end
+
+      it "should not support spaces" do
+        expect { described_class.new(:name => '/vol/volume', :path => '/vol/v export') }.to raise_error(Puppet::Error, /\/vol\/v export is not a valid export filer path/)
+      end
+      
+      it "should not support an invalid volume/qtree path" do
+        expect { described_class.new(:name => '/vol/volume', :path => '/vol/v_export/q_export/export') }.to raise_error(Puppet::Error, /\/vol\/v_export\/q_export\/export is not a valid export filer path/)
+      end
+    end
+    
+    describe "for anon" do
+      it "should support a valid string value" do
+        described_class.new(:name => '/vol/volume', :anon => '0')[:anon].should == '0'
+      end
+
+      it "should not support an integer" do
+        expect { described_class.new(:name => '/vol/volume', :anon => 0) }.to raise_error(Puppet::Error, /Anon should be a string./)
+      end
+      
+      it "should have a default value of '0'" do
+        described_class.new(:name => '/vol/volume')[:anon].should == '0'
+      end
+    end
+   
+    describe "for readonly" do
+      it "should support a value of 'all_hosts'" do
+        described_class.new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => '192.168.1.1')[:readonly].should == ['all_hosts']
+      end
+      
+      it "should support an array of hosts" do
+        described_class.new(:name => '/vol/volume', :readonly => ['192.168.1.1', '192.168.1.2'])[:readonly].should == ['192.168.1.1', '192.168.1.2']
+      end
+      
+      it "should not have a default value" do
+        described_class.new(:name => '/vol/volume')[:readonly].should == nil
+      end
+    end
+    
+    describe "for readwrite" do
+      it "should support a value of 'all_hosts'" do
+        described_class.new(:name => '/vol/volume', :readwrite => 'all_hosts')[:readwrite].should == ['all_hosts']
+      end
+      
+      it "should support an array of hosts" do
+        described_class.new(:name => '/vol/volume', :readwrite => ['192.168.1.1', '192.168.1.2'])[:readwrite].should == ['192.168.1.1', '192.168.1.2']
+      end
+      
+      it "should have a default value of 'all_hosts'" do
+        described_class.new(:name => '/vol/volume')[:readwrite].should == ['all_hosts']
+      end
+    end
+    
+    describe "for readonly and readwrite" do
+      it "should not support the same value for both" do
+        expect { described_class.new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => 'all_hosts')  }.to raise_error(ArgumentError, /Readonly and Readwrite params cannot be the same./)
+      end
+    end
+    
+  end
+  
 end

@@ -3,19 +3,7 @@ Puppet::Type.newtype(:netapp_export) do
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp NFS Export resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:name) do
     desc "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
