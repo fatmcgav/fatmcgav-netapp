@@ -26,13 +26,33 @@ class Puppet::Provider::Netapp < Puppet::Provider
   # Arguments should be a hash of 'command name' => 'api command'.
   def self.netapp_commands(command_specs)
     command_specs.each do |name, apicommand|
-      create_class_and_instance_method(name) do |*args|
-        debug "Executing api call #{[apicommand, args].flatten.join(' ')}"
-        result = transport.invoke(apicommand, *args)
-        if result.results_status == 'failed'
-          raise Puppet::Error, "Executing api call #{[apicommand, args].flatten.join(' ')} failed: #{result.results_reason.inspect}"
+      # The `create_class_and_instance_method` method was added in puppet 3.0.0
+      if respond_to? :create_class_and_instance_method
+        create_class_and_instance_method(name) do |*args|
+          debug "Executing api call #{[apicommand, args].flatten.join(' ')}"
+          result = transport.invoke(apicommand, *args)
+          if result.results_status == 'failed'
+            raise Puppet::Error, "Executing api call #{[apicommand, args].flatten.join(' ')} failed: #{result.results_reason.inspect}"
+          end
+          result
         end
-        result
+      else
+        # workaround for puppet 2.7.x
+        unless singleton_class.method_defined?(name)
+          meta_def(name) do |*args|
+            debug "Executing api call #{[apicommand, args].flatten.join(' ')}"
+            result = transport.invoke(apicommand, *args)
+            if result.results_status == 'failed'
+              raise Puppet::Error, "Executing api call #{[apicommand, args].flatten.join(' ')} failed: #{result.results_reason.inspect}"
+            end
+            result
+          end
+        end
+        unless method_defined?(name)
+          define_method(name) do |*args|
+            self.class.send(name, *args)
+          end
+        end
       end
     end
   end
