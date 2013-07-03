@@ -28,10 +28,7 @@ describe Puppet::Provider::Netapp do
     it "with uninitialized device and a unresolvable url should return error" do
       # the NetApp Device expects a filer instead of a traditional url
       Facter.expects(:value).with(:url).twice.returns('filer.example.com')
-      Puppet::Util::NetworkDevice::Netapp::Device.expects(:configfile).returns my_fixture('netapp.yml')
-      expect { netapp_prov_obj.transport }.to(
-        raise_error(Puppet::Error, /invoke system-get-version failed/)
-      )
+      expect { netapp_prov_obj.transport }.to raise_error ArgumentError
     end
   end
 
