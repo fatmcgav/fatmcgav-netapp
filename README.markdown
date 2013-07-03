@@ -43,15 +43,13 @@ This is preferred as it allows you to run puppet against individual devices, rat
 
 In order to run puppet against a single device, you can use the following command:
 
-`puppet device --deviceconfig /etc/puppet/device/[device].conf`
+    puppet device --deviceconfig /etc/puppet/device/[device].conf
 
-This module uses a further config file containing a suitable device username and password, which should reside within the *$confdir* for the appropriate device.
-The config file should be called *netapp.yml*, and should be structured as follows:
+Example configuration `/etc/puppet/device/pfiler01.example.com.conf`:
 
-    [device name]:
-     :user: [username]
-     :password: [password]
-
+    [pfiler01.example.com]
+      type netapp
+      url https://root:secret@pfiler01.example.com
 
 If you attempt to run *puppet device* without this conf file, you will likely see the following error:
 
@@ -73,7 +71,7 @@ An example of this is:
       persistent     => true
     }
 
-This will create a NetApp volume called 'v_volume_name' with a qtree called 'q_volume_name'.
+This will create a NetApp volume called `v_volume_name` with a qtree called `q_volume_name`.
 The volume will have an initial size of 1 Terabyte in Aggregate aggr2.
 The space reservation mode will be set to volume, and snapshot space reserve will be set to 20%.
 The volume will be able to auto increment, and the NFS export will be persistent.
