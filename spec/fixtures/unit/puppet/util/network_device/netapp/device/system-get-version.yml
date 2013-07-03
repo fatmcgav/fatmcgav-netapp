@@ -1,0 +1,26 @@
+--- !ruby/object:NaElement 
+attrkeys: 
+- status
+attrvals: 
+- passed
+children: 
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: "NetApp Release 8.1P2 7-Mode: Tue Jun 12 17:53:00 PDT 2012 Multistore"
+  name: version
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: "false"
+  name: is-clustered
+content: ""
+name: results

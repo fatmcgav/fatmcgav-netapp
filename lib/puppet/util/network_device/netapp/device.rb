@@ -1,38 +1,32 @@
 require 'puppet/util/network_device'
 require 'puppet/util/network_device/netapp/facts'
 require 'puppet/util/network_device/netapp/NaServer'
-require 'yaml'
+require 'uri'
 
 class Puppet::Util::NetworkDevice::Netapp::Device
 
   attr_accessor :filer, :transport
 
-  def self.configfile
-    File.join(Puppet[:confdir], 'netapp.yml')
-  end
-  
-  def initialize(filer)
+  def initialize(url)
+    @url = URI.parse(url)
+    redacted_url = @url.dup
+    redacted_url.password = "****" if redacted_url.password
 
-    Puppet.debug("Puppet::Device::Netapp: connecting to Netapp device #{filer}.")
+    Puppet.debug("Puppet::Device::Netapp: connecting to Netapp device #{redacted_url}")
 
-    filerconfig = YAML.load_file(self.class.configfile)[filer]
-    username = filerconfig[:user]
-    password = filerconfig[:password]
-    if(username == nil || password == nil)
-      raise Puppet::Error, "Puppet::Device::Netapp username or password for #{filer} are null."
-    else
-      Puppet.debug("Puppet::Device::Netapp: config read. User = #{username}.")
-    end
+    raise ArgumentError, "Invalid scheme #{@url.scheme}. Must be https" unless @url.scheme == 'https'
+    raise ArgumentError, "no user specified" unless @url.user
+    raise ArgumentError, "no password specified" unless @url.password
 
-    @transport ||= NaServer.new(filer, 1, 13)
-    @transport.set_admin_user(username, password)
-    @transport.set_transport_type("HTTPS")
+    @transport ||= NaServer.new(@url.host, 1, 13)
+    @transport.set_admin_user(@url.user, @url.password)
+    @transport.set_transport_type(@url.scheme.upcase)
+    @transport.set_port(@url.port)
     
-    # Test interface
     result = @transport.invoke("system-get-version")
-    if(result.results_errno() != 0)
-      r = result.results_reason()
-      raise Puppet::Error, "Puppet::Device::Netapp: invoke system-get-version failed: #{r}"
+    if(result.results_errno != 0)
+      r = result.results_reason
+      raise Puppet::Error, "invoke system-get-version failed: #{r}"
     else
       version = result.child_get_string("version")
       Puppet.debug("Puppet::Device::Netapp: Verion = #{version}")
@@ -44,7 +38,5 @@ class Puppet::Util::NetworkDevice::Netapp::Device
     facts = @facts.retreive
     
     facts
-  
   end
-
 end
