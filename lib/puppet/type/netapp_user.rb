@@ -90,6 +90,7 @@ Puppet::Type.newtype(:netapp_user) do
   
   newproperty(:groups) do
     desc "List of groups for this user account. Comma separate multiple values. "
+    isrequired
     
     validate do |value|
       unless value =~ /^[\w\s\-]+(,?[\w\s\-]*)*$/
@@ -118,7 +119,7 @@ Puppet::Type.newtype(:netapp_user) do
   end
   
   autorequire(:netapp_group) do 
-    self[:groups].split(',')
+    self[:groups].split(',') if self[:groups]
   end
   
 end
