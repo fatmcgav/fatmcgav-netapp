@@ -6,6 +6,8 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
   confine :feature => :posix
   defaultfor :feature => :posix
 
+  netapp_commands :elist => 'nfs-exportfs-list-rules-2'
+  
   mk_resource_methods
 
   def self.instances
@@ -13,86 +15,81 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
     exports = Array.new
 
     # Get a list of all nfs export rules
-    result = transport.invoke("nfs-exportfs-list-rules-2")
-    # Check result status.
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_export: nfs-exportfs-list-rules-2 failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp nfs-exportfs-list-rules-2 failed due to #{result.results_reason} \n."
-    else
-      # Get a list of exports
-      rule_list = result.child_get("rules")
-      rules = rule_list.children_get()
-      # Itterate through each 'export-info' block.
-      rules.each do |rule|
-        name = rule.child_get_string("pathname")
-        Puppet.debug("Puppet::Provider::Netapp_export.prefetch: Processing rule for export #{name}. \n")
-        
-        # Construct an export hash for rule
-        export = { :name => name,
-                   :ensure => :present }
-        
-        # Add the actual filer path if present.
-        export[:path] = rule.child_get_string("actual-pathname") unless rule.child_get_string("actual-pathname").nil?
-        
-        # Pull out security rules block
-        security_rules = rule.child_get("security-rules")
-        security_rule_info = security_rules.child_get("security-rule-info")
-        
-        # Add Anon value to export
-        anon = security_rule_info.child_get_string("anon")
-        export[:anon] = anon
-        
-        # Placeholders to be populated as required...
-        ro_hosts = Array.new
-        rw_hosts = Array.new
-        
-        # Pull read-only rules...
-        read_only = security_rule_info.child_get("read-only")
-        unless read_only.nil?
-          Puppet.debug("Processing read-only security rules. \n")
-          read_only_hosts = read_only.children_get()
-          read_only_hosts.each do |ro_export|
-            ro_host_name = ro_export.child_get_string("name")
-            ro_all_hosts = ro_export.child_get_string("all-hosts")
-            Puppet.debug("Read-only: Name = #{ro_host_name}, All hosts = #{ro_all_hosts} \n")
-            if ro_all_hosts
-            Puppet.debug("All_hosts = #{ro_all_hosts} \n")
-              export[:readonly] = ['all_hosts']
-            else
-              Puppet.debug("Processing hostname records... \n")
-              ro_hosts << ro_host_name
-            end
+    result = elist
+
+    # Get a list of exports
+    rule_list = result.child_get("rules")
+    rules = rule_list.children_get()
+    # Itterate through each 'export-info' block.
+    rules.each do |rule|
+      name = rule.child_get_string("pathname")
+      Puppet.debug("Puppet::Provider::Netapp_export.prefetch: Processing rule for export #{name}. \n")
+      
+      # Construct an export hash for rule
+      export = { :name => name,
+                 :ensure => :present }
+      
+      # Add the actual filer path if present.
+      export[:path] = rule.child_get_string("actual-pathname") unless rule.child_get_string("actual-pathname").nil?
+      
+      # Pull out security rules block
+      security_rules = rule.child_get("security-rules")
+      security_rule_info = security_rules.child_get("security-rule-info")
+      
+      # Add Anon value to export
+      anon = security_rule_info.child_get_string("anon")
+      export[:anon] = anon
+      
+      # Placeholders to be populated as required...
+      ro_hosts = Array.new
+      rw_hosts = Array.new
+      
+      # Pull read-only rules...
+      read_only = security_rule_info.child_get("read-only")
+      unless read_only.nil?
+        Puppet.debug("Processing read-only security rules. \n")
+        read_only_hosts = read_only.children_get()
+        read_only_hosts.each do |ro_export|
+          ro_host_name = ro_export.child_get_string("name")
+          ro_all_hosts = ro_export.child_get_string("all-hosts")
+          Puppet.debug("Read-only: Name = #{ro_host_name}, All hosts = #{ro_all_hosts} \n")
+          if ro_all_hosts
+          Puppet.debug("All_hosts = #{ro_all_hosts} \n")
+            export[:readonly] = ['all_hosts']
+          else
+            Puppet.debug("Processing hostname records... \n")
+            ro_hosts << ro_host_name
           end
         end
-        
-        # Pull read-write rules
-        read_write = security_rule_info.child_get("read-write")
-        unless read_write.nil?
-          Puppet.debug("Processing read-write security rules. \n")
-          read_write_hosts = read_write.children_get()
-          read_write_hosts.each do |rw_export|
-            rw_host_name = rw_export.child_get_string("name")
-            rw_all_hosts = rw_export.child_get_string("all-hosts")
-            Puppet.debug("Read-write: Name = #{rw_host_name}, All hosts = #{rw_all_hosts} \n")
-            if rw_all_hosts
-              Puppet.debug("All_hosts = #{rw_all_hosts} \n")
-              export[:readwrite] = ['all_hosts']
-            else
-              Puppet.debug("Processing hostname_records... \n")
-              rw_hosts << rw_host_name
-            end
-          end
-        end
-    
-        Puppet.debug("Processed all fields. Adding to export if required... ")
-        # Add ro_hosts and rw_hosts if not empty
-        export[:readonly] = ro_hosts unless ro_hosts.empty?
-        export[:readwrite] = rw_hosts unless rw_hosts.empty?
-    
-        # Create the instance and add to exports array.
-        Puppet.debug("Creating instance for #{name}. \n")
-        exports << new(export)
       end
+      
+      # Pull read-write rules
+      read_write = security_rule_info.child_get("read-write")
+      unless read_write.nil?
+        Puppet.debug("Processing read-write security rules. \n")
+        read_write_hosts = read_write.children_get()
+        read_write_hosts.each do |rw_export|
+          rw_host_name = rw_export.child_get_string("name")
+          rw_all_hosts = rw_export.child_get_string("all-hosts")
+          Puppet.debug("Read-write: Name = #{rw_host_name}, All hosts = #{rw_all_hosts} \n")
+          if rw_all_hosts
+            Puppet.debug("All_hosts = #{rw_all_hosts} \n")
+            export[:readwrite] = ['all_hosts']
+          else
+            Puppet.debug("Processing hostname_records... \n")
+            rw_hosts << rw_host_name
+          end
+        end
+      end
+  
+      Puppet.debug("Processed all fields. Adding to export if required... ")
+      # Add ro_hosts and rw_hosts if not empty
+      export[:readonly] = ro_hosts unless ro_hosts.empty?
+      export[:readwrite] = rw_hosts unless rw_hosts.empty?
+  
+      # Create the instance and add to exports array.
+      Puppet.debug("Creating instance for #{name}. \n")
+      exports << new(export)
     end
   
     # Return the final exports array. 
