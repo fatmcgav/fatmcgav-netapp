@@ -114,78 +114,27 @@ Puppet::Type.newtype(:netapp_export) do
     raise ArgumentError, "Readonly and Readwrite params cannot be the same." if self[:readwrite] == self[:readonly]
   end
   
+  # Autorequire any matching netapp_volume resources. 
   autorequire(:netapp_volume) do
-    # Check if we've got a path
-    if self[:path].nil?
-      Puppet.debug("No :path value, so use :name.")
-      # Pull out some vars
-      resource = self[:name][self[:name].rindex('/')+1..-1]
-      count = self[:name].count("/")
-      Puppet.debug("Resource = #{resource}, Count = #{count}")
-      # Check if this is a volume or qtree
-      if count == 2
-        # Got a volume, therefore add the resource require.
-        Puppet.debug("Got a volume, adding resource require.")
-        resource
-      else
-        # Got a qtree, therefore nothing to add.
-        Puppet.debug("Got a qtree, no resources to require.") 
-        nil
-      end
-    else
-      Puppet.debug("Got a :path value.")
-      # Pull out some vars
-      resource = self[:path][self[:path].rindex('/')+1..-1]
-      count = self[:path].count("/")
-      Puppet.debug("Resource = #{resource}, Count = #{count}")
-      # Check if this is a volume or qtree
-      if count == 2
-        # Got a volume, therefore add the resource require.
-        Puppet.debug("Got a volume, adding resource require.")
-        resource
-      else
-        # Got a qtree, therefore nothing to add.
-        Puppet.debug("Got a qtree, no resources to require.") 
-        nil
+    requires = Array.new
+    [self[:name], self[:path]].compact.each do |path|
+      if match = %r{/\w+/(\w+)(?:/\w+)?$}.match(path)
+        requires << match.captures[0]
       end
     end
+    requires
   end
   
+  # Autorequire any matching netapp_qtree resources. 
   autorequire(:netapp_qtree) do
-    # Check if we've got a path
-    if self[:path].nil?
-      Puppet.debug("No :path value, so use :name.")
-      # Pull out some vars
-      resource = self[:name][self[:name].rindex('/')+1..-1]
-      count = self[:name].count("/")
-      Puppet.debug("Resource = #{resource}, Count = #{count}")
-      # Check if this is a volume or qtree
-      if count == 3
-        # Got a volume, therefore add the resource require.
-        Puppet.debug("Got a qtree, adding resource require.")
-        resource
-      else
-        # Got a qtree, therefore nothing to add.
-        Puppet.debug("Got a volume, no resources to require.") 
-        nil
-      end
-    else
-      Puppet.debug("Got a :path value.")
-      # Pull out some vars
-      resource = self[:path][self[:path].rindex('/')+1..-1]
-      count = self[:path].count("/")
-      Puppet.debug("Resource = #{resource}, Count = #{count}")
-      # Check if this is a volume or qtree
-      if count == 3
-        # Got a volume, therefore add the resource require.
-        Puppet.debug("Got a qtree, adding resource require.")
-        resource
-      else
-        # Got a qtree, therefore nothing to add.
-        Puppet.debug("Got a volume, no resources to require.") 
-        nil
+    requires = Array.new
+    [self[:name], self[:path]].compact.each do |path|
+      if match = %r{\/\w+\/\w+(?:\/(\w+))?$}.match(path)
+        qtree = match.captures[0]
+        requires << qtree if qtree
       end
     end
+    requires
   end
   
 end

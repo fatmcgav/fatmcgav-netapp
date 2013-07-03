@@ -167,10 +167,26 @@ describe Puppet::Type.type(:netapp_export) do
       )
     end
     
+    let :export_vol_path do
+      described_class.new(
+        :name   => '/vol/volume',
+        :ensure => :present,
+        :path   => '/vol/othervolume'
+      )
+    end
+    
     let :export_qtree do
       described_class.new(
         :name   => '/vol/volume/qtree',
         :ensure => :present
+      )
+    end
+    
+    let :export_qtree_path do
+      described_class.new(
+        :name   => '/vol/volume/qtree',
+        :ensure => :present,
+        :path   => '/vol/volume/otherqtree'
       )
     end
 
@@ -191,11 +207,28 @@ describe Puppet::Type.type(:netapp_export) do
       )
     end
     
+    let :othervolume do
+      Puppet::Type.type(:netapp_volume).new(
+        :name      => 'othervolume',
+        :ensure    => :present,
+        :initsize  => '20m',
+        :aggregate => 'aggr1'
+      )
+    end
+    
     let :qtree do
       Puppet::Type.type(:netapp_qtree).new(
         :name   => 'qtree',
         :ensure => :present,
         :volume => 'volume'
+      )
+    end
+    
+    let :otherqtree do
+      Puppet::Type.type(:netapp_qtree).new(
+        :name   => 'otherqtree',
+        :ensure => :present,
+        :volume => 'othervolume'
       )
     end
 
@@ -218,7 +251,7 @@ describe Puppet::Type.type(:netapp_export) do
       export_qtree.autorequire.should be_empty
     end
 
-    it "should autorequire a matching volume" do
+    it "should autorequire a matching volume name" do
       catalog.add_resource export_vol
       catalog.add_resource volume
       reqs = export_vol.autorequire
@@ -227,13 +260,31 @@ describe Puppet::Type.type(:netapp_export) do
       reqs[0].target.must == export_vol
     end
     
-    it "should autorequire a matching qtree" do
+    it "should autorequire a matching volume path" do
+      catalog.add_resource export_vol_path
+      catalog.add_resource othervolume
+      reqs = export_vol_path.autorequire
+      reqs.size.should == 1
+      reqs[0].source.must == othervolume
+      reqs[0].target.must == export_vol_path
+    end
+    
+    it "should autorequire a matching qtree name" do
       catalog.add_resource export_qtree
       catalog.add_resource qtree
       reqs = export_qtree.autorequire
       reqs.size.should == 1
       reqs[0].source.must == qtree
       reqs[0].target.must == export_qtree
+    end
+    
+    it "should autorequire a matching qtree path" do
+      catalog.add_resource export_qtree_path
+      catalog.add_resource otherqtree
+      reqs = export_qtree_path.autorequire
+      reqs.size.should == 1
+      reqs[0].source.must == otherqtree
+      reqs[0].target.must == export_qtree_path
     end
   end
   
