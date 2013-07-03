@@ -3,19 +3,7 @@ Puppet::Type.newtype(:netapp_volume) do
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp Volume resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:name) do
     desc "The volume name. Valid characters are a-z, 1-9 & underscore."
@@ -39,6 +27,7 @@ Puppet::Type.newtype(:netapp_volume) do
   
   newparam(:aggregate) do
     desc "The aggregate this volume should be created in." 
+    isrequired
     validate do |value|
       unless value =~ /^\w+$/
         raise ArgumentError, "%s is not a valid aggregate name." % value
@@ -60,8 +49,10 @@ Puppet::Type.newtype(:netapp_volume) do
   
   newproperty(:snapreserve) do 
     desc "The percentage of space to reserve for snapshots."
-
+    isrequired
+    
     validate do |value|
+      raise ArgumentError, "%s is not a valid snapreserve." % value unless value =~ /^\d+$/
       raise ArgumentError, "Puppet::Type::Netapp_volume: Reserved percentage must be between 0 and 100." unless value.to_i.between?(0,100)
     end 
     
@@ -79,11 +70,8 @@ Puppet::Type.newtype(:netapp_volume) do
   
   newproperty(:autoincrement, :boolean => true) do 
     desc "Should volume size auto-increment be enabled? Defaults to `true`."
-    
     newvalues(:true, :false)
-    
     defaultto true
-    
   end
   
   newproperty(:options, :array_matching => :all) do 
