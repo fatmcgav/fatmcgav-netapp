@@ -1,0 +1,26 @@
+--- !ruby/object:NaElement 
+attrkeys: 
+- status
+attrvals: 
+- passed
+children: 
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: "off"
+  name: status
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: []
+
+  content: none
+  name: substatus
+content: ""
+name: results
