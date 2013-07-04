@@ -129,7 +129,7 @@ Puppet::Type.newtype(:netapp_export) do
   autorequire(:netapp_qtree) do
     requires = Array.new
     [self[:name], self[:path]].compact.each do |path|
-      if match = %r{\/\w+\/\w+(?:\/(\w+))?$}.match(path)
+      if match = %r{/\w+/\w+(?:/(\w+))?$}.match(path)
         qtree = match.captures[0]
         requires << qtree if qtree
       end
