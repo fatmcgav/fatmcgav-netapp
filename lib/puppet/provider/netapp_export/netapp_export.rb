@@ -12,7 +12,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
 
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_export: got to self.instances.")
-    exports = Array.new
+    exports = []
 
     # Get a list of all nfs export rules
     result = elist
@@ -41,8 +41,8 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
       export[:anon] = anon
       
       # Placeholders to be populated as required...
-      ro_hosts = Array.new
-      rw_hosts = Array.new
+      ro_hosts = []
+      rw_hosts = []
       
       # Pull read-only rules...
       read_only = security_rule_info.child_get("read-only")

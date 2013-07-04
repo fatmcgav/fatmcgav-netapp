@@ -13,7 +13,7 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_role: got to self.instances.")
     
-    role_instances = Array.new
+    role_instances = []
     
     # Query Netapp for user role list. 
     result = rlist

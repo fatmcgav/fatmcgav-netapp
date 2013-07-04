@@ -19,7 +19,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
 
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_volume: got to self.instances.")
-    volumes = Array.new
+    volumes = []
 
     # Get init-size details
     volume_info = get_volinfo
@@ -131,7 +131,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     # Pull back current volume-size.
     result = vollist("verbose", "true")
     Puppet.debug("Puppet::Provider::Netapp_volume get_volinfo: Pulling back volumes array. \n")
-    volume_info = Array.new
+    volume_info = []
     # Get the volume_size value. 
     volumes = result.child_get("volumes")
     volumes_info = volumes.children_get()
@@ -168,7 +168,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     Puppet.debug("Puppet::Provider::Netapp_volume get_options: getting current volume options for Volume #{name}")
     
     # Create hash for current_options
-    current_options = Hash.new
+    current_options = {}
     
     # Pull list of volume-options
     output = optslist("volume", name)

@@ -13,7 +13,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_user: got to self.instances.")
     
-    user_instances = Array.new
+    user_instances = []
     
     # Query Netapp for user list. 
     result = ulist("verbose", "true")

@@ -116,7 +116,7 @@ Puppet::Type.newtype(:netapp_export) do
   
   # Autorequire any matching netapp_volume resources. 
   autorequire(:netapp_volume) do
-    requires = Array.new
+    requires = []
     [self[:name], self[:path]].compact.each do |path|
       if match = %r{/\w+/(\w+)(?:/\w+)?$}.match(path)
         requires << match.captures[0]
@@ -127,7 +127,7 @@ Puppet::Type.newtype(:netapp_export) do
   
   # Autorequire any matching netapp_qtree resources. 
   autorequire(:netapp_qtree) do
-    requires = Array.new
+    requires = []
     [self[:name], self[:path]].compact.each do |path|
       if match = %r{/\w+/\w+(?:/(\w+))?$}.match(path)
         qtree = match.captures[0]

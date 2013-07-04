@@ -13,7 +13,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_group: got to self.instances.")
     
-    group_instances = Array.new
+    group_instances = []
     
     # Query Netapp for user group list. 
     result = glist

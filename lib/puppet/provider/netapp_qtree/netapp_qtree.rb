@@ -12,7 +12,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
   
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_qtree: got to self.instances.")
-    qtree_instances = Array.new
+    qtree_instances = []
 
     # Query Netapp for qtree-list against volume. 
     result = qlist
