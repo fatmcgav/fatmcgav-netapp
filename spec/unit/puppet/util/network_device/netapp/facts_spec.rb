@@ -42,13 +42,20 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       facts.retrieve["domain"].should == 'example.com'
     end
 
+    # TODO: operatingsystem and operatingsystemrelease seems to be
+    # broken and NetApp Release 8.1P2 7-Mode is not correctly parsed
     {
       :productname            => 'FAS3240',
+      :manufacturer           => 'NetApp',
       :hostname               => 'filer01',
       :fqdn                   => 'filer01.example.com',
+      :uniqueid               => '1918293798',
+      :serialnumber           => '123289979812',
+      :processorcount         => '4',
       :memorysize_mb          => '8192',
       :memorysize             => '8192 MB',
       :hardwareisa            => 'Intel(R) Xeon(R) CPU           L5410  @ 2.33GHz',
+      :is_clustered           => 'false',
     }.each do |fact, expected_value|
       it "should return #{expected_value} for #{fact}" do
         facts.retrieve[fact.to_s].should == expected_value

@@ -18,9 +18,11 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
 
     # Pull out version
     sys_version = result.child_get_string("version")
-
-    # Add to facts hash
     @facts['version'] = sys_version
+
+    if sys_clustered = result.child_get_string("is-clustered") and !sys_clustered.empty?
+      @facts['is_clustered'] = sys_clustered
+    end
 
     # Invoke "system-get-info" call to gather system information.
     result = @transport.invoke("system-get-info")
@@ -45,17 +47,22 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
       'system-revision',
       'number-of-processors',
       'memory-size',
-      'cpu-processor-type'
+      'cpu-processor-type',
+      'vendor-id',
     ].each do |key|
       @facts[key] = sys_info.child_get_string("#{key}".to_s)
     end
 
     # cleanup of netapp output to match existing facter key values.
     map = {
-      'system-name'        => 'hostname',
-      'memory-size'        => 'memorysize_mb',
-      'system-model'       => 'productname',
-      'cpu-processor-type' => 'hardwareisa',
+      'system-name'          => 'hostname',
+      'memory-size'          => 'memorysize_mb',
+      'system-model'         => 'productname',
+      'cpu-processor-type'   => 'hardwareisa',
+      'vendor-id'            => 'manufacturer',
+      'number-of-processors' => 'processorcount',
+      'system-serial-number' => 'serialnumber',
+      'system-id'            => 'uniqueid'
     }
     @facts = Hash[@facts.map {|k, v| [map[k] || k, v] }]\
 
