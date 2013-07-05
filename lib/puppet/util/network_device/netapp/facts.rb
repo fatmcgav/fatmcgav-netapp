@@ -53,14 +53,15 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
     # cleanup of netapp output to match existing facter key values.
     map = {
       'system-name'        => 'hostname',
-      'memory-size'        => 'memorysize',
+      'memory-size'        => 'memorysize_mb',
       'system-model'       => 'productname',
-      'cpu-processor-type' => 'processor',
+      'cpu-processor-type' => 'hardwareisa',
     }
     @facts = Hash[@facts.map {|k, v| [map[k] || k, v] }]\
 
     # Need to replace '-' with '_'
     @facts = Hash[@facts.map {|k, v| [k.to_s.gsub('-','_'), v] }]
+    @facts['memorysize'] = "#{@facts['memorysize_mb']} MB"
 
     # Set operatingsystem details if present
     if @facts['version'] then
