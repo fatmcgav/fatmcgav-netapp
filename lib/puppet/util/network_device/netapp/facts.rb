@@ -8,7 +8,7 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
     @transport = transport
   end
   
-  def retreive
+  def retrieve
     
     # Create empty array
     @facts = {}
