@@ -31,7 +31,7 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
     # Get DNS domainname to build up fqdn
     result = @transport.invoke("options-get", "name", "dns.domainname")
     domain_name = result.child_get_string("value")
-    @facts['domain'] = domain_name
+    @facts['domain'] = domain_name.downcase
 
     # Array of values to get
     [
@@ -71,6 +71,7 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
     end
 
     # Handle FQDN
+    @facts['hostname'].downcase!
     if @facts['hostname'].include? @facts['domain']
       # Hostname contains the domain, therefore must be FQDN
       @facts['fqdn'] = @facts['hostname']
