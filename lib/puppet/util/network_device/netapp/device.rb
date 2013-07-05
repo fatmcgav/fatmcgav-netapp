@@ -35,7 +35,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
 		
   def facts
     @facts ||= Puppet::Util::NetworkDevice::Netapp::Facts.new(@transport)
-    facts = @facts.retreive
+    facts = @facts.retrieve
     
     facts
   end
