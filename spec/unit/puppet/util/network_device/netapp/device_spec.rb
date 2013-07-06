@@ -45,7 +45,7 @@ describe Puppet::Util::NetworkDevice::Netapp::Device do
       transport.expects(:set_transport_type).with('HTTPS')
       transport.expects(:set_port).with(443)
       transport.expects(:invoke).with('system-get-version').returns version
-      Puppet.expects(:debug).with regexp_matches /^Puppet::Device::Netapp: Verion = /
+      Puppet.expects(:debug).with regexp_matches /^Puppet::Device::Netapp: Version = /
 
       described_class.new('https://root:secret@pfiler.example.com')
     end

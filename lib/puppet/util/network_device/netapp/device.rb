@@ -29,7 +29,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
       raise Puppet::Error, "invoke system-get-version failed: #{r}"
     else
       version = result.child_get_string("version")
-      Puppet.debug("Puppet::Device::Netapp: Verion = #{version}")
+      Puppet.debug("Puppet::Device::Netapp: Version = #{version}")
     end
   end
 		
