@@ -22,6 +22,11 @@ class Puppet::Util::NetworkDevice::Netapp::Device
     @transport.set_admin_user(@url.user, @url.password)
     @transport.set_transport_type(@url.scheme.upcase)
     @transport.set_port(@url.port)
+    if match = %r{/([^/]+)}.match(@url.path)
+      @vfiler = match.captures[0]
+      @transport.set_vfiler(@vfiler)
+      Puppet.debug("Puppet::Device::Netapp: vfiler context has been set to #{@vfiler}")
+    end
     
     result = @transport.invoke("system-get-version")
     if(result.results_errno != 0)
