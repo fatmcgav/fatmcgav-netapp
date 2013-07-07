@@ -51,6 +51,15 @@ Example configuration `/etc/puppet/device/pfiler01.example.com.conf`:
       type netapp
       url https://root:secret@pfiler01.example.com
 
+You can also specify a virtual filer you want to operate on: Simply
+provide the connection information for your physical filer and specify
+an optional path that represents the name of your virtual filer. Example
+configuration `/etc/puppet/device/vfiler01.example.com.conf`:
+
+    [vfiler01.example.com]
+      type netapp
+      url https://root:secret@pfiler01.example.com/vfiler01
+
 ### NetApp operations
 As part of this module, there is a defined type called 'netapp::vqe', which can be used to create a volume, add a qtree and create an NFS export.
 An example of this is:
