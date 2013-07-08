@@ -1,5 +1,7 @@
 # NetApp network device module
-Warning: This project is work in progress, therefore some functions may not work as expected.
+
+** Please note that the device configuration management has been changed as of v0.4.0 of this module. 
+You will therefore need to update your device configuration file if upgrading from a version < 0.4.0. **
 
 ## Overview
 The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.
@@ -14,9 +16,10 @@ The following items are supported:
  * Creation, modification and deletion of QTrees.
  * Creation, modification and deletion of NFS Exports, including NFS export security.
  * Creation, modification and deletion of users, groups and roles.
+ * Creation, modification and deletion of Quotas. 
  * Creation of snapmirror relationships.
  * Creation of snapmirror schedules.
-
+ 
 ## Requirements
 Since we can not directly install a puppet agent on the NetApp filers, it can either be managed from the Puppet Master server,
 or through an intermediate proxy system running a puppet agent. The requirement for the proxy system:
@@ -81,10 +84,13 @@ The volume will be able to auto increment, and the NFS export will be persistent
 
 You can also use any of the types individually, or create new defined types as required.
 
+## Contributors
+Thanks to the following people who have helped with this module:
+ * Stefan Schulte
+
 ## TODO
 The following items are yet to be implemented:
 
- * Quota support
  * Data Fabric Manager support
  * Support adding/deleting/modifying cifs shares
  * LDAP and/or AD configuration
