@@ -1,7 +1,7 @@
 # NetApp network device module
 
-** Please note that the device configuration management has been changed as of v0.4.0 of this module. 
-You will therefore need to update your device configuration file if upgrading from a version < 0.4.0. **
+**Please note that the device configuration management has been changed as of v0.4.0 of this module. 
+You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
 
 ## Overview
 The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.

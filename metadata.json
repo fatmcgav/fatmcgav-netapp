@@ -17,7 +17,7 @@
     "CHANGELOG": "45c51d119a5c2efe0d362ab4b5b56eea",
     "LICENSE": "2180042ca176b660becdef4fc29225e1",
     "Modulefile": "dce08792f4c2d6f79aa46acbabbedce5",
-    "README.markdown": "9c72948f03fd7adb40c8d208ce2258d6",
+    "README.markdown": "2942f93f715262ae419b0c1c554199bf",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "lib\\puppet\\provider\\netapp.rb": "899f95fab96aff07cd4ad654de239f9a",
     "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "3449e4ec2f67afada6f2049e30590bd8",
