@@ -3,6 +3,21 @@
 **Please note that the device configuration management has been changed as of v0.4.0 of this module. 
 You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
 
+**Table of Contents**
+
+- [NetApp network device module](#netapp-network-device-module)
+	- [Overview](#overview)
+	- [Features](#features)
+	- [Requirements](#requirements)
+		- [NetApp Manageability SDK](#netapp-manageability-sdk)
+	- [Usage](#usage)
+		- [Device Setup](#device-setup)
+		- [NetApp operations](#netapp-operations)
+	- [Contributors](#contributors)
+	- [TODO](#todo)
+	- [Development](#development)
+		- [Testing](#testing)
+
 ## Overview
 The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.
 
@@ -38,7 +53,7 @@ Once the files have been copied into place on your Puppet Master, patch needs to
 The patch file is `files/NaServer.patch`.  
 To apply, change into the `netapp` module root directory and run:
 	
-	`patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch`
+	patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
 
 This should apply the patch without any errors, as below:
 
