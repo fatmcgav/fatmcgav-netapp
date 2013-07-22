@@ -474,7 +474,7 @@
     "lib\\puppet\\type\\netapp_volume.rb": "2f20e65542330c4f1dbcfe4e67be603c",
 =======
     "Modulefile": "57593fb77c517fbf8dbce10257785bd2",
-    "README.markdown": "24740d3ef6b88216cc2e41a77ab265d1",
+    "README.markdown": "bcfc79ba3135f1a1cb0616252870318b",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "files\\NaServer.patch": "713549d10ed32d9572736ba84d1ed111",
     "lib\\puppet\\provider\\netapp.rb": "899f95fab96aff07cd4ad654de239f9a",
