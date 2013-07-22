@@ -6,7 +6,10 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
   confine :feature => :posix
   defaultfor :feature => :posix
 
-  netapp_commands :elist => 'nfs-exportfs-list-rules-2'
+  netapp_commands :elist   => 'nfs-exportfs-list-rules-2'
+  netapp_commands :edel    => 'nfs-exportfs-delete-rules'
+  netapp_commands :eadd    => 'nfs-exportfs-append-rules-2'
+  netapp_commands :emodify => 'nfs-exportfs-modify-rule-2'
   
   mk_resource_methods
 
@@ -122,37 +125,19 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
       cmd.child_add_string("persistent", @resource[:persistent].to_s)
       
       # Add Pathnames container
-      paths = NaElement.new("pathnames")
       pathnames = NaElement.new("pathname-info")
       pathnames.child_add_string("name", @resource[:name])
-      paths.child_add(pathnames)
-      cmd.child_add(paths)
       Puppet.debug("Destroy command xml looks like: \n #{cmd.sprintf()}")
       
       # Invoke the constructed request
-      result = transport.invoke_elem(cmd)
+      result = edel('persistent', @resource[:persistent].to_s, 'pathnames', pathnames)
   
-      # Check result returned. 
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} wasn't destroyed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} destroy failed due to #{result.results_reason} \n."
-        return false
-      else 
-        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} destroyed successfully. \n")
-        return true
-      end
+      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} destroyed successfully. \n")
+      return true
     
     when :present
-    
       Puppet.debug("Puppet::Provider::Netapp_export: Ensure is present.")
-      
-      # Query Netapp to create export against path.
-      # Start to construct request
-      cmd = NaElement.new("nfs-exportfs-modify-rule-2")
-      cmd.child_add_string("persistent", @resource[:persistent].to_s)
-        
-      # Add Rules container
-      rule = NaElement.new("rule")
+
       # Construct rule list
       rule_list = NaElement.new("exports-rule-info-2")
       rule_list.child_add_string("pathname", @resource[:name])
@@ -204,38 +189,20 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
       # Put it all togeather
       security.child_add(security_rules)
       rule_list.child_add(security)
-      rule.child_add(rule_list)
-      cmd.child_add(rule)
-      Puppet.debug("Modify command xml looks like: \n #{cmd.sprintf()}")
       
-      # Invoke the constructed request
-      result = transport.invoke_elem(cmd)
+      # Modify the rule
+      result = emodify('persistent', @resource[:persistent].to_s, 'rule', rule_list)
   
-      # Check result status
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modification failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} modification failed due to #{result.results_reason} \n."
-        return false
-      else
-        # Passed above, therefore must of worked.
-        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modified successfully on path #{@resource[:path]}. \n")
-        return true
-      end
+      # Passed above, therefore must of worked.
+      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} modified successfully on path #{@resource[:path]}. \n")
+      return true
       
     end #EOC
   end
   
   def create
     Puppet.debug("Puppet::Provider::Netapp_export: creating Netapp export rule #{@resource[:name]} on path #{@resource[:path]}.")
-    
-    # Query Netapp to create export against path.
-    # Start to construct request
-    cmd = NaElement.new("nfs-exportfs-append-rules-2")
-    cmd.child_add_string("persistent", @resource[:persistent].to_s)
-    cmd.child_add_string("verbose", "true")
-    
-    # Add Rules container
-    rules = NaElement.new("rules")
+
     # Construct rule list
     rule_list = NaElement.new("exports-rule-info-2")
     rule_list.child_add_string("pathname", @resource[:name])
@@ -286,32 +253,23 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
     # Put it all togeather
     security.child_add(security_rules)
     rule_list.child_add(security)
-    rules.child_add(rule_list)
-    cmd.child_add(rules)
-    Puppet.debug("Create command xml looks like: \n #{cmd.sprintf()}")
     
-    # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
+    # Add the export rule
+    result = eadd('persistent', @resource[:persistent], 'verbose', 'true', 'rules', rule_list)
 
-    # Check result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp export rule #{@resource[:name]} creation failed due to #{result.results_reason} \n."
+    # Work-around defect in NetApp SDK, whereby command will pass, even if export is not valid. 
+    output = result.child_get("loaded-pathnames")
+    loaded_paths = output.child_get("pathname-info")
+    # Check if var is actually null. 
+    if(loaded_paths.nil?)
+      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} creation failed. \n")
+      raise Puppet::Error, "Puppet::Provider::Netapp_export: export rule #{@resource[:name]} creation failed. Verify settings. \n"
       return false
-    else
-      # Work-around defect in NetApp SDK, whereby command will pass, even if export is not valid. 
-      output = result.child_get("loaded-pathnames")
-      loaded_paths = output.child_get("pathname-info")
-      # Check if var is actually null. 
-      if(loaded_paths.nil?)
-        Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} creation failed. \n")
-        raise Puppet::Error, "Puppet::Provider::Netapp_export: export rule #{@resource[:name]} creation failed. Verify settings. \n"
-        return false
-      end
-      # Passed above, therefore must of worked. 
-      Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} created successfully on path #{@resource[:path]}. \n")
-      return true
     end
+    
+    # Passed above, therefore must of worked. 
+    Puppet.debug("Puppet::Provider::Netapp_export: export rule #{@resource[:name]} created successfully on path #{@resource[:path]}. \n")
+    return true
   end
   
   def destroy

@@ -6,7 +6,10 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
   confine :feature => :posix
   defaultfor :feature => :posix
 
-  netapp_commands :rlist => 'useradmin-role-list', :rdel => 'useradmin-role-delete'
+  netapp_commands :rlist   => 'useradmin-role-list'
+  netapp_commands :rdel    => 'useradmin-role-delete'
+  netapp_commands :radd    => 'useradmin-role-add'
+  netapp_commands :rmodify => 'useradmin-role-modify'
   
   mk_resource_methods
     
@@ -81,11 +84,6 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
       return true
     when :present
       # Query Netapp device to modify role. 
-      # Start to construct request
-      cmd = NaElement.new("useradmin-role-modify")
-        
-      # Add useradmin-role container
-      role = NaElement.new("useradmin-role")
       
       # Construct useradmin-role-info
       role_info = NaElement.new("useradmin-role-info")
@@ -107,33 +105,19 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
       
       # Put it all together
       role_info.child_add(role_capabilities)
-      role.child_add(role_info)
-      cmd.child_add(role)
       
       # Invoke the constructed request
-      result = transport.invoke_elem(cmd)
+      result = rmodify('useradmin-role', role_info)
       
-      # Check result status
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} modification failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_role: role #{@resource[:rolename]} modification failed due to #{result.results_reason}. \n."
-        return false
-      else
-        # Passed above, therefore must of worked. 
-        Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} modified successfully. \n")
-        return true
-      end
+      # Passed above, therefore must of worked. 
+      Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} modified successfully. \n")
+      return true
     end
   end
   
   def create
     Puppet.debug("Puppet::Provider::Netapp_role: creating Netapp role for #{@resource[:rolename]}. \n")
-    
-    # Start to construct request
-    cmd = NaElement.new("useradmin-role-add")
-    
-    # Add useradmin-role container
-    role = NaElement.new("useradmin-role")
+
     # Construct useradmin-role-info
     role_info = NaElement.new("useradmin-role-info")
     # Add values
@@ -154,22 +138,13 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     
     # Put it all together
     role_info.child_add(role_capabilities)
-    role.child_add(role_info)
-    cmd.child_add(role)
     
     # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
+    result = radd('useradmin-role', role_info)
     
-    # Check result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_role: role #{@resource[:rolename]} creation failed due to #{result.results_reason}. \n."
-      return false
-    else
-      # Passed above, therefore must of worked. 
-      Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} created successfully. \n")
-      return true
-    end
+    # Passed above, therefore must of worked. 
+    Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} created successfully. \n")
+    return true
   end
   
   def destroy

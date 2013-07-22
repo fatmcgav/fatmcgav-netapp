@@ -6,14 +6,17 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   confine :feature => :posix
   defaultfor :feature => :posix
  
-  netapp_commands :vollist => 'volume-list-info'
-  netapp_commands :optslist => 'volume-options-list-info'
-  netapp_commands :snapschedlist => 'snapshot-get-schedule'
-  netapp_commands :volsizeset => 'volume-size'
-  netapp_commands :snapresset => 'snapshot-set-reserve'
-  netapp_commands :autosizeset => 'volume-autosize-set'
-  netapp_commands :voloptset => 'volume-set-option'
-  netapp_commands :volcreate => 'volume-create'
+  netapp_commands :vollist        => 'volume-list-info'
+  netapp_commands :optslist       => 'volume-options-list-info'
+  netapp_commands :snapschedlist  => 'snapshot-get-schedule'
+  netapp_commands :snapschedset   => 'snapshot-set-schedule'
+  netapp_commands :volsizeset     => 'volume-size'
+  netapp_commands :snapresset     => 'snapshot-set-reserve'
+  netapp_commands :autosizeset    => 'volume-autosize-set'
+  netapp_commands :voloptset      => 'volume-set-option'
+  netapp_commands :volcreate      => 'volume-create'
+  netapp_commands :voloffline     => 'volume-offline'
+  netapp_commands :voldestroy     => 'volume-destroy'
   
   mk_resource_methods
 
@@ -88,33 +91,21 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     Puppet.debug("Property_hash ensure = #{@property_hash[:ensure]}")
     if @property_hash[:ensure] == :absent
       # Check if volume is online. 
-      vi_result = transport.invoke("volume-list-info", "volume", @resource[:name])
-      if(vi_result.results_status == "passed")
-        volumes = vi_result.child_get("volumes")
-        volume_info = volumes.child_get("volume-info")
-        state = volume_info.child_get_string("state")
-        if(state == "online")
-          Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
-          off_result = transport.invoke("volume-offline", "name", @resource[:name])
-          if(off_result.results_status == "failed")
-            Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} offline failed due to #{off_result.results_reason}. \n")
-            raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} offline failed due to #{off_result.results_reason} \n."
-            return false
-          else 
-            Puppet.debug("Puppet::Provider::Netapp_volume: Volume taken offline successfully. \n")
-          end
-        end
+      vi_result = vollist('volume', @resource[:name])
+      volumes = vi_result.child_get("volumes")
+      volume_info = volumes.child_get("volume-info")
+      state = volume_info.child_get_string("state")
+      # Is the volume 'Online'?
+      if(state == "online")
+        # Need to 'offline' the volume
+        Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} is currently online. Offlining... ")
+        off_result = voloffline('name', @resource[:name])
+        Puppet.debug("Puppet::Provider::Netapp_volume: Volume taken offline successfully. \n")
       end
-      destroy_result = transport.invoke("volume-destroy", "name", @resource[:name])
-      Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroy output: " + destroy_result.sprintf() + "\n")
-      if(destroy_result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} wasn't destroyed due to #{destroy_result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp Volume #{@resource[:name]} destroy failed due to #{destroy_result.results_reason} \n."
-        return false
-      else 
-        Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
-        return true
-      end
+      # Can now destroy the volume... 
+      destroy_result = voldestroy('name', @resource[:name])
+      Puppet.debug("Puppet::Provider::Netapp_volume: Volume destroyed successfully. \n")
+      return true
     end
     
     @property_hash.clear
@@ -292,26 +283,18 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Got to snapschedule= setter... \n")
     # Value is an array, so pull out first value. 
     snapschedule = value.first
-    
-    # Create a new NaElement object
-    opts = NaElement.new('snapshot-set-schedule')
-    opts.child_add_string('volume', @resource[:name])
-    
-    # Itterate through snapschedule hash
-    snapschedule.each do |key,value|
-      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Key = #{key}, Value = #{value}. \n")
-      opts.child_add_string(key, value.to_s)
-    end
-    
-    # Call webservice to set schedule. 
-    result = transport.invoke_elem(opts)
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Setting of Snapschedule failed for volume #{@resource[:name]} due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_volume snapschedule=: Setting of Snapschedule failed for volume #{@resource[:name]} due to #{result.results_reason}."
-      return false
-    else 
-      Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Snapshedule successfully set against Volume #{@resource[:name]}. \n")
-    end
+
+    # Set the snapshot schedule    
+    result = snapschedset(
+      'volume', @resource[:name], 
+      'weeks', snapschedule['weeks'].to_s, 
+      'days', snapschedule['days'].to_s, 
+      'hours', snapschedule['hours'].to_s, 
+      'minutes', snapschedule['minutes'].to_s, 
+      'which-hours', snapschedule['which-hours'].to_s,
+      'which-minutes', snapschedule['which-minutes'].to_s )
+     
+    Puppet.debug("Puppet::Provider::Netapp_volume snapschedule=: Snapshedule successfully set against Volume #{@resource[:name]}. \n")
     return true
   end
   

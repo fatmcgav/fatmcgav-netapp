@@ -6,6 +6,8 @@ Puppet::Type.type(:netapp_snapmirror_schedule).provide(:netapp_snapmirror_schedu
   confine :feature => :posix
   defaultfor :feature => :posix
   
+  netapp_commands :sslist => 'snapmirror-list-schedule'
+  
   def create
     Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: creating Netapp SnapMirror schedule for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
     
@@ -58,43 +60,35 @@ Puppet::Type.type(:netapp_snapmirror_schedule).provide(:netapp_snapmirror_schedu
     Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: checking status of SnapMirror for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
     
     # Call webservice to list volume info
-    result = transport.invoke("snapmirror-list-schedule", "destination-location", @resource[:destination_location])
-    Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: Snapmirror status: " + result.sprintf() + "\n")
-    # Check response status. 
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: Something went wrong checking for schedules... #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_snapmirror_schedule something went wrong checking for schedules: #{result.results_reason} \n."
+    result = sslist('destination-location', @resource[:destination_location])
+    Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: Checking if schedule exists... \n")
+      
+    sms_status = result.child_get('snapmirror-schedules')
+    if !sms_status
+      Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: No schedules exist for #{@resource[:source_location]}... \n")
       return false
     else 
-      Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: Checking if schedule exists... \n")
+      # Should probably check to see if a schedule similar to what we're trying to create already exists?
+      # Pull out the schedule-info block. 
+      schedule = sms_status.child_get('snapmirror-schedule-info')
       
-      sms_status = result.child_get('snapmirror-schedules')
-      if !sms_status
-        Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: No schedules exist for #{@resource[:source_location]}... \n")
+      # Check if there is a snapmirror-error element first...
+      if schedule.child_get('snapmirror-error')
+        Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: no schedules returned for destination_location #{@resource[:destination_location]}. \n")
         return false
-      else 
-        # Should probably check to see if a schedule similar to what we're trying to create already exists?
-        # Pull out the schedule-info block. 
-        schedule = sms_status.child_get('snapmirror-schedule-info')
-        
-        # Check if there is a snapmirror-error element first...
-        if schedule.child_get('snapmirror-error')
-          Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: no schedules returned for destination_location #{@resource[:destination_location]}. \n")
-          return false
-        else  
-          destination_location = schedule.child_get_string('destination-location')
-          source_location = schedule.child_get_string('source-location')
-          minutes = schedule.child_get_string('minutes')
-          hours = schedule.child_get_string('hours')
-          dow = schedule.child_get_string('days-of-week')
-          dom = schedule.child_get_string('days-of-month')
-        
-          if (source_location == @resource[:source_location] && destination_location == @resource[:destination_location])
-            Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: schedule exists for destination_location #{@resource[:destination_location]} and source_location #{@resource[:source_location]}. Checking schedule. ")
-            if (minutes == @resource[:minutes].to_s && hours == @resource[:hours].to_s && dow == @resource[:days_of_week].to_s && dom == @resource[:days_of_month].to_s)
-              Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: schedule matches for #{@resource[:destination_location]}.")
-              return true
-            end
+      else  
+        destination_location = schedule.child_get_string('destination-location')
+        source_location = schedule.child_get_string('source-location')
+        minutes = schedule.child_get_string('minutes')
+        hours = schedule.child_get_string('hours')
+        dow = schedule.child_get_string('days-of-week')
+        dom = schedule.child_get_string('days-of-month')
+      
+        if (source_location == @resource[:source_location] && destination_location == @resource[:destination_location])
+          Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: schedule exists for destination_location #{@resource[:destination_location]} and source_location #{@resource[:source_location]}. Checking schedule. ")
+          if (minutes == @resource[:minutes].to_s && hours == @resource[:hours].to_s && dow == @resource[:days_of_week].to_s && dom == @resource[:days_of_month].to_s)
+            Puppet.debug("Puppet::Provider::Netapp_snapmirror_schedule: schedule matches for #{@resource[:destination_location]}.")
+            return true
           end
         end
       end

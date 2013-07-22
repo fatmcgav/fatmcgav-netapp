@@ -6,7 +6,9 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
   confine :feature => :posix
   defaultfor :feature => :posix
 
-  netapp_commands :qlist => 'qtree-list', :qadd => 'qtree-create', :qdel => 'qtree-delete'
+  netapp_commands :qlist => 'qtree-list'
+  netapp_commands :qadd  => 'qtree-create'
+  netapp_commands :qdel  => 'qtree-delete'
   
   mk_resource_methods
   

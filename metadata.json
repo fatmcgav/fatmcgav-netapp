@@ -1,72 +1,12 @@
 {
   "name": "fatmcgav-netapp",
+  "version": "0.3.0",
+  "summary": "NetApp Network Device support for Puppet",
   "author": "fatmcgav",
   "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nOverview:\nThe NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.\n\nThe Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode. \nHowever it may well be compatible with other OnTap versions. \n\nFeatures:\nThe following items are supported:\n* Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.\n* Creation, modification and deletion of QTrees. \n* Creation, modification and deletion of NFS Exports, including NFS Export security. \n* Creation, modification and deletion of users, groups and roles. \n* Creation of snapmirror relationships. \n* Creation of snapmirror schedules. ",
-  "license": "Apache License, version 2.0",
-  "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
-  "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
-  "summary": "NetApp Network Device support for Puppet",
-  "version": "0.3.0",
-  "checksums": {
-    "CHANGELOG": "45c51d119a5c2efe0d362ab4b5b56eea",
-    "LICENSE": "2180042ca176b660becdef4fc29225e1",
-    "Modulefile": "ab4c2ec186687627f56cb755ba568233",
-    "README.markdown": "de862b0df36431a75da76a6a2ae96e2d",
-    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
-    "lib\\puppet\\provider\\netapp.rb": "6627eb67b83eb1a1d0a956232c9072ed",
-    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "3449e4ec2f67afada6f2049e30590bd8",
-    "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "43419fa9134b8f311073bad72f8d0533",
-    "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "3279a7f1afc7b196c0fb52c0dbd5927c",
-    "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "b62a3ebf2971b684038c6dd48d6fb0bb",
-    "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
-    "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
-    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "e608882e489575e4b84bc733ffb10438",
-    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "e9590a7c2385c2bcb2da81d6b2ae15b1",
-    "lib\\puppet\\type\\netapp_export.rb": "b7893d1b5774b28f1564c643b5698873",
-    "lib\\puppet\\type\\netapp_group.rb": "f4cddbfe2db790d1d3f58e141cd08989",
-    "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
-    "lib\\puppet\\type\\netapp_qtree.rb": "800a707b9ac898e16d220a5de27dadfb",
-    "lib\\puppet\\type\\netapp_role.rb": "631c4379d5f6e75bf6a50e216b6f6b93",
-    "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
-    "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
-    "lib\\puppet\\type\\netapp_user.rb": "e6a8c6155c00a0c01deddc7364423079",
-    "lib\\puppet\\type\\netapp_volume.rb": "cf68bae48fe9413b9f3d309ac071c5ee",
-    "lib\\puppet\\util\\network_device\\netapp.rb": "ddf62939ce81fa9d42430fabb7624c52",
-    "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
-    "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
-    "lib\\puppet\\util\\network_device\\netapp\\NaErrno.rb": "f39ce8c746c6284cac04820e9a609259",
-    "lib\\puppet\\util\\network_device\\netapp\\NaServer.rb": "0ede800393481ab75d216c52f88a1096",
-    "lib\\puppet\\util\\network_device\\netapp\\device.rb": "b0534810097b5120485f7a9aafbc117a",
-    "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "f5775818e40620b7bc45c2367f57c048",
-    "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
-    "manifests\\vqe.pp": "c1534f2a218b6f4337964d7849371061",
-    "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
-    "spec\\spec_helper.rb": "368c4ee7c8bacf6b8ae4126e8c0f19d5",
-    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
-    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "11c92df43c3b40ad10744b2d2b8b865c",
-    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "24ae6b16ca0e910ea7be58466dafb572",
-    "spec\\unit\\puppet\\type\\netapp_group_spec.rb": "24bf981d695365c9326eba03ad280f09",
-    "spec\\unit\\puppet\\type\\netapp_qtree_spec.rb": "6110f5cf1fd0f6b132a96d4d56d73693",
-    "spec\\unit\\puppet\\type\\netapp_role_spec.rb": "d478575f2041cae591f3cfdc6237b9ac",
-    "spec\\unit\\puppet\\type\\netapp_user_spec.rb": "93db5745cd5667fc615ccb74c0f28928",
-    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "e91fbd30a083553ce626d032e0c9d0a0"
-  },
+  "dependencies": [],
   "types": [
     {
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
-        },
-        {
-          "name": "persistent",
-          "doc": "Should this be a persistent export? Defaults to true."
-        },
-        {
-          "name": "path",
-          "doc": "The filer path to export. If not specified, uses :name value"
-        }
-      ],
       "properties": [
         {
           "name": "anon",
@@ -81,6 +21,20 @@
           "doc": "Export read-write hosts. Defaults to \u0027all_hosts\u0027."
         }
       ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
+        },
+        {
+          "name": "persistent",
+          "doc": "Should this be a persistent export? Defaults to true."
+        },
+        {
+          "name": "path",
+          "doc": "The filer path to export. If not specified, uses :name value"
+        }
+      ],
       "providers": [
         {
           "name": "netapp_export"
@@ -90,6 +44,12 @@
       "doc": "Manage Netapp NFS Export creation, modification and deletion."
     },
     {
+      "properties": [
+        {
+          "name": "roles",
+          "doc": "List of roles for this group. Comma separate multiple values. "
+        }
+      ],
       "parameters": [
         {
           "name": "groupname",
@@ -98,12 +58,6 @@
         {
           "name": "comment",
           "doc": "Group comment"
-        }
-      ],
-      "properties": [
-        {
-          "name": "roles",
-          "doc": "List of roles for this group. Comma separate multiple values. "
         }
       ],
       "providers": [
@@ -115,6 +69,12 @@
       "doc": "Manage Netapp Group creation, modification and deletion."
     },
     {
+      "properties": [
+        {
+          "name": "message",
+          "doc": "The message to be sent to the log."
+        }
+      ],
       "parameters": [
         {
           "name": "withpath",
@@ -123,12 +83,6 @@
         {
           "name": "name",
           "doc": "An arbitrary tag for your own reference; the name of the message."
-        }
-      ],
-      "properties": [
-        {
-          "name": "message",
-          "doc": "The message to be sent to the log."
         }
       ],
       "name": "netapp_notify",
@@ -154,6 +108,12 @@
       "doc": "Manage Netapp Qtree creation, modification and deletion."
     },
     {
+      "properties": [
+        {
+          "name": "capabilities",
+          "doc": "List of capabilities for this role. Comma separate multiple values. "
+        }
+      ],
       "parameters": [
         {
           "name": "rolename",
@@ -162,12 +122,6 @@
         {
           "name": "comment",
           "doc": "Role comment"
-        }
-      ],
-      "properties": [
-        {
-          "name": "capabilities",
-          "doc": "List of capabilities for this role. Comma separate multiple values. "
         }
       ],
       "providers": [
@@ -257,20 +211,6 @@
       "doc": "Manage Netapp Snapmirror schedule creation, modification and deletion."
     },
     {
-      "parameters": [
-        {
-          "name": "username",
-          "doc": "The user username."
-        },
-        {
-          "name": "password",
-          "doc": "The user password. Minimum length is 8 characters, must contain at-least one number."
-        },
-        {
-          "name": "status",
-          "doc": "Status of user account. Valid values are: enabled, disabled and expired. "
-        }
-      ],
       "properties": [
         {
           "name": "fullname",
@@ -293,6 +233,20 @@
           "doc": "List of groups for this user account. Comma separate multiple values. "
         }
       ],
+      "parameters": [
+        {
+          "name": "username",
+          "doc": "The user username."
+        },
+        {
+          "name": "password",
+          "doc": "The user password. Minimum length is 8 characters, must contain at-least one number."
+        },
+        {
+          "name": "status",
+          "doc": "Status of user account. Valid values are: enabled, disabled and expired. Cannot be modified via API. "
+        }
+      ],
       "providers": [
         {
           "name": "netapp_user"
@@ -302,24 +256,6 @@
       "doc": "Manage Netapp User creation, modification and deletion."
     },
     {
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "The volume name. Valid characters are a-z, 1-9 \u0026 underscore."
-        },
-        {
-          "name": "aggregate",
-          "doc": "The aggregate this volume should be created in."
-        },
-        {
-          "name": "languagecode",
-          "doc": "The language code this volume should use."
-        },
-        {
-          "name": "spaceres",
-          "doc": "The space reservation mode."
-        }
-      ],
       "properties": [
         {
           "name": "initsize",
@@ -342,6 +278,24 @@
           "doc": "The volume snapshot schedule, in a hash format. Valid keys are: \u0027minutes\u0027, \u0027hours\u0027, \u0027days\u0027, \u0027weeks\u0027, \u0027which-hours\u0027, \u0027which-minutes\u0027. "
         }
       ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The volume name. Valid characters are a-z, 1-9 \u0026 underscore."
+        },
+        {
+          "name": "aggregate",
+          "doc": "The aggregate this volume should be created in."
+        },
+        {
+          "name": "languagecode",
+          "doc": "The language code this volume should use."
+        },
+        {
+          "name": "spaceres",
+          "doc": "The space reservation mode."
+        }
+      ],
       "providers": [
         {
           "name": "netapp_volume"
@@ -351,5 +305,52 @@
       "doc": "Manage Netapp Volume creation, modification and deletion."
     }
   ],
-  "dependencies": []
+  "checksums": {
+    "CHANGELOG": "45c51d119a5c2efe0d362ab4b5b56eea",
+    "LICENSE": "2180042ca176b660becdef4fc29225e1",
+    "Modulefile": "2f43172ef81876384a52a9e633a7f334",
+    "README.markdown": "de862b0df36431a75da76a6a2ae96e2d",
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "lib\\puppet\\provider\\netapp.rb": "f19f7830e7e58746c83b3af00e240672",
+    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "3c799472e046d08cec319bae70a2c969",
+    "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "e566503069d6447b9dac3018f1de0ffe",
+    "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "4568d1fa761415ee97c8b13ba6a727e8",
+    "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "98a165ea71191910e33d4dbffdb2308a",
+    "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "7cc52b6000ab387924891414e9832753",
+    "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "2dab4329a2b473f488ff2c38541cf1ac",
+    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "79d9007871a9735a11408d0f6098e6b1",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "ab5a31c74dd9ea42a992bb5edaa4e25a",
+    "lib\\puppet\\type\\netapp_export.rb": "50108695edec9d737ae9e7fbede2a40f",
+    "lib\\puppet\\type\\netapp_group.rb": "d72a4265dcfafa8af780de3ceab1f284",
+    "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
+    "lib\\puppet\\type\\netapp_qtree.rb": "8dbe2887701253a2b2592b6e28eae714",
+    "lib\\puppet\\type\\netapp_role.rb": "04a7b95c3677e1abdfec58f482cf00a9",
+    "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
+    "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
+    "lib\\puppet\\type\\netapp_user.rb": "64c317d0d820b0dc1c28d1cf222d465d",
+    "lib\\puppet\\type\\netapp_volume.rb": "2f20e65542330c4f1dbcfe4e67be603c",
+    "lib\\puppet\\util\\network_device\\netapp.rb": "ddf62939ce81fa9d42430fabb7624c52",
+    "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
+    "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
+    "lib\\puppet\\util\\network_device\\netapp\\NaErrno.rb": "f39ce8c746c6284cac04820e9a609259",
+    "lib\\puppet\\util\\network_device\\netapp\\NaServer.rb": "0ede800393481ab75d216c52f88a1096",
+    "lib\\puppet\\util\\network_device\\netapp\\device.rb": "626a7b4578b9833a5662b5082599e0de",
+    "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "f5775818e40620b7bc45c2367f57c048",
+    "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
+    "manifests\\vqe.pp": "c1534f2a218b6f4337964d7849371061",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp\\netapp.yml": "5442d772b0cbd6f6798a18efb081d4a6",
+    "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "spec\\spec_helper.rb": "5be9104a4d14168dae966fb1cb8c418a",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "556533d11f2978460091d8410867d0a9",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "927865ab3af9842ffba6f817732b1234",
+    "spec\\unit\\puppet\\type\\netapp_group_spec.rb": "f310b6e808e6453c4e34200c598d2435",
+    "spec\\unit\\puppet\\type\\netapp_qtree_spec.rb": "96f7a358acd6a4c3523ff096f68c5887",
+    "spec\\unit\\puppet\\type\\netapp_role_spec.rb": "43cd88cff9811648ca90713dc35b26b0",
+    "spec\\unit\\puppet\\type\\netapp_user_spec.rb": "edbdba0df451cff002c44e03f23358ea",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "43140869fa81ba1bc653f76b2ec78132"
+  },
+  "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
+  "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
+  "license": "Apache License, version 2.0"
 }

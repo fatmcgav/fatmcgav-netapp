@@ -6,7 +6,10 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
   confine :feature => :posix
   defaultfor :feature => :posix
 
-  netapp_commands :glist => 'useradmin-group-list', :gdel => 'useradmin-group-delete'
+  netapp_commands :glist   => 'useradmin-group-list' 
+  netapp_commands :gdel    => 'useradmin-group-delete'
+  netapp_commands :gadd    => 'useradmin-group-add'
+  netapp_commands :gmodify => 'useradmin-group-modify'
   
   mk_resource_methods
   
@@ -80,11 +83,6 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       return true
     when :present
       # Query Netapp device to modify user group. 
-      # Start to construct request
-      cmd = NaElement.new("useradmin-group-modify")
-        
-      # Add useradmin-group container
-      group = NaElement.new("useradmin-group")
       
       # Construct useradmin-group-info
       group_info = NaElement.new("useradmin-group-info")
@@ -106,34 +104,19 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       
       # Put it all togeather
       group_info.child_add(group_roles)
-      group.child_add(group_info)
-      cmd.child_add(group)
       
       # Invoke the constructed request
-      result = transport.invoke_elem(cmd)
+      result = gmodify('useradmin-group', group_info)
       
-      # Check result status
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n."
-        return false
-      else
-        # Passed above, therefore must of worked. 
-        Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} created successfully. \n")
-        return true
-      end
+      # Passed above, therefore must of worked. 
+      Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} created successfully. \n")
+      return true
     end
   end
   
   def create
     Puppet.debug("Puppet::Provider::Netapp_group: creating Netapp group for #{@resource[:groupname]}. \n")
-    
-    # Start to construct request
-    cmd = NaElement.new("useradmin-group-add")
-      
-    # Add useradmin-group container
-    group = NaElement.new("useradmin-group")
-    
+
     # Construct useradmin-user-info
     group_info = NaElement.new("useradmin-group-info")
     # Add values
@@ -154,23 +137,14 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
     
     # Put it all together
     group_info.child_add(group_roles)
-    group.child_add(group_info)
-    cmd.child_add(group)
     
     # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
+    result = gadd('useradmin-group', group_info)
     
-    # Check result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_group: group #{@resource[:groupname]} creation failed due to #{result.results_reason}. \n."
-      return false
-    else
-      # Passed above, therefore must of worked. 
-      Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} created successfully. \n")
-      @property_hash.clear
-      return true
-    end
+    # Passed above, therefore must of worked. 
+    Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} created successfully. \n")
+    @property_hash.clear
+    return true
   end
   
   def destroy

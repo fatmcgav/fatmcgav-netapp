@@ -83,7 +83,7 @@ Puppet::Type.newtype(:netapp_user) do
   end
   
   newparam(:status) do
-    desc "Status of user account. Valid values are: enabled, disabled and expired. "
+    desc "Status of user account. Valid values are: enabled, disabled and expired. Cannot be modified via API. "
     newvalues(:enabled, :disabled, :expired)
     defaultto(:enabled)
   end

@@ -6,7 +6,10 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   confine :feature => :posix
   defaultfor :feature => :posix
   
-  netapp_commands :ulist => 'useradmin-user-list', :udel => 'useradmin-user-delete' 
+  netapp_commands :ulist   => 'useradmin-user-list'
+  netapp_commands :udel    => 'useradmin-user-delete'
+  netapp_commands :uadd    => 'useradmin-user-add'
+  netapp_commands :umodify => 'useradmin-user-modify'
 
   mk_resource_methods
   
@@ -88,20 +91,15 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     case @property_hash[:ensure] 
     when :absent
       Puppet.debug("Puppet::Provider::Netapp_user: destroying Netapp user #{@resource[:username]}.")
+      
       # Query Netapp to remove user. 
-      result = udel("user-name", @resource[:username])
+      result = udel('user-name', @resource[:username])
       Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} deleted successfully. \n")
       return true
       
     when :present
       Puppet.debug("Puppet::Provider::Netapp_user: modifying Netapp user account for #{@resource[:username]}.")
-      
-      # Start to construct request
-      cmd = NaElement.new("useradmin-user-modify")
-        
-      # Add useradmin-user container
-      user = NaElement.new("useradmin-user")
-      
+       
       # Construct useradmin-user-info
       user_info = NaElement.new("useradmin-user-info")
       # Add values
@@ -133,35 +131,19 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       
       # Put it all together
       user_info.child_add(user_groups)
-      user.child_add(user_info)
-      cmd.child_add(user)
       
-      Puppet.debug("Modification request xml looks like: \n #{cmd.sprintf()}")
-      # Invoke the constructed request
-      result = transport.invoke_elem(cmd)
+      # Modify the user
+      result = umodify('useradmin-user', user_info)
       
-      # Check result status
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n."
-        return false
-      else
-        # Passed above, therefore must of worked. 
-        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modified successfully. \n")
-        return true
-      end
+      # Passed above, therefore must of worked. 
+      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modified successfully. \n")
+      return true
       
     end 
   end
   
   def create
     Puppet.debug("Puppet::Provider::Netapp_user: creating Netapp user account for #{@resource[:username]}. \n")
-    # Start to construct request
-    cmd = NaElement.new("useradmin-user-add")
-    cmd.child_add_string("password", @resource[:password])
-      
-    # Add useradmin-user container
-    user = NaElement.new("useradmin-user")
     
     # Construct useradmin-user-info
     user_info = NaElement.new("useradmin-user-info")
@@ -194,23 +176,14 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     
     # Put it all together
     user_info.child_add(user_groups)
-    user.child_add(user_info)
-    cmd.child_add(user)
     
-    # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
+    # Add the user
+    result = uadd('password', @resource[:password], 'useradmin-user', user_info)
     
-    # Check result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n."
-      return false
-    else
-      # Passed above, therefore must of worked. 
-      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")
-      @property_hash.clear
-      return true
-    end
+    # Passed above, therefore must of worked. 
+    Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")
+    @property_hash.clear
+    return true
   end
   
   def destroy

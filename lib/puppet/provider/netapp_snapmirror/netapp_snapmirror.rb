@@ -6,6 +6,8 @@ Puppet::Type.type(:netapp_snapmirror).provide(:netapp_snapmirror, :parent => Pup
   confine :feature => :posix
   defaultfor :feature => :posix
   
+  netapp_commands :slist => 'snapmirror-get-status' 
+  
   def create
     Puppet.debug("Puppet::Provider::Netapp_snapmirror: creating Netapp SnapMirror relationship for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
     
@@ -53,34 +55,26 @@ Puppet::Type.type(:netapp_snapmirror).provide(:netapp_snapmirror, :parent => Pup
   def exists?
     Puppet.debug("Puppet::Provider::Netapp_snapmirror: checking status of SnapMirror for Source #{@resource[:source_location]} to Destination #{@resource[:destination_location]}")
     
-    # Call webservice to list volume info
-    result = transport.invoke("snapmirror-get-status", "location", @resource[:destination_location])
-    Puppet.debug("Puppet::Provider::Netapp_snapmirror: Snapmirror status: " + result.sprintf() + "\n")
-    # Check response status. 
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_snapmirror: Something went wrong checking for relationship... #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_snapmirror something went wrong checking for relationship: #{result.results_reason} \n."
+    # Get a list of existing snapmirror relationships
+    result = slist('location', @resource[:destination_location])
+    Puppet.debug("Puppet::Provider::Netapp_snapmirror: Checking if relationship exists... \n")
+    
+    sm_status = result.child_get('snapmirror-status')
+    if !sm_status
+      Puppet.debug("Puppet::Provider::Netapp_snapmirror: No relationship exist for #{@resource[:destination_location]}... \n")
       return false
     else 
-      Puppet.debug("Puppet::Provider::Netapp_snapmirror: Checking if relationship exists... \n")
+      # Should probably check to see if a relationship similar to what we're trying to create already exists?
+      relationships = sm_status.children_get
       
-      sm_status = result.child_get('snapmirror-status')
-      if !sm_status
-        Puppet.debug("Puppet::Provider::Netapp_snapmirror: No relationship exist for #{@resource[:destination_location]}... \n")
-        return false
-      else 
-        # Should probably check to see if a relationship similar to what we're trying to create already exists?
-        relationships = sm_status.children_get
+      # Itterate through the relationships for this source_location. 
+      relationships.each do |relationship|
+        source_location = relationship.child_get_string('source-location')
+        destination_location = relationship.child_get_string('destination-location')
         
-        # Itterate through the relationships for this source_location. 
-        relationships.each do |relationship|
-          source_location = relationship.child_get_string('source-location')
-          destination_location = relationship.child_get_string('destination-location')
-          
-          if (source_location == @resource[:source_location] && destination_location == @resource[:destination_location])
-            Puppet.debug("Puppet::Provider::Netapp_snapmirror: relationship already exists for source_location #{@resource[:source_location]} and destination_location #{@resource[:destination_location]}. ")
-            return true
-          end
+        if (source_location == @resource[:source_location] && destination_location == @resource[:destination_location])
+          Puppet.debug("Puppet::Provider::Netapp_snapmirror: relationship already exists for source_location #{@resource[:source_location]} and destination_location #{@resource[:destination_location]}. ")
+          return true
         end
       end
       
