@@ -28,7 +28,7 @@ describe Puppet::Provider::Netapp do
     it "with uninitialized device and a unresolvable url should return error" do
       # the NetApp Device expects a filer instead of a traditional url
       Facter.expects(:value).with(:url).twice.returns('filer.example.com')
-      expect { netapp_prov_obj.transport }.to raise_error ArgumentError
+      expect { netapp_prov_obj.transport }.to raise_error(ArgumentError)
     end
   end
 
@@ -66,7 +66,7 @@ describe Puppet::Provider::Netapp do
 
     it "should raise an error if api call fails" do
       provider.transport.expects(:invoke).with("qtree-create", 'qtree', 'q1').returns result_failed
-      expect { provider.qadd 'qtree', 'q1' }.to raise_error Puppet::Error, 'Executing api call qtree-create qtree q1 failed: "Authorization failed"'
+      expect { provider.qadd 'qtree', 'q1' }.to raise_error(Puppet::Error, 'Executing api call qtree-create qtree q1 failed: "Authorization failed"')
     end
   end
 end

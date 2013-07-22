@@ -42,11 +42,11 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       facts.retrieve["domain"].should == 'example.com'
     end
 
-    # TODO: operatingsystem and operatingsystemrelease seems to be
-    # broken and NetApp Release 8.1P2 7-Mode is not correctly parsed
     {
       :productname            => 'FAS3240',
       :manufacturer           => 'NetApp',
+      :operatingsystem        => 'OnTAP',
+      :operatingsystemrelease => '8.1P2',
       :hostname               => 'filer01',
       :fqdn                   => 'filer01.example.com',
       :uniqueid               => '1918293798',
