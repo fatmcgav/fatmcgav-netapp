@@ -1,6 +1,10 @@
 {
   "name": "fatmcgav-netapp",
+<<<<<<< HEAD
   "version": "0.3.0",
+=======
+  "version": "0.4.0",
+>>>>>>> Updated README.markdown with details on how to apply the patch
   "summary": "NetApp Network Device support for Puppet",
   "author": "fatmcgav",
 <<<<<<< HEAD
@@ -8,6 +12,7 @@
   "dependencies": [],
 =======
   "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nOverview:\nThe NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.\n\nThe Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode. \nHowever it may well be compatible with other OnTap versions. \n\nFeatures:\nThe following items are supported:\n* Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.\n* Creation, modification and deletion of QTrees. \n* Creation, modification and deletion of NFS Exports, including NFS Export security. \n* Creation, modification and deletion of users, groups and roles. \n* Creation, modification and deletion of Quotas. \n* Creation of snapmirror relationships. \n* Creation of snapmirror schedules. ",
+<<<<<<< HEAD
   "license": "Apache License, version 2.0",
   "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
   "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
@@ -71,6 +76,9 @@
     "spec\\unit\\puppet\\util\\network_device\\netapp\\device_spec.rb": "d07acd4f8ce15ae4d0fac49f7e63d9f8"
   },
 >>>>>>> (#37) Updated README and Modulefile. 
+=======
+  "dependencies": [],
+>>>>>>> Updated README.markdown with details on how to apply the patch
   "types": [
     {
       "properties": [
@@ -174,6 +182,7 @@
       "doc": "Manage Netapp Qtree creation, modification and deletion."
     },
     {
+<<<<<<< HEAD
       "properties": [
         {
           "name": "capabilities",
@@ -186,6 +195,8 @@
           "doc": "The name of the quota target.  Depending on the quota type this\n      can be a pathname (e.g. `/vol/vol1/qtree1`), a username, or a group"
         }
       ],
+=======
+>>>>>>> Updated README.markdown with details on how to apply the patch
       "properties": [
         {
           "name": "qtree",
@@ -220,6 +231,12 @@
           "doc": "The name of the volume the quota resides on"
         }
       ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The name of the quota target.  Depending on the quota type this\n      can be a pathname (e.g. `/vol/vol1/qtree1`), a username, or a group"
+        }
+      ],
       "providers": [
         {
           "name": "netapp_quota"
@@ -229,6 +246,12 @@
       "doc": "Manage NetApp quota entries.  Please note that NetApp identifies\n    a quota entry uniquely by the type, target, volume, and qtree. This type\n    on the other hand has to uniquely identify a quota entry only by its\n    target.  This means that you cannot manage two quota entries for the\n    same user (username \u003d quota-target) but for different trees. As a result\n    this type is best at managing tree quotas\n\n    Example:\n\n    Limit `qtree1` on `vol1` to 10G\n\n        netapp_quota { \u0027/vol/vol1/qtree1\u0027:\n          ensure    \u003d\u003e present,\n          type      \u003d\u003e tree,\n          volume    \u003d\u003e \u0027vol1\u0027,\n          disklimit \u003d\u003e \u002710G\u0027,\n        }\n\n     Limit user bob to consume 2G on qtree1. Note that you cannot\n     define multiple quotas for user bob:\n\n         netapp_quota { \u0027bob\u0027:\n           ensure    \u003d\u003e present,\n           type      \u003d\u003e user,\n           qtree     \u003d\u003e \u0027qtree1\u0027,\n           volume    \u003d\u003e \u0027vol1\u0027,\n           disklimit \u003d\u003e \u00272048M\u0027,\n         }\n\n     Make sure the following restrictions apply in your\n     environment before using this type:\n     - every quota target has to be unique\n     - quota entries must not contain any special characters that would\n       require quotation"
     },
     {
+      "properties": [
+        {
+          "name": "capabilities",
+          "doc": "List of capabilities for this role. Comma separate multiple values. "
+        }
+      ],
       "parameters": [
         {
           "name": "rolename",
@@ -359,7 +382,11 @@
         },
         {
           "name": "status",
+<<<<<<< HEAD
           "doc": "Status of user account. Valid values are: enabled, disabled and expired. Cannot be modified via API. "
+=======
+          "doc": "Status of user account. Valid values are: enabled, disabled and expired. "
+>>>>>>> Updated README.markdown with details on how to apply the patch
         }
       ],
       "providers": [
@@ -423,6 +450,7 @@
   "checksums": {
     "CHANGELOG": "45c51d119a5c2efe0d362ab4b5b56eea",
     "LICENSE": "2180042ca176b660becdef4fc29225e1",
+<<<<<<< HEAD
     "Modulefile": "2f43172ef81876384a52a9e633a7f334",
     "README.markdown": "de862b0df36431a75da76a6a2ae96e2d",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
@@ -444,11 +472,38 @@
     "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
     "lib\\puppet\\type\\netapp_user.rb": "64c317d0d820b0dc1c28d1cf222d465d",
     "lib\\puppet\\type\\netapp_volume.rb": "2f20e65542330c4f1dbcfe4e67be603c",
+=======
+    "Modulefile": "57593fb77c517fbf8dbce10257785bd2",
+    "README.markdown": "24740d3ef6b88216cc2e41a77ab265d1",
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "files\\NaServer.patch": "713549d10ed32d9572736ba84d1ed111",
+    "lib\\puppet\\provider\\netapp.rb": "899f95fab96aff07cd4ad654de239f9a",
+    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "3449e4ec2f67afada6f2049e30590bd8",
+    "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "43419fa9134b8f311073bad72f8d0533",
+    "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "3279a7f1afc7b196c0fb52c0dbd5927c",
+    "lib\\puppet\\provider\\netapp_quota\\netapp_quota.rb": "c26dcbb25d73c833b1fadef4038cfb95",
+    "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "b62a3ebf2971b684038c6dd48d6fb0bb",
+    "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "45e37ac2535758958295bc796a79fa97",
+    "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "0c78109ca9ce82710a7a9c3d44f48269",
+    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "e608882e489575e4b84bc733ffb10438",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "e9590a7c2385c2bcb2da81d6b2ae15b1",
+    "lib\\puppet\\type\\netapp_export.rb": "b7893d1b5774b28f1564c643b5698873",
+    "lib\\puppet\\type\\netapp_group.rb": "f4cddbfe2db790d1d3f58e141cd08989",
+    "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
+    "lib\\puppet\\type\\netapp_qtree.rb": "8dbe2887701253a2b2592b6e28eae714",
+    "lib\\puppet\\type\\netapp_quota.rb": "82a728ef0729f1b993ac84d7625d5474",
+    "lib\\puppet\\type\\netapp_role.rb": "631c4379d5f6e75bf6a50e216b6f6b93",
+    "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
+    "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
+    "lib\\puppet\\type\\netapp_user.rb": "e6a8c6155c00a0c01deddc7364423079",
+    "lib\\puppet\\type\\netapp_volume.rb": "cf68bae48fe9413b9f3d309ac071c5ee",
+>>>>>>> Updated README.markdown with details on how to apply the patch
     "lib\\puppet\\util\\network_device\\netapp.rb": "ddf62939ce81fa9d42430fabb7624c52",
     "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
     "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
     "lib\\puppet\\util\\network_device\\netapp\\NaErrno.rb": "f39ce8c746c6284cac04820e9a609259",
     "lib\\puppet\\util\\network_device\\netapp\\NaServer.rb": "0ede800393481ab75d216c52f88a1096",
+<<<<<<< HEAD
     "lib\\puppet\\util\\network_device\\netapp\\device.rb": "626a7b4578b9833a5662b5082599e0de",
     "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "f5775818e40620b7bc45c2367f57c048",
     "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
@@ -464,6 +519,37 @@
     "spec\\unit\\puppet\\type\\netapp_role_spec.rb": "43cd88cff9811648ca90713dc35b26b0",
     "spec\\unit\\puppet\\type\\netapp_user_spec.rb": "edbdba0df451cff002c44e03f23358ea",
     "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "43140869fa81ba1bc653f76b2ec78132"
+=======
+    "lib\\puppet\\util\\network_device\\netapp\\device.rb": "0a3c4af3fc0272213bacc87a44fbee7c",
+    "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "221ad4c1a2811a280038cf2a5202f428",
+    "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
+    "manifests\\vqe.pp": "c1534f2a218b6f4337964d7849371061",
+    "spec\\fixtures\\integration\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-list-entries.yml": "2b380d4e363c93b85544ddc8f1936b32",
+    "spec\\fixtures\\integration\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-off.yml": "d5c0ed9cc4e625e3127fbbbdac153703",
+    "spec\\fixtures\\integration\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-on.yml": "9c87b99691ed0b69ff117d69f7ced15e",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-list-entries.yml": "2b380d4e363c93b85544ddc8f1936b32",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-off.yml": "d5c0ed9cc4e625e3127fbbbdac153703",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-on.yml": "9c87b99691ed0b69ff117d69f7ced15e",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\device\\system-get-version.yml": "bc97d352909e890ddb8d203dacd0335f",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\options-get-dns.domainname.yml": "e3e355ddd42890950f0078ec39903838",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\system-get-info.yml": "e72825c087664d4185d70f6e3307b94a",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\system-get-version.yml": "bc97d352909e890ddb8d203dacd0335f",
+    "spec\\integration\\puppet\\provider\\netapp_quota\\netapp_quota_spec.rb": "99c301416a1429721b667ca6bfa15160",
+    "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "spec\\spec_helper.rb": "5be9104a4d14168dae966fb1cb8c418a",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "spec\\unit\\puppet\\provider\\netapp_quota\\netapp_quota_spec.rb": "19e7b3379108fed9c4e31443e5842a53",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "e8481b3a5d95fc740b5ead9cfec0abe0",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "24ae6b16ca0e910ea7be58466dafb572",
+    "spec\\unit\\puppet\\type\\netapp_group_spec.rb": "24bf981d695365c9326eba03ad280f09",
+    "spec\\unit\\puppet\\type\\netapp_qtree_spec.rb": "8d051a54fee7db94bd451f4a6668f5b9",
+    "spec\\unit\\puppet\\type\\netapp_quota_spec.rb": "9b42ed2f0393c55aabdc9dea6a6a0dd7",
+    "spec\\unit\\puppet\\type\\netapp_role_spec.rb": "d478575f2041cae591f3cfdc6237b9ac",
+    "spec\\unit\\puppet\\type\\netapp_user_spec.rb": "93db5745cd5667fc615ccb74c0f28928",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "e91fbd30a083553ce626d032e0c9d0a0",
+    "spec\\unit\\puppet\\util\\network_device\\netapp\\device_spec.rb": "d07acd4f8ce15ae4d0fac49f7e63d9f8",
+    "spec\\unit\\puppet\\util\\network_device\\netapp\\facts_spec.rb": "8c5c586b6469a52ed68e4a5672fa925d"
+>>>>>>> Updated README.markdown with details on how to apply the patch
   },
   "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
   "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
