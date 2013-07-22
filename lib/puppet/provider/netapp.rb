@@ -36,16 +36,5 @@ class Puppet::Provider::Netapp < Puppet::Provider
       end
     end
   end
-  
-  # Helper function to wrap around the Netapp invoke_elem function, 
-  # to check the result code and return as appropriate.
-  def netapp_invoke(request)
-    debug 'Executing invoke_elem api.'
-    result = transport.invoke_elem(request)
-    if result.result_status == 'failed'
-      raise Puppet::Error, "Executing invoke_elem api call failed: #{result.results_reason.inspect}"
-    end
-    result
-  end 
-  
+
 end
