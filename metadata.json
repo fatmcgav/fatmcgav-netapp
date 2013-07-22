@@ -358,7 +358,7 @@
     "CHANGELOG": "45c51d119a5c2efe0d362ab4b5b56eea",
     "LICENSE": "2180042ca176b660becdef4fc29225e1",
     "Modulefile": "57593fb77c517fbf8dbce10257785bd2",
-    "README.markdown": "bcfc79ba3135f1a1cb0616252870318b",
+    "README.markdown": "73f2974bebdcce9e62bd128b276d33f0",
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "files\\NaServer.patch": "713549d10ed32d9572736ba84d1ed111",
     "lib\\puppet\\provider\\netapp.rb": "899f95fab96aff07cd4ad654de239f9a",
