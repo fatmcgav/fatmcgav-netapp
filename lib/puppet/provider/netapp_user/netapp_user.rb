@@ -5,73 +5,71 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
   
   confine :feature => :posix
   defaultfor :feature => :posix
+  
+  netapp_commands :ulist   => 'useradmin-user-list'
+  netapp_commands :udel    => 'useradmin-user-delete'
+  netapp_commands :uadd    => 'useradmin-user-add'
+  netapp_commands :umodify => 'useradmin-user-modify'
 
   mk_resource_methods
   
   def self.instances
     Puppet.debug("Puppet::Provider::Netapp_user: got to self.instances.")
     
-    user_instances = Array.new
+    user_instances = []
     
     # Query Netapp for user list. 
-    result = transport.invoke("useradmin-user-list", "verbose", "true")
-    # Check result status. 
-    if(result.results_status == "failed")
-      # Check failed, therefore the account doesn't exist. 
-      Puppet.debug("Puppet::Provider::Netapp_user: useradmin-user-list failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_user: useradmin-user-list failed due to #{result.results_reason}. \n."
-      return false
-    else       
-      # Get a list of all users into array
-      user_list = result.child_get("useradmin-users")
-      users = user_list.children_get()
+    result = ulist("verbose", "true")
+     
+    # Get a list of all users into array
+    user_list = result.child_get("useradmin-users")
+    users = user_list.children_get()
+    
+    # Iterate through each 'useradmin-user-info' block. 
+    users.each do |user|
       
-      # Iterate through each 'useradmin-user-info' block. 
-      users.each do |user|
-        
-        # Pull out relevant info
-        username = user.child_get_string("name")
-        Puppet.debug("Puppet::Provider::Netapp_user.prefetch: Processing user info block for #{username}.")          
-        
-        # Create base hash
-        user_info = { :name => username,
-                      :ensure => :present }
-        
-        # Add fullname if present
-        user_info[:fullname] = user.child_get_string("full-name") unless user.child_get_string("full-name").nil?
-        
-        # Add comment if present
-        user_info[:comment] = user.child_get_string("comment") unless user.child_get_string("comment").nil?
+      # Pull out relevant info
+      username = user.child_get_string("name")
+      Puppet.debug("Puppet::Provider::Netapp_user.prefetch: Processing user info block for #{username}.")          
+      
+      # Create base hash
+      user_info = { :name => username,
+                    :ensure => :present }
+      
+      # Add fullname if present
+      user_info[:fullname] = user.child_get_string("full-name") unless user.child_get_string("full-name").nil?
+      
+      # Add comment if present
+      user_info[:comment] = user.child_get_string("comment") unless user.child_get_string("comment").nil?
 
-        # Password min and max ages
-        user_info[:passminage] = user.child_get_int("password-minimum-age") unless user.child_get_int("password-minimum-age").nil?
-        user_info[:passmaxage] = user.child_get_int("password-maximum-age") unless user.child_get_int("password-maximum-age").nil?
-          
-        # Get user status
-        user_info[:status] = user.child_get_string("status") unless user.child_get_string("status").nil?
-          
-        # Get groups
-        group_list = String.new
-        user_groups = user.child_get("useradmin-groups")
-        user_groups_arr = user_groups.children_get
-        user_groups_arr.each do |user_group|
-          group_name = user_group.child_get_string("name")
-          group_list << group_name + ","
-        end
+      # Password min and max ages
+      user_info[:passminage] = user.child_get_int("password-minimum-age") unless user.child_get_int("password-minimum-age").nil?
+      user_info[:passmaxage] = user.child_get_int("password-maximum-age") unless user.child_get_int("password-maximum-age").nil?
         
-        # Add groups to hash, removing trailing comma
-        user_info[:groups] = group_list.chomp!(",")
+      # Get user status
+      user_info[:status] = user.child_get_string("status") unless user.child_get_string("status").nil?
         
-        # Create the instance and add to users array.
-        Puppet.debug("Creating instance for '#{username}'. \n")
-        user_instances << new(user_info)
-          
+      # Get groups
+      group_list = String.new
+      user_groups = user.child_get("useradmin-groups")
+      user_groups_arr = user_groups.children_get
+      user_groups_arr.each do |user_group|
+        group_name = user_group.child_get_string("name")
+        group_list << group_name + ","
       end
       
-      # Return the final user array. 
-      Puppet.debug("Returning user array. ")
-      user_instances
-    end
+      # Add groups to hash, removing trailing comma
+      user_info[:groups] = group_list.chomp!(",")
+      
+      # Create the instance and add to users array.
+      Puppet.debug("Creating instance for '#{username}'. \n")
+      user_instances << new(user_info)
+    end   
+    
+    # Return the final user array. 
+    Puppet.debug("Returning user array. ")
+    user_instances
+
   end
   
   def self.prefetch(resources)
@@ -93,27 +91,15 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     case @property_hash[:ensure] 
     when :absent
       Puppet.debug("Puppet::Provider::Netapp_user: destroying Netapp user #{@resource[:username]}.")
+      
       # Query Netapp to remove user. 
-      result = transport.invoke("useradmin-user-delete", "user-name", @resource[:username])
-      # Check result returned. 
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} wasn't deleted due to #{destroy_result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} deletion failed due to #{destroy_result.results_reason} \n."
-        return false
-      else 
-        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} deleted successfully. \n")
-        return true
-      end
+      result = udel('user-name', @resource[:username])
+      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} deleted successfully. \n")
+      return true
       
     when :present
       Puppet.debug("Puppet::Provider::Netapp_user: modifying Netapp user account for #{@resource[:username]}.")
-      
-      # Start to construct request
-      cmd = NaElement.new("useradmin-user-modify")
-        
-      # Add useradmin-user container
-      user = NaElement.new("useradmin-user")
-      
+       
       # Construct useradmin-user-info
       user_info = NaElement.new("useradmin-user-info")
       # Add values
@@ -145,35 +131,19 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       
       # Put it all together
       user_info.child_add(user_groups)
-      user.child_add(user_info)
-      cmd.child_add(user)
       
-      Puppet.debug("Modification request xml looks like: \n #{cmd.sprintf()}")
-      # Invoke the constructed request
-      result = transport.invoke_elem(cmd)
+      # Modify the user
+      result = umodify('useradmin-user', user_info)
       
-      # Check result status
-      if(result.results_status == "failed")
-        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n")
-        raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} modification failed due to #{result.results_reason}. \n."
-        return false
-      else
-        # Passed above, therefore must of worked. 
-        Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modified successfully. \n")
-        return true
-      end
+      # Passed above, therefore must of worked. 
+      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} modified successfully. \n")
+      return true
       
     end 
   end
   
   def create
     Puppet.debug("Puppet::Provider::Netapp_user: creating Netapp user account for #{@resource[:username]}. \n")
-    # Start to construct request
-    cmd = NaElement.new("useradmin-user-add")
-    cmd.child_add_string("password", @resource[:password])
-      
-    # Add useradmin-user container
-    user = NaElement.new("useradmin-user")
     
     # Construct useradmin-user-info
     user_info = NaElement.new("useradmin-user-info")
@@ -206,23 +176,14 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     
     # Put it all together
     user_info.child_add(user_groups)
-    user.child_add(user_info)
-    cmd.child_add(user)
     
-    # Invoke the constructed request
-    result = transport.invoke_elem(cmd)
+    # Add the user
+    result = uadd('password', @resource[:password], 'useradmin-user', user_info)
     
-    # Check result status
-    if(result.results_status == "failed")
-      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n")
-      raise Puppet::Error, "Puppet::Device::Netapp_user: user #{@resource[:username]} creation failed due to #{result.results_reason}. \n."
-      return false
-    else
-      # Passed above, therefore must of worked. 
-      Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")
-      @property_hash.clear
-      return true
-    end
+    # Passed above, therefore must of worked. 
+    Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")
+    @property_hash.clear
+    return true
   end
   
   def destroy

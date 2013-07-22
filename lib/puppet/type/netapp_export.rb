@@ -3,19 +3,7 @@ Puppet::Type.newtype(:netapp_export) do
   
   apply_to_device
   
-  ensurable do
-    desc "Netapp NFS Export resource state. Valid values are: present, absent."
-    
-    defaultto(:present)
-    
-    newvalue(:present) do 
-      provider.create
-    end
-    
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
+  ensurable
   
   newparam(:name) do
     desc "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
@@ -125,5 +113,28 @@ Puppet::Type.newtype(:netapp_export) do
   validate do
     raise ArgumentError, "Readonly and Readwrite params cannot be the same." if self[:readwrite] == self[:readonly]
   end
-
+  
+  # Autorequire any matching netapp_volume resources. 
+  autorequire(:netapp_volume) do
+    requires = []
+    [self[:name], self[:path]].compact.each do |path|
+      if match = %r{/\w+/(\w+)(?:/\w+)?$}.match(path)
+        requires << match.captures[0]
+      end
+    end
+    requires
+  end
+  
+  # Autorequire any matching netapp_qtree resources. 
+  autorequire(:netapp_qtree) do
+    requires = []
+    [self[:name], self[:path]].compact.each do |path|
+      if match = %r{/\w+/\w+(?:/(\w+))?$}.match(path)
+        qtree = match.captures[0]
+        requires << qtree if qtree
+      end
+    end
+    requires
+  end
+  
 end
