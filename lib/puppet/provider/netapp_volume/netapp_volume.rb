@@ -148,10 +148,11 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
 
       # Add to array
       volume_info << vol_info
-      Puppet.debug("Processed all volumes. Returning info array.")
-      # Return volume_info array
-      volume_info
+      
     end
+    Puppet.debug("Processed all volumes. Returning info array.")
+    # Return volume_info array
+    volume_info
   end
   
   # Volume options getter
