@@ -49,8 +49,8 @@ Please note you need a NetApp NOW account in order to be able to download the SD
 Once you have downloaded and extracted the SDK, the following files need to be copied onto your Puppet Master:
 `../lib/ruby/NetApp > [module dir]/netapp/lib/puppet/util/network_device/netapp/`
 
-Once the files have been copied into place on your Puppet Master, patch needs to be applied to *NaServer.rb*.  
-The patch file is `files/NaServer.patch`.  
+Once the files have been copied into place on your Puppet Master, a patch needs to be applied to *NaServer.rb*.  
+The patch file can be found under `files/NaServer.patch`.  
 To apply, change into the `netapp` module root directory and run:
 	
 	patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
