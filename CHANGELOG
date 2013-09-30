@@ -1,3 +1,17 @@
+0.4.0 2013-09-30 Gavin Williams <fatmcgav@gmail.com>
+Feature release incorporating multiple changes. 
+Many thanks to Stefan Schulte for a large amount of the changes. 
+Noteworthy changes:
+* (#41) Added the netapp_quota type/provider. 
+* (#43) Remove the need for a special configuration file - 
+  Instead get username and password from connection string.
+* Simplify calling of netapp commands by using netapp_commands function. 
+* Loads more tests, with some new integration/unit tests. 
+* Various types will auto-require any appropriate resources that they should depend on. 
+  E.g. Netapp_export will auto-require the appropriate netapp_volume or netapp_qtree. 
+  Netapp_user will auto-require the appropriate netapp_group.
+* Some improvements to facts being returned.
+
 0.3.0 2013-04-09 Gavin Williams <fatmcgav@gmail.com>
 Feature release incorporating 2 enhancements.
 * (#18) Improved device facts
