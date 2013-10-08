@@ -7,7 +7,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
 
   attr_accessor :filer, :transport
 
-  def initialize(url)
+  def initialize(url, option = {})
     @url = URI.parse(url)
     redacted_url = @url.dup
     redacted_url.password = "****" if redacted_url.password
