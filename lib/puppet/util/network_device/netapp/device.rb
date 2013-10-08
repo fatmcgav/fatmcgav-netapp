@@ -5,7 +5,7 @@ require 'uri'
 
 class Puppet::Util::NetworkDevice::Netapp::Device
 
-  attr_accessor :filer, :transport
+  attr_accessor :url, :transport
 
   def initialize(url, option = {})
     @url = URI.parse(url)
