@@ -1,3 +1,7 @@
+0.4.1 2013-10-08 Gavin Williams <fatmcgav@gmail.com>
+Bug fix release.
+* (#48) Netapp device fails with Puppet > 3.2.0
+
 0.4.0 2013-09-30 Gavin Williams <fatmcgav@gmail.com>
 Feature release incorporating multiple changes. 
 Many thanks to Stefan Schulte for a large amount of the changes. 
