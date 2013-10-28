@@ -331,6 +331,12 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     required_state = value
     Puppet.debug("Puppet::Provider::Netapp_volume state=: Required state = #{required_state}.") 
     
+    # Check if creating new resource
+    if (required_state == @resource[:state])
+      Puppet.debug("Puppet::Provider::Netapp_volume state=: required_state matches resource state.")
+      return true
+    end
+    
     # Handle the required_state value
     if (required_state == "online")
       Puppet.debug("Onlining volume #{@resource[:name]}.")
