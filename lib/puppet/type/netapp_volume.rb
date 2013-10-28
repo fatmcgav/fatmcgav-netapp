@@ -15,6 +15,12 @@ Puppet::Type.newtype(:netapp_volume) do
     end
   end
 
+  newproperty(:state) do
+    desc "The volume state. Valid options are: online, offline, restricted."
+    newvalues(:online, :offline, :restricted)
+    defaultto "online"
+  end
+  
   newproperty(:initsize) do
     desc "The initial volume size. Valid format is 1-9(kmgt)."
     defaultto "1g"
@@ -69,9 +75,9 @@ Puppet::Type.newtype(:netapp_volume) do
   end
   
   newproperty(:autoincrement, :boolean => true) do 
-    desc "Should volume size auto-increment be enabled? Defaults to `true`."
+    desc "Should volume size auto-increment be enabled? Defaults to `:true`."
     newvalues(:true, :false)
-    defaultto true
+    defaultto :true
   end
   
   newproperty(:options, :array_matching => :all) do 
