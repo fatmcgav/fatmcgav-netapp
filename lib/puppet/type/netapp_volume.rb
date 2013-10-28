@@ -18,7 +18,7 @@ Puppet::Type.newtype(:netapp_volume) do
   newproperty(:state) do
     desc "The volume state. Valid options are: online, offline, restricted."
     newvalues(:online, :offline, :restricted)
-    defaultto "online"
+    defaultto :online
   end
   
   newproperty(:initsize) do

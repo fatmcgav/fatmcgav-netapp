@@ -331,12 +331,6 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     required_state = value
     Puppet.debug("Puppet::Provider::Netapp_volume state=: Required state = #{required_state}.") 
     
-    # Check if creating new resource
-    if (required_state == @resource[:state])
-      Puppet.debug("Puppet::Provider::Netapp_volume state=: required_state matches resource state.")
-      return true
-    end
-    
     # Handle the required_state value
     if (required_state == "online")
       Puppet.debug("Onlining volume #{@resource[:name]}.")
@@ -358,7 +352,7 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   
   # Volume create. 
   def create
-    Puppet.debug("Puppet::Provider::Netapp_volume: creating Netapp Volume #{@resource[:name]} of initial size #{@resource[:initsize]} in Aggregate #{@resource[:aggregate]} using space reserve of #{@resource[:spaceres]}.")
+    Puppet.debug("Puppet::Provider::Netapp_volume: creating Netapp Volume #{@resource[:name]} of initial size #{@resource[:initsize]} in Aggregate #{@resource[:aggregate]} using space reserve of #{@resource[:spaceres]}, with a state of #{@resource[:state]}.")
     # Call webservice to create volume. 
     result = volcreate("volume", @resource[:name], "size", @resource[:initsize], "containing-aggr-name", @resource[:aggregate], "language-code", @resource[:languagecode], "space-reserve", @resource[:spaceres])
     Puppet.debug("Puppet::Provider::Netapp_volume: Volume #{@resource[:name]} created successfully. Setting options...")
@@ -368,13 +362,17 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
       'autoincrement',
       'options',
       'snapreserve',
-      'snapschedule',
-      'state'
+      'snapschedule'
       ]
     
     # Itterate through methods. 
     methods.each do |method|
       self.send("#{method}=", resource[method.to_sym]) if resource[method.to_sym]
+    end
+    
+    # Handle volume state seperately
+    unless (@resource[:state] == :online)
+      self.send("state=", resource["state".to_sym]) if resource["state".to_sym]
     end
     
     return true
