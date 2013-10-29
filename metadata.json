@@ -307,6 +307,10 @@
     {
       "properties": [
         {
+          "name": "state",
+          "doc": "The volume state. Valid options are: online, offline, restricted."
+        },
+        {
           "name": "initsize",
           "doc": "The initial volume size. Valid format is 1-9(kmgt)."
         },
@@ -316,7 +320,7 @@
         },
         {
           "name": "autoincrement",
-          "doc": "Should volume size auto-increment be enabled? Defaults to `true`."
+          "doc": "Should volume size auto-increment be enabled? Defaults to `:true`."
         },
         {
           "name": "options",
