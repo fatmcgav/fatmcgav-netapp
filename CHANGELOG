@@ -1,8 +1,11 @@
+0.4.3 2013-10-29 Gavin Williams <fatmcgav@gmail.com>
+Enhancement release. 
+* (#54) Missed merging onto v0.4-fixes branch. 
+
 0.4.2 2013-10-29 Gavin Williams <fatmcgav@gmail.com>
 Bug fix and enhacement release. 
 * (#50) Bug with volume provider against SnapMirrored volume. 
 * (#51) Add support for setting volume state. 
-* (#54) Add facts for network interface config. 
 
 0.4.1 2013-10-08 Gavin Williams <fatmcgav@gmail.com>
 Bug fix release.

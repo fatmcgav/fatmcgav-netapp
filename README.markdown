@@ -112,6 +112,7 @@ You can also use any of the types individually, or create new defined types as r
 ## Contributors
 Thanks to the following people who have helped with this module:
  * Stefan Schulte
+ * Gerald Lechner
 
 ## TODO
 The following items are yet to be implemented:
