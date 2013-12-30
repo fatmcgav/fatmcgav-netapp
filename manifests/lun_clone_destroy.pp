@@ -4,17 +4,17 @@
 #
 
 define netapp::lun_clone_destroy (
-  $parentlunpath,
-  $parentsnap,
-  $ensure                                  = 'present',
-  $spacereservationenabled                 =  false,
-) {
+        $parentlunpath,
+        $parentsnap,
+        $ensure                                  = 'present',
+        $spacereservationenabled                 =  false,
+        ) {
 
-  netapp_lun_clone_destroy { "${name}":
-    ensure                      => $ensure,
-    parentlunpath               => $parentlunpath,
-    parentsnap                  => $parentsnap,
-    spacereservationenabled     => $spacereservationenabled,
-  }
- }
+    netapp_lun_clone_destroy { "${name}":
+        ensure                      => $ensure,
+        parentlunpath               => $parentlunpath,
+        parentsnap                  => $parentsnap,
+        spacereservationenabled     => $spacereservationenabled,
+    }
+}
 

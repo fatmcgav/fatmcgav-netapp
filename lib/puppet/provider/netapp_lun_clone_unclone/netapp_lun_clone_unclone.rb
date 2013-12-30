@@ -43,10 +43,6 @@ Puppet::Type.type(:netapp_lun_clone_unclone).provide(:netapp_lun_clone_unclone, 
 
   def get_destroy_command
     arguments = ["path", @resource[:name]]
-     if @resource[:force] == :true
-      arguments +=["force", @resource[:force] ]
-     end
-
     return arguments
   end
 
