@@ -19,7 +19,7 @@ class Puppet::Util::NetworkDevice::Netapp::Device
     raise ArgumentError, "no password specified" unless @url.password
 
     @transport ||= NaServer.new(@url.host, 1, 13)
-    @transport.set_admin_user(@url.user, @url.password)
+    @transport.set_admin_user(URI.decode(@url.user), URI.decode(@url.password))
     @transport.set_transport_type(@url.scheme.upcase)
     @transport.set_port(@url.port)
     if match = %r{/([^/]+)}.match(@url.path)
