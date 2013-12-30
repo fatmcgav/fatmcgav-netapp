@@ -1,13 +1,13 @@
 require 'puppet/provider/netapp'
 
-Puppet::Type.type(:netapp_lun_clone_destroy).provide(:netapp_lun_clone_destroy, :parent => Puppet::Provider::Netapp) do
-  @doc = "Manage Netapp Lun clone and deletion."
+Puppet::Type.type(:netapp_lun_create_destroy).provide(:netapp_lun_create_destroy, :parent => Puppet::Provider::Netapp) do
+  @doc = "Manage Netapp Lun creation, modification and deletion."
 
   confine :feature => :posix
   defaultfor :feature => :posix
 
-  netapp_commands :luncreateclone      => 'lun-create-clone'
-  netapp_commands :lundestroy          => 'lun-destroy'
+  netapp_commands :luncreate      => 'lun-create-by-size'
+  netapp_commands :lundestroy     => 'lun-destroy'
   netapp_commands :lunlist        => 'lun-list-info'
 
   mk_resource_methods
@@ -31,9 +31,18 @@ Puppet::Type.type(:netapp_lun_clone_destroy).provide(:netapp_lun_clone_destroy, 
   end
 
   def get_create_command
-    arguments = ["parent-lun-path", @resource[:parentlunpath], "path", @resource[:name], "parent-snap", @resource[:parentsnap]]
-    if @resource[:spacereservationenabled] == :true
-      arguments +=["space-reservation-enabled", @resource[:spacereservationenabled] ]
+    arguments = ["path", @resource[:name], "size", @resource[:size_bytes]]
+
+    if @resource[:space_res_enabled] == :true
+      arguments +=["space-reservation-enabled", @resource[:space_res_enabled]]
+    end
+
+    if ((@resource[:prefix_size_bytes]!= nil) && (@resource[:prefix_size_bytes].length > 0))
+      arguments +=["prefix-size", @resource[:prefix_size_bytes]]
+    end
+
+    if ((@resource[:ostype]!= nil) && (@resource[:ostype].length > 0))
+      arguments +=["ostype", @resource[:ostype]]
     end
 
     return arguments
@@ -41,20 +50,25 @@ Puppet::Type.type(:netapp_lun_clone_destroy).provide(:netapp_lun_clone_destroy, 
 
   def get_destroy_command
     arguments = ["path", @resource[:name]]
+    if @resource[:force] == :true
+      arguments +=["force", @resource[:force] ]
+    end
+
     return arguments
   end
 
   def create
     Puppet.debug("Inside create method.")
-    Puppet.info("Creating LUN '#{@resource[:name]}' from parent LUN '#{@resource[:parentlunpath]}'")
+    Puppet.info("Creating LUN '#{@resource[:name]}'")
     lun_exists = get_lun_existence_status
     if  "#{lun_exists}" == "false"
-      luncreateclone(*get_create_command)
+      exitvalue = luncreate(*get_create_command)
+      Puppet.debug("Current LUN size after executing create operation - #{exitvalue.child_get_int("actual-size")}")
       lun_exists = get_lun_existence_status
       if  "#{lun_exists}" == "true"
         Puppet.info("LUN '#{@resource[:name]}' created successfully.")
       else
-        raise Puppet::Error, "Failed to clone the LUN '@resource[:name]'"
+        raise Puppet::Error, "Failed to create the LUN '@resource[:name]'"
       end
     else
       Puppet.info("LUN '#{@resource[:name]}' already exists.")
@@ -84,12 +98,14 @@ Puppet::Type.type(:netapp_lun_clone_destroy).provide(:netapp_lun_clone_destroy, 
     Puppet.debug("Inside exists method.")
     lun_exists = get_lun_existence_status
     if  "#{lun_exists}" == "false"
-      Puppet.debug("Lun existence status before executing clone/destroy operation - #{lun_exists}")
+      Puppet.debug("Lun existence status before executing any create/destroy operation - #{lun_exists}")
       false
     else
-      Puppet.debug("Lun existence status before executing clone/destroy operation - #{lun_exists}")
+      Puppet.debug("Lun existence status before executing any create/destroy operation - #{lun_exists}")
       true
     end
+
   end
+
 end
 
