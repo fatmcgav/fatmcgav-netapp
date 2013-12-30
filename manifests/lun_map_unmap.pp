@@ -7,7 +7,7 @@ define netapp::lun_map_unmap (
         $initiatorgroup,
         $lunid                = '',
         $ensure        	= 'present',
-        $force                =  true, 
+        $force                =  false, 
         ) {
 
     netapp_lun_map_unmap { "${name}":

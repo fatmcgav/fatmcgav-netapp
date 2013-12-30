@@ -7,7 +7,7 @@ define netapp::lun_clone_destroy (
         $parentlunpath,
         $parentsnap,
         $ensure                                  = 'present',
-        $spacereservationenabled                 =  false,
+        $spacereservationenabled                 =  true,
         ) {
 
     netapp_lun_clone_destroy { "${name}":
