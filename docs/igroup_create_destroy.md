@@ -30,7 +30,7 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 # Summary of parameters.
 # -------------------------------------------------------------------------
 
-    name: (Required) This parameter defines the Path of the LUN to be created.
+    name: (Required) This parameter defines the name of the iGroup to be created.
 
     ensure: (Required) This parameter is required to call the create or destroy method.
     Possible values: present/absent
