@@ -13,6 +13,7 @@ Puppet::Type.type(:netapp_lun_online_offline).provide(:netapp_lun_online_offline
   def get_lun_status
     lun_status = 'offline'
     Puppet.debug("Fetching Lun information")
+    begin
     result = lunlist("path", @resource[:name])
     Puppet.debug(" Lun informations - #{result}")
     luns = result.child_get("luns")
@@ -25,6 +26,8 @@ Puppet::Type.type(:netapp_lun_online_offline).provide(:netapp_lun_online_offline
       if ((lun_state != nil) && (lun_state == "true"))
         lun_status = 'online'
       end
+    end
+    rescue
     end
     return lun_status
   end
@@ -80,9 +83,11 @@ Puppet::Type.type(:netapp_lun_online_offline).provide(:netapp_lun_online_offline
     lun_status = get_lun_status
     if  "#{lun_status}" == "offline"
       Puppet.debug("Lun status before executing any online/offline operation - #{lun_status}")
+      Puppet.info("LUN '#{@resource[:name]}' is already in offline state")
       false
     else
       Puppet.debug("Lun status before executing any online/offline operation - #{lun_status}")
+      Puppet.info("LUN '#{@resource[:name]}' is already in online state")
       true
     end
   end

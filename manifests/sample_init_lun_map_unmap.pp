@@ -16,7 +16,6 @@ class netapp {
     lun_map_unmap { '/vol/testVolumeFCoE/testLun':
         ensure          => 'present',
         initiatorgroup => 'abcd',
-        lunid          => '',
         force           => true
     }
 }

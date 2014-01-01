@@ -12,8 +12,9 @@ Puppet::Type.type(:netapp_lun_map_unmap).provide(:netapp_lun_map_unmap, :parent 
   def get_lun_mapped_status
     lun_mapped_status = 'false'
     Puppet.debug("Fetching Lun information")
+    begin
     result = lunmaplist("path", @resource[:name])
-    Puppet.debug(" Lun informations - #{result}")
+    Puppet.debug(" Lun informations - #{result}") 
 
     initiator_groups = result.child_get("initiator-groups")
     initiator_group_info = initiator_groups.children_get()
@@ -27,7 +28,8 @@ Puppet::Type.type(:netapp_lun_map_unmap).provide(:netapp_lun_map_unmap, :parent 
         lun_mapped_status = 'true'
       end
     end
-
+    rescue
+    end
     return lun_mapped_status
 
   end
@@ -93,9 +95,11 @@ Puppet::Type.type(:netapp_lun_map_unmap).provide(:netapp_lun_map_unmap, :parent 
     lun_mapped_status = get_lun_mapped_status
     if  "#{lun_mapped_status}" == "false"
       Puppet.debug("Lun mapping status before executing any map/unmap operation - #{lun_mapped_status}")
+      Puppet.info("LUN '#{@resource[:name]}' not mapped to iGroup '#{@resource[:initiatorgroup]}'")
       false
     else
       Puppet.debug("Lun mapping status before executing any map/unmap operation - #{lun_mapped_status}")
+      Puppet.info("LUN '#{@resource[:name]}' already mapped to iGroup '#{@resource[:initiatorgroup]}'")
       true
     end
 

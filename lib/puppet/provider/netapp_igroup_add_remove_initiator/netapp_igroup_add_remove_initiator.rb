@@ -102,9 +102,11 @@ Puppet::Type.type(:netapp_igroup_add_remove_initiator).provide(:netapp_igroup_ad
     igroup_initiator_status = get_igroup_initiator_status
     if  "#{igroup_initiator_status}" == "false"
       Puppet.debug("iGroup initiator status before executing any add/remove operation - #{igroup_initiator_status}")
+      Puppet.info("Initiator '#{@resource[:initiator]}' does not exists in iGroup '#{@resource[:name]}'")
       false
     else
       Puppet.debug("iGroup initiator status before executing any add/remove operation - #{igroup_initiator_status}")
+      Puppet.info("Initiator '#{@resource[:initiator]}' already exists in iGroup '#{@resource[:name]}'")
       true
     end
   end

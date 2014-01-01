@@ -86,12 +86,13 @@ Puppet::Type.type(:netapp_igroup_create_destroy).provide(:netapp_igroup_create_d
     igroup_status = get_igroup_status
     if  "#{igroup_status}" == "false"
       Puppet.debug("iGroup existence status before executing any create/destroy operation - #{igroup_status}")
+      Puppet.info("iGroup '#{@resource[:name]}' does not exists")
       false
     else
       Puppet.debug("iGroup existence status before executing any create/destroy operation - #{igroup_status}")
+      Puppet.info("iGroup '#{@resource[:name]}' already exists")
       true
     end
-
   end
 
 end

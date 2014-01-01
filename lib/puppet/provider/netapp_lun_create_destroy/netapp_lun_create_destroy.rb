@@ -94,18 +94,20 @@ Puppet::Type.type(:netapp_lun_create_destroy).provide(:netapp_lun_create_destroy
     end
   end
 
-  def exists?
+ def exists?
     Puppet.debug("Inside exists method.")
     lun_exists = get_lun_existence_status
     if  "#{lun_exists}" == "false"
       Puppet.debug("Lun existence status before executing any create/destroy operation - #{lun_exists}")
+      Puppet.info("LUN '#{@resource[:name]}' does not exists")
       false
     else
       Puppet.debug("Lun existence status before executing any create/destroy operation - #{lun_exists}")
+      Puppet.info("LUN '#{@resource[:name]}' already exists")
       true
     end
-
   end
+  
 
 end
 

@@ -39,9 +39,6 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
     
     initiatorgroup:(Required) This parameter defines the initiator group to map to the given LUN.	     
     
-    lunid:(optional) If the lun-id is not specified, the smallest number that can be used for the various initiators
-                     in the group is automatically picked. Value can range between [0..4095]
-    
     force:(Optional) Forcibly map the lun, disabling mapping conflict checks with the high-availability partner.
                      If not specified all conflict checks are performed. In Data ONTAP Cluster-Mode, this field is
                      accepted for backwards compatibilty and is ignored.
@@ -54,7 +51,6 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 
 define netapp::lun_map_unmap (
         $initiatorgroup,
-        $lunid                = '',
         $ensure        	      = 'present',
         $force                =  true, 
         ) {
@@ -62,7 +58,6 @@ define netapp::lun_map_unmap (
     netapp_lun_map_unmap { "${name}":
         ensure            => $ensure,
         initiatorgroup    => $initiatorgroup,
-        lunid             => $lunid,
         force      	      => $force,
     }
 }
