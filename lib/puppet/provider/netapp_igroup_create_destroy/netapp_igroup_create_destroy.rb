@@ -25,9 +25,6 @@ Puppet::Type.type(:netapp_igroup_create_destroy).provide(:netapp_igroup_create_d
 
   def get_create_command
     arguments = ["initiator-group-name", @resource[:name], "initiator-group-type", @resource[:initiatorgrouptype]]
-    if ((@resource[:bindportset]!= nil) && (@resource[:bindportset].length > 0))
-      arguments +=["bind-portset", @resource[:bindportset]]
-    end
 
     if ((@resource[:ostype]!= nil) && (@resource[:ostype].length > 0))
       arguments +=["os-type", @resource[:ostype]]

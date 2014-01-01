@@ -17,5 +17,10 @@ Puppet::Type.newtype(:netapp_igroup_create_destroy) do
     desc "OS type of the initiators within the group"
   end
   
+   newparam(:force, :boolean => false) do
+    desc "Forcibly destroys the iGroup, disabling mapping conflict checks with the high-availability partner."
+    newvalues(:true, :false)
+    defaultto :false
+  end
+  
 end
-

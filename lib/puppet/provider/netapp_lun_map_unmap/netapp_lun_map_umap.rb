@@ -40,10 +40,6 @@ Puppet::Type.type(:netapp_lun_map_unmap).provide(:netapp_lun_map_unmap, :parent 
       arguments +=["force", @resource[:force]]
     end
 
-    if ((@resource[:lunid]!= nil) && (@resource[:lunid].length > 0))
-      arguments +=["lun-id", @resource[:lunid]]
-    end
-
     return arguments
   end
 

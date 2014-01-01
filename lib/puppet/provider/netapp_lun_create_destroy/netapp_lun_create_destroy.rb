@@ -37,10 +37,6 @@ Puppet::Type.type(:netapp_lun_create_destroy).provide(:netapp_lun_create_destroy
       arguments +=["space-reservation-enabled", @resource[:space_res_enabled]]
     end
 
-    if ((@resource[:prefix_size_bytes]!= nil) && (@resource[:prefix_size_bytes].length > 0))
-      arguments +=["prefix-size", @resource[:prefix_size_bytes]]
-    end
-
     if ((@resource[:ostype]!= nil) && (@resource[:ostype].length > 0))
       arguments +=["ostype", @resource[:ostype]]
     end

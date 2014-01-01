@@ -25,5 +25,9 @@ Puppet::Type.newtype(:netapp_lun_create_destroy) do
     defaultto :false
   end
 
+  newparam(:force, :boolean => false) do
+    desc "Forcibly destroys the LUN, disabling mapping conflict checks with the high-availability partner."
+    newvalues(:true, :false)
+    defaultto :false
 end
-
+end
