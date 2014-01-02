@@ -1,0 +1,4 @@
+DeleteLUN1:
+  name: '/vol/testVolume/testLun1'
+  ensure: 'absent'
+  force: true

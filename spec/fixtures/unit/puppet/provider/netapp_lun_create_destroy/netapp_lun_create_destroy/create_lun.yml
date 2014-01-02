@@ -1,0 +1,6 @@
+CreateLUN1:
+  name: 	'/vol/testVolume/testLun1'
+  ensure: 	'present'
+  size_bytes: '20000000' 
+  ostype: 		'vmware'
+  space_res_enabled: true
