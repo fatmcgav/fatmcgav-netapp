@@ -4,7 +4,7 @@
 #
 
 define netapp::lun_create_destroy (
-        $size_bytes    	     = '2000',
+        $size_bytes    	     = '',
         $ensure        	     = 'present',
         $ostype      		     = '',
         $space_res_enabled         = true, 

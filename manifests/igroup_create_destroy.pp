@@ -4,7 +4,7 @@
 #
 
 define netapp::igroup_create_destroy (
-        $initiatorgrouptype,
+        $initiatorgrouptype  = '',
         $ensure              = 'present',
         $ostype              =  '',
         ) {
