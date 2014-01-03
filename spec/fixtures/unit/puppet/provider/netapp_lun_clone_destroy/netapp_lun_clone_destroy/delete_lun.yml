@@ -1,0 +1,6 @@
+DeleteLUN1:
+  name: 	'/vol/testVolume/testLun2'
+  ensure: 	'present'
+  parentlunpath: '/vol/testVolume/testLun1' 
+  parentsnap: 	  'snap1'
+  spacereservationenabled: true
