@@ -1,7 +1,7 @@
 # NetApp network device module
 
-**Please note that the device configuration management has been changed as of v0.4.0 of this module. 
-You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
+**Please note that the device configuration management of NetApp network device module has been modified in the version 0.4.0. 
+Therefore, if you are upgrading from a version lower than 0.4.0, you need to update your device configuration file**
 
 **Table of Contents**
 
@@ -21,8 +21,8 @@ You will therefore need to update your device configuration file if upgrading fr
 ## Overview
 The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.
 
-The Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode.
-However it may well be compatible with other OnTap versions.
+The NetApp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode.
+However, it may be compatible with other OnTap versions.
 
 ## Features
 The following items are supported:
@@ -36,26 +36,26 @@ The following items are supported:
  * Creation of snapmirror schedules.
  
 ## Requirements
-Since we can not directly install a puppet agent on the NetApp filers, it can either be managed from the Puppet Master server,
-or through an intermediate proxy system running a puppet agent. The requirement for the proxy system:
+Because we can not directly install a puppet agent on the NetApp filers, the agent can be managed either from the Puppet Master server or
+through an intermediate proxy system running a puppet agent. The following are the requirements for the proxy system:
 
  * Puppet 2.7.+
  * NetApp Manageability SDK Ruby libraries
 
 ### NetApp Manageability SDK
-The NetApp Ruby libraries are contained within the NetApp Manageability SDK, currently at v5.0, which is available to download directly from [NetApp](http://support.netapp.com/NOW/cgi-bin/software?product=NetApp+Manageability+SDK&platform=All+Platforms).
-Please note you need a NetApp NOW account in order to be able to download the SDK.
+The NetApp Ruby libraries are contained within the NetApp Manageability SDK, currently in v5.0. The libraries are available for download, directly from [NetApp](http://support.netapp.com/NOW/cgi-bin/software?product=NetApp+Manageability+SDK&platform=All+Platforms).
+Please note that you need a NetApp NOW account to download the SDK.
 
-Once you have downloaded and extracted the SDK, the following files need to be copied onto your Puppet Master:
+After you download and extract the SDK, copy the following files to your Puppet Master:
 `../lib/ruby/NetApp > [module dir]/netapp/lib/puppet/util/network_device/netapp/`
 
-Once the files have been copied into place on your Puppet Master, a patch needs to be applied to *NaServer.rb*.  
-The patch file can be found under `files/NaServer.patch`.  
-To apply, change into the `netapp` module root directory and run:
+After the files are copied to a location on your Puppet Master, you need to apply a patch to *NaServer.rb*.  
+The patch files are available in the location: `files/NaServer.patch`.  
+To apply the patch, change the directory to `netapp` module root directory and run the following:
 	
 	patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
 
-This should apply the patch without any errors, as below:
+This should apply the patch without any exceptions. See below:
 
 	$ patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
 	patching file lib/puppet/util/network_device/netapp/NaServer.rb
@@ -65,11 +65,11 @@ This should apply the patch without any errors, as below:
 ## Usage
 
 ### Device Setup
-In order to configure a NetApp network device, the device *type* should be `netapp`.
-You can either configure the device within */etc/puppet/device.conf* or, preferrably, create an individual config file for each device within a subfolder.
-This is preferred as it allows you to run puppet against individual devices, rather than all devices configured...
+To configure a NetApp network device, the device *type* should be `netapp`.
+You can either configure the device within */etc/puppet/device.conf* or, preferably, create an individual config file for each device within a subfolder.
+This is preferred as it allows you to run puppet against individual devices, rather than all devices configured.
 
-In order to run puppet against a single device, you can use the following command:
+To run puppet against a single device, you can use the following command:
 
     puppet device --deviceconfig /etc/puppet/device/[device].conf
 
@@ -79,10 +79,10 @@ Example configuration `/etc/puppet/device/pfiler01.example.com.conf`:
       type netapp
       url https://root:secret@pfiler01.example.com
 
-You can also specify a virtual filer you want to operate on: Simply
-provide the connection information for your physical filer and specify
-an optional path that represents the name of your virtual filer. Example
-configuration `/etc/puppet/device/vfiler01.example.com.conf`:
+You can also specify a virtual filer that you want to operate on. To specify a virtual filter,
+provide the connection information of the physical filer and specify
+an optional path that represents the name of the virtual filer. 
+Sample configuration `/etc/puppet/device/vfiler01.example.com.conf`:
 
     [vfiler01.example.com]
       type netapp
@@ -102,9 +102,9 @@ An example of this is:
       persistent     => true
     }
 
-This will create a NetApp volume called `v_volume_name` with a qtree called `q_volume_name`.
-The volume will have an initial size of 1 Terabyte in Aggregate aggr2.
-The space reservation mode will be set to volume, and snapshot space reserve will be set to 20%.
+This creates a NetApp volume called `v_volume_name` with a qtree called `q_volume_name`.
+The volume will have an initial size of one terabyte (TB) in Aggregate aggr2.
+The space reservation mode will be set to volume, and the snapshot space reserve will be set to 20%.
 The volume will be able to auto increment, and the NFS export will be persistent.
 
 You can also use any of the types individually, or create new defined types as required.
@@ -112,14 +112,6 @@ You can also use any of the types individually, or create new defined types as r
 ## Contributors
 Thanks to the following people who have helped with this module:
  * Stefan Schulte
-
-## TODO
-The following items are yet to be implemented:
-
- * Data Fabric Manager support
- * Support adding/deleting/modifying cifs shares
- * LDAP and/or AD configuration
- * ???
 
 ## Development
 
@@ -134,33 +126,34 @@ Following additional functionalities have been added to the existing NetApp Modu
 6> iGroup Add/Remove initiators
 
 ## References
-Following functionality related readme's are kept in docs folder.
+Following functionality related readmes are stored in docs folder.
 
-1) lun_create_destroy.md: This readme file talks about following NetApp functionalities.
+1) lun_create_destroy.md: This readme file describes about the following NetApp functionalities.
    a) Creating LUN
    b) Deleting the LUN.
    
-2) lun_online_offline.md: This readme file talks about following NetApp functionalities.
+2) lun_online_offline.md: This readme file describes about the following NetApp functionalities.
    a) Bring a LUN online.
    b) Bring a LUN offline.
     
-3) lun_clone_destroy.md: This readme file describes following NetApp functionalities.
+3) lun_clone_destroy.md: This readme file describes the following NetApp functionalities.
    a) Cloning a LUN.
    b) Destroying a clones LUN.
    
-4) igroup_create_destroy.md: This readme file talks about following NetApp functionalities.
+4) igroup_create_destroy.md: This readme file describes about the following NetApp functionalities.
    a) Creating an iGroup
    b) Deleting an iGroup
    
-5) lun_map_unmap.md: This readme file talks about following NetApp functionalities.
+5) lun_map_unmap.md: This readme file describes about following the NetApp functionalities.
    a) Mapping a LUN to an iGroup
    b) UN Mapping a LUn from an iGroup.
 
-6) igroup_add_remove_initiator.md: This readme file talks about following NetApp functionalities.
+6) igroup_add_remove_initiator.md: This readme file describes about the following NetApp functionalities.
    a) Adding an initiator to a iGroup.
    b) Removing an initiator from an iGroup.
 
 ### Testing
 
 You will need to install the NetApp Manageability SDK Ruby libraries for most of the tests to work.
-How to obtain these files is detailed in the NetApp Manageability SDK section above.
+For the instruction to download the library files, see "NetApp Manageability SDK" section, earlier in this readme.
+

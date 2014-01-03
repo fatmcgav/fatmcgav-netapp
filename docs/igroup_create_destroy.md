@@ -2,7 +2,7 @@
 # Access Mechanism 
 # --------------------------------------------------------------------------
 
-The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to interact with the NetApp storage device.
+  The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to interact with the NetApp storage devices.
 
 # --------------------------------------------------------------------------
 #  Supported Functionality
@@ -18,12 +18,12 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 
   1. Create
 
-     The create method creates the iGroup as per the parameters specified in the definition. 
+     This method creates the iGroup as per the parameters specified in the definition. 
 
    
   2. Destroy
 
-     The destroy method removes the iGroup from the storage device.  
+     The method removes the iGroup from the storage device.  
 
 
 # -------------------------------------------------------------------------
@@ -32,15 +32,15 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 
     name: (Required) This parameter defines the name of the iGroup to be created.
 
-    ensure: (Required) This parameter is required to call the create or destroy method.
-    Possible values: present/absent
-    If the value of the ensure parameter is set to present, the module calls the create method.
-    If the value of the ensure parameter is set to absent, the modules calls the destroy method.
+    ensure: (Required) This parameter is required to call the 'create' or 'destroy' method.
+            The Possible values are: "present" and "absent"
+            If the 'ensure' parameter is set to "present", the module calls the 'create' method.
+            If the 'ensure' parameter is set to "absent", the modules calls the 'destroy' method.
     
-    initiatorgrouptype:(Required) Type of the initiator group. Possible values: "fcp", "iscsi", "mixed".
-                       "mixed" is available in Data ONTAP Cluster-Mode 8.1 or later only.	     
+    initiatorgrouptype:(Required) This parameter defines the type of the initiator group. The possible values are: "fcp", "iscsi", and "mixed".
+                       The "mixed" values is available only in Data ONTAP Cluster-Mode 8.1 or later.	     
 
-    ostype:(Optional) OS type of the initiators within the group. The default value if not specified is "default".
+    ostype:(Optional) This parameter defines the OS type of the initiators within the group. If not values is not specified, the default value is "default".
                      
 
 # -------------------------------------------------------------------------
@@ -66,12 +66,12 @@ define netapp::igroup_create_destroy (
 # Usage
 # --------------------------------------------------------------------------
    Refer to the examples in the manifest directory.
-   The following files capture the details of the sample init.pp and the supported files:
+   The following files contains the details of the sample init.pp and the supported files:
 
     - sample_init_lun_create_destroy.pp
     - igroup_create_destroy.pp
    
-   A user can create an init.pp file based on the above sample files, and call the "puppet device" command , for example: 
+   You can create an init.pp file based on the above sample files, and call the "puppet device" command , for example: 
    # puppet device
 
 #-------------------------------------------------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 # Access Mechanism 
 # --------------------------------------------------------------------------
 
-The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to interact with the NetApp storage device.
+  The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to interact with the NetApp storage devices.
 
 # --------------------------------------------------------------------------
 #  Supported Functionality
@@ -18,12 +18,12 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 
   1. Create
 
-     The create method adds the initiator to the iGroup. 
+     The 'Create' method adds the initiator to the iGroup. 
 
    
   2. Destroy
 
-     The destroy method removes the initiator from the iGroup.  
+     The 'Destroy' method removes the initiator from the iGroup.  
 
 
 # -------------------------------------------------------------------------
@@ -32,23 +32,24 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 
     name: (Required) This parameter defines the name of the iGroup being used.
 
-    ensure: (Required) This parameter is required to call the create or destroy method.
-                       Possible values: present/absent
-                       If the value of the ensure parameter is set to present, the module calls the create method.
-                       If the value of the ensure parameter is set to absent, the modules calls the destroy method.
+    ensure: (Required) This parameter is required to call the 'Create' or 'Destroy' method.
+                       The possible values are: "present" and "absent"
+                       If the 'ensure' parameter is set to "present", the module calls the 'Create' method.
+                       If the 'ensure' parameter is set to "absent", the modules calls the 'Destroy' method.
     
-    initiator:(Required) This parameter defines the WWPN or Alias of Initiator.	     
+    initiator:(Required) This parameter defines the WWPN or Alias of the initiator.	     
 
-    force:(Optional) This parameter if set to "true" forcibly add the initiator, disabling mapping
-                     and type conflict checks with the high-availability partner. If not specified all 
-                     conflict checks are performed.
+    force:(Optional) This parameter enables you to forcibly add the initiator.
+                     If the 'force' parameter is set to "true", it forcibly adds the initiator by disabling mapping
+                     and type conflict checks with the high-availability partner. 
+					 If not, all the conflict checks are performed.
                      
 
 # -------------------------------------------------------------------------
 # Parameter signature 
 # -------------------------------------------------------------------------
 
-#Provide transport and igroup properties
+#Provide transport and iGroup properties
 
 define netapp::igroup_add_remove_initiator (
   $initiator,
@@ -68,12 +69,12 @@ define netapp::igroup_add_remove_initiator (
 # Usage
 # --------------------------------------------------------------------------
    Refer to the examples in the manifest directory.
-   The following files capture the details of the sample init.pp and the supported files:
+   The following files contain the details of the sample init.pp and the supported files:
 
     - sample_init_igroup_add_remove_initiator.pp
     - igroup_add_remove_initiator.pp
    
-   A user can create an init.pp file based on the above sample files, and call the "puppet device" command , for example: 
+   You can create an init.pp file based on the above sample files, and call the "puppet device" command , for example: 
    # puppet device
 
 #-------------------------------------------------------------------------------------------------------------------------

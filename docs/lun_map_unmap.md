@@ -2,7 +2,7 @@
 # Access Mechanism 
 # --------------------------------------------------------------------------
 
-The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to interact with the NetApp storage device.
+  The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to interact with the NetApp storage device.
 
 # --------------------------------------------------------------------------
 #  Supported Functionality
@@ -18,30 +18,33 @@ The NetApp storage module uses the NetApp Manageability SDK Ruby libraries to in
 
   1. Create
 
-     The create method Maps the LUN with a give iGroup. 
+     This method maps the LUN with the specified iGroup. 
 
    
   2. Destroy
 
-     The destroy method Un Maps the LUn from a given iGroup.  
+     The destroy method unmaps the LUN from the specified iGroup.  
 
 
 # -------------------------------------------------------------------------
 # Summary of parameters.
 # -------------------------------------------------------------------------
 
-    name: (Required) This parameter defines the Path of the LUN to be mapped/unmapped.
+    name: (Required) This parameter defines the path of the LUN to be mapped or unmapped.
 
-    ensure: (Required) This parameter is required to call the create or destroy method.
-                       Possible values: present/absent
-                       If the value of the ensure parameter is set to present, the module calls the create method.
-                       If the value of the ensure parameter is set to absent, the modules calls the destroy method.
+    ensure: (Required) This parameter is required to call the 'create' or 'destroy' method.
+                       The possible values are: "present" and "absent"
+                       If the ensure parameter is set to "present", the module calls the 'create' method.
+                       If the ensure parameter is set to "absent", the modules calls the 'destroy' method.
     
-    initiatorgroup:(Required) This parameter defines the initiator group to map to the given LUN.	     
+    initiatorgroup:(Required) This parameter defines the initiator group to map the specified LUN.	     
     
-    force:(Optional) Forcibly map the lun, disabling mapping conflict checks with the high-availability partner.
-                     If not specified all conflict checks are performed. In Data ONTAP Cluster-Mode, this field is
-                     accepted for backwards compatibilty and is ignored.
+    lunid:(optional) If the value for 'lunid' is not specified, the smallest number that can be used for the various initiators
+                     in the group is automatically picked. The 'lunid' value must be between: 0 and 4095
+    
+    force:(Optional) This parameter enables you to forcibly map the LUN, disabling mapping conflict checks with the high-availability partner.
+                     If the value is not specified for this parameter, then all conflict checks are performed. In Data ONTAP Cluster-Mode, this field is
+                     accepted for backwards compatibility and it is ignored.
 
 # -------------------------------------------------------------------------
 # Parameter signature 
@@ -66,12 +69,12 @@ define netapp::lun_map_unmap (
 # Usage
 # --------------------------------------------------------------------------
    Refer to the examples in the manifest directory.
-   The following files capture the details of the sample init.pp and the supported files:
+   The following files contains the details of the sample init.pp and the supported files:
 
     - sample_init_lun_map_unmap.pp
     - lun_map_unmap.pp
    
-   A user can create an init.pp file based on the above sample files, and call the "puppet device" command , for example: 
+   You can create an init.pp file based on the above sample files, and call the "puppet device" command , for example: 
    # puppet device
 
 #-------------------------------------------------------------------------------------------------------------------------
