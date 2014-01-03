@@ -11,6 +11,7 @@ Puppet::Type.newtype(:netapp_igroup_create_destroy) do
 
   newparam(:initiatorgrouptype) do
     desc "Type of the initiator group" 
+    newvalues(:fcp, :mixed, :iscsi)
   end
   
   newparam(:ostype) do 
