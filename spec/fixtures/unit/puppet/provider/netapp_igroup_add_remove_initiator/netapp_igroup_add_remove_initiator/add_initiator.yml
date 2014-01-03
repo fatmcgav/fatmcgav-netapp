@@ -1,0 +1,4 @@
+AddInitiator1:
+  name: 'Test_iGroup_Test'
+  ensure: 'present'
+  initiator: '20:01:00:0e:aa:34:00:65'

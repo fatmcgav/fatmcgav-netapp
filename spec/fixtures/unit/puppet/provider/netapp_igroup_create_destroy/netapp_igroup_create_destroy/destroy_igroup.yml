@@ -1,0 +1,4 @@
+DestroyiGroup1:
+  name: 'Test_iGroup_Test'
+  ensure: 'absent'
+  initiatorgrouptype: 'fcp'

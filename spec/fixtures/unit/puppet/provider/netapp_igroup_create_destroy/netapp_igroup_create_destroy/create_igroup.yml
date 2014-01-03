@@ -1,0 +1,5 @@
+CreateiGroup1:
+  name: 'Test_iGroup_Test'
+  ensure: 'present'
+  initiatorgrouptype: 'fcp'
+  ostype: 'vmware'
