@@ -9,24 +9,23 @@ Puppet::Type.type(:netapp_lun_state).provide(:netapp_lun_state, :parent => Puppe
   netapp_commands :lunlist        => 'lun-list-info'
   netapp_commands :lunoffline     => 'lun-offline'
   netapp_commands :lunonline      => 'lun-online'
-
   def get_lun_status
     lun_status = 'offline'
     Puppet.debug("Fetching Lun information")
     begin
-    result = lunlist("path", @resource[:name])
-    Puppet.debug(" Lun informations - #{result}")
-    luns = result.child_get("luns")
-    luns_info = luns.children_get()
-    # Iterate through the luns-info blocks
-    luns_info.each do |lun|
-      # Pull out relevant info
-      lun_state = lun.child_get_string("online")
+      result = lunlist("path", @resource[:name])
+      Puppet.debug(" Lun informations - #{result}")
+      luns = result.child_get("luns")
+      luns_info = luns.children_get()
+      # Iterate through the luns-info blocks
+      luns_info.each do |lun|
+        # Pull out relevant info
+        lun_state = lun.child_get_string("online")
 
-      if ((lun_state != nil) && (lun_state == "true"))
-        lun_status = 'online'
+        if ((lun_state != nil) && (lun_state == "true"))
+          lun_status = 'online'
+        end
       end
-    end
     rescue
     end
     return lun_status
@@ -91,6 +90,6 @@ Puppet::Type.type(:netapp_lun_state).provide(:netapp_lun_state, :parent => Puppe
       true
     end
   end
-  
+
 end
 

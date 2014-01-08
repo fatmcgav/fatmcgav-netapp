@@ -13,21 +13,21 @@ Puppet::Type.type(:netapp_lun_map).provide(:netapp_lun_map, :parent => Puppet::P
     lun_mapped_status = 'false'
     Puppet.debug("Fetching Lun information")
     begin
-    result = lunmaplist("path", @resource[:name])
-    Puppet.debug(" Lun informations - #{result}") 
+      result = lunmaplist("path", @resource[:name])
+      Puppet.debug(" Lun informations - #{result}")
 
-    initiator_groups = result.child_get("initiator-groups")
-    initiator_group_info = initiator_groups.children_get()
+      initiator_groups = result.child_get("initiator-groups")
+      initiator_group_info = initiator_groups.children_get()
 
-    # Itterate through the luns-info blocks
-    initiator_group_info.each do |group|
-      # Pull out relevant info
-      group_name = group.child_get_string("initiator-group-name")
+      # Itterate through the luns-info blocks
+      initiator_group_info.each do |group|
+        # Pull out relevant info
+        group_name = group.child_get_string("initiator-group-name")
 
-      if ((group_name != nil) && (@resource[:initiatorgroup] == group_name))
-        lun_mapped_status = 'true'
+        if ((group_name != nil) && (@resource[:initiatorgroup] == group_name))
+          lun_mapped_status = 'true'
+        end
       end
-    end
     rescue
     end
     return lun_mapped_status

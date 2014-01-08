@@ -3,7 +3,6 @@
 require 'spec_helper'
 require 'yaml'
 
-
 describe Puppet::Type.type(:netapp_lun_state).provider(:netapp_lun_state) do
 
   device_conf =  YAML.load_file(my_fixture('device_conf.yml'))
@@ -15,25 +14,24 @@ describe Puppet::Type.type(:netapp_lun_state).provider(:netapp_lun_state) do
 
   let :lun_online do
     Puppet::Type.type(:netapp_lun_state).new(
-      :name     => '/vol/testVolume/testLun1',
-      :ensure   => :present,
-      :force   =>  true
+    :name     => '/vol/testVolume/testLun1',
+    :ensure   => :present,
+    :force   =>  true
     )
   end
 
   let :lun_offline do
     Puppet::Type.type(:netapp_lun_state).new(
-      :name     => '/vol/testVolume/testLun1',
-      :ensure   => :absent,
-      :force   =>  true
+    :name     => '/vol/testVolume/testLun1',
+    :ensure   => :absent,
+    :force   =>  true
     )
   end
 
- 
   let :provider do
     described_class.new( )
   end
-  
+
   describe "when asking exists?" do
     it "should return false if lun is not online" do
       lun_online.provider.should_not be_exists

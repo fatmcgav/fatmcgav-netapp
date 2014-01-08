@@ -90,7 +90,7 @@ Puppet::Type.type(:netapp_lun).provide(:netapp_lun, :parent => Puppet::Provider:
     end
   end
 
- def exists?
+  def exists?
     Puppet.debug("Inside exists method.")
     lun_exists = get_lun_existence_status
     if  "#{lun_exists}" == "false"
@@ -103,7 +103,6 @@ Puppet::Type.type(:netapp_lun).provide(:netapp_lun, :parent => Puppet::Provider:
       true
     end
   end
-  
 
 end
 

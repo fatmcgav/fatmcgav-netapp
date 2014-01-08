@@ -13,7 +13,7 @@
 # [Remember: No empty lines between comments and class definition]
 
 class netapp {
-  lun_online_offline { '/vol/testVolumeFCoE/testLun':
+  lun_state { '/vol/testVolumeFCoE/testLun':
     ensure => 'present',
     force  => true
   }

@@ -3,7 +3,6 @@
 require 'spec_helper'
 require 'yaml'
 
-
 describe Puppet::Type.type(:netapp_lun_map).provider(:netapp_lun_map) do
 
   device_conf =  YAML.load_file(my_fixture('device_conf.yml'))
@@ -15,25 +14,24 @@ describe Puppet::Type.type(:netapp_lun_map).provider(:netapp_lun_map) do
 
   let :lun_map do
     Puppet::Type.type(:netapp_lun_map).new(
-      :name     => '/vol/testVolume/testLun1',
-      :ensure   => :present,
-      :initiatorgroup   => 'TestGroupNetApp'
+    :name     => '/vol/testVolume/testLun1',
+    :ensure   => :present,
+    :initiatorgroup   => 'TestGroupNetApp'
     )
   end
 
   let :lun_unmap do
     Puppet::Type.type(:netapp_lun_map).new(
-      :name     => '/vol/testVolume/testLun1',
-      :ensure   => :present,
-      :initiatorgroup   => 'TestGroupNetApp'
+    :name     => '/vol/testVolume/testLun1',
+    :ensure   => :present,
+    :initiatorgroup   => 'TestGroupNetApp'
     )
   end
 
- 
   let :provider do
     described_class.new( )
   end
-  
+
   describe "when asking exists?" do
     it "should return false if lun is not mapped" do
       lun_map.provider.should_not be_exists

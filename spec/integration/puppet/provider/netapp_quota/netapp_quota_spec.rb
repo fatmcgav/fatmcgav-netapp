@@ -21,31 +21,31 @@ describe Puppet::Type.type(:netapp_quota).provider(:netapp_quota), '(integration
   # this resource is absent in our listing, and we'll try to create it
   let :resource_create do
     Puppet::Type.type(:netapp_quota).new(
-      :name      => '/vol/vol10/a_new_qtree',
-      :ensure    => 'present',
-      :type      => 'tree',
-      :volume    => 'vol10',
-      :disklimit => '200M'
+    :name      => '/vol/vol10/a_new_qtree',
+    :ensure    => 'present',
+    :type      => 'tree',
+    :volume    => 'vol10',
+    :disklimit => '200M'
     )
   end
 
   # this resource is present in our listing, and we'll try to change it
   let :resource_modify do
     Puppet::Type.type(:netapp_quota).new(
-      :name          => '/vol/FILER01P_vol1/some-share',
-      :ensure        => 'present',
-      :type          => 'tree',
-      :volume        => 'FILER01P_vol1',
-      :disklimit     => :absent, # current value = 5G
-      :softdisklimit => '3G'     # current value = absent
+    :name          => '/vol/FILER01P_vol1/some-share',
+    :ensure        => 'present',
+    :type          => 'tree',
+    :volume        => 'FILER01P_vol1',
+    :disklimit     => :absent, # current value = 5G
+    :softdisklimit => '3G'     # current value = absent
     )
   end
 
   # this resource is present in our listing, and we'll try to destroy it
   let :resource_destroy do
     Puppet::Type.type(:netapp_quota).new(
-      :name   => 'bob',
-      :ensure => 'absent'
+    :name   => 'bob',
+    :ensure => 'absent'
     )
   end
 

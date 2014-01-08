@@ -13,7 +13,7 @@
 # [Remember: No empty lines between comments and class definition]
 
 class netapp {
-  lun_map_unmap { '/vol/testVolumeFCoE/testLun':
+  lun_map { '/vol/testVolumeFCoE/testLun':
     ensure         => 'present',
     initiatorgroup => 'abcd',
     force          => true
