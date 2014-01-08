@@ -50,7 +50,7 @@ Puppet::Type.type(:netapp_igroup).provide(:netapp_igroup, :parent => Puppet::Pro
       igroup_status = get_igroup_status
       Puppet.debug("iGroup existence status after executing create operation - #{igroup_status}")
       if  "#{igroup_status}" == "true"
-       
+
         Puppet.info("iGroup '#{@resource[:name]}' created successfully")
       else
         raise Puppet::Error, "Failed to create the iGroup '#{@resource[:name]}'"

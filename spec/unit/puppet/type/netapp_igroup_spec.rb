@@ -9,16 +9,14 @@ describe Puppet::Type.type(:netapp_igroup) do
     :name          	=> 'Test_iGroup_Test',
     :ensure        	=> 'present',
     :initiatorgrouptype	=> 'initiatorgrouptype',
-    :ostype		=> 'ostype',
+    :ostype		=> 'ostype'
     )
   end
 
-  
   it "should have name as its keyattribute" do
     described_class.key_attributes.should == [:name]
   end
 
-  
   describe "when validating attributes" do
     [:name].each do |param|
       it "should hava a #{param} parameter" do
@@ -27,9 +25,8 @@ describe Puppet::Type.type(:netapp_igroup) do
     end
   end
 
-  
   describe "when validating values" do
-  
+
     describe "for name" do
       it "should allow a valid mapping name where ensure is present" do
         described_class.new(:name => 'Test_iGroup_Test', :ensure => 'present')[:name].should == 'Test_iGroup_Test'
@@ -53,7 +50,7 @@ describe Puppet::Type.type(:netapp_igroup) do
         expect { described_class.new(:name => 'Test_iGroup_Test', :ensure => 'foo') }.to raise_error Puppet::Error, /Invalid value/
       end
     end
-		 
-    end
-	
+
   end
+
+end

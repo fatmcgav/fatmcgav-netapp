@@ -13,10 +13,10 @@
 # [Remember: No empty lines between comments and class definition]
 
 class netapp {
-   igroup { 'abcd':
-      ensure             => 'present',
-      initiatorgrouptype => 'fcp',
-      ostype             => 'linux',
-    }
+  igroup { 'abcd':
+    ensure             => 'present',
+    initiatorgrouptype => 'fcp',
+    ostype             => 'linux',
+  }
 }
 
