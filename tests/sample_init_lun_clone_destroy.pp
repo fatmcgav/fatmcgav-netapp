@@ -13,7 +13,7 @@
 # [Remember: No empty lines between comments and class definition]
 
 class netapp {
-    lun_clone_destroy { '/vol/testVolume/testLun10':
+    lun_clone { '/vol/testVolume/testLun10':
         ensure                    => 'absent',
         parentlunpath             => '/vol/testVolume/testLun1',
         parentsnap                => 'abc',

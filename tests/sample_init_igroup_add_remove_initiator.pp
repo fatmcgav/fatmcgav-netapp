@@ -13,7 +13,7 @@
 # [Remember: No empty lines between comments and class definition]
 
 class netapp {
-   igroup_add_remove_initiator { 'abcd':
+   igroup_initiator { 'abcd':
       ensure             => 'present',
       initiator          => 'testuser',
       force              => true,

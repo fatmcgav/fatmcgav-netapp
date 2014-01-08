@@ -13,7 +13,7 @@
 # [Remember: No empty lines between comments and class definition]
 
 class netapp {
-   igroup_create_destroy { 'abcd':
+   igroup { 'abcd':
       ensure             => 'present',
       initiatorgrouptype => 'fcp',
       ostype             => 'linux',
