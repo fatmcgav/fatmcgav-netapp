@@ -6,10 +6,12 @@
 define netapp::igroup (
   $initiatorgrouptype = '', 
   $ensure = 'present', 
-  $ostype = '',) {
+  $ostype = '',
+  $force  = false,) {
   netapp_igroup { "${name}":
     ensure             => $ensure,
     initiatorgrouptype => $initiatorgrouptype,
     ostype             => $ostype,
+    force              => $force,
   }
 }

@@ -17,6 +17,7 @@ class netapp {
     ensure             => 'present',
     initiatorgrouptype => 'fcp',
     ostype             => 'linux',
+    force              =>  true,
   }
 }
 
