@@ -12,18 +12,17 @@ describe Puppet::Type.type(:netapp_lun).provider(:netapp_lun) do
 
   let :lun_create do
     Puppet::Type.type(:netapp_lun).new(
-    :name     => '/vol/testVolumeFCoE/testLun_test',
-    :ensure   => :present,
-    :size_bytes   => '20000000',
-    :ostype     => 'linux'
+    :name        => '/vol/testVolumeFCoE/testLun_test',
+    :ensure      => :present,
+    :size_bytes  => '20000000',
+    :ostype      => 'linux'
     )
   end
 
   let :lun_destroy do
     Puppet::Type.type(:netapp_lun).new(
     :name     => '/vol/testVolumeFCoE/testLun_test',
-    :ensure   => :absent,
-    :force    => true
+    :ensure   => :absent
     )
   end
 
@@ -61,7 +60,7 @@ describe Puppet::Type.type(:netapp_lun).provider(:netapp_lun) do
       #Then
       lun_create.provider.expects(:luncreate).with('path', '/vol/testVolumeFCoE/testLun_test', 'size', '20000000', 'ostype', 'linux').returns ""
       lun_create.provider.expects(:get_lun_existence_status).with().returns 'false'
-      provider.expects(:info).never
+      lun_create.provider.expects(:info).never
 
       #When
       expect {lun_create.provider.create}.to raise_error(Puppet::Error)
@@ -70,22 +69,22 @@ describe Puppet::Type.type(:netapp_lun).provider(:netapp_lun) do
     context "when destroying a lun resource" do
       it "should be able to delete a lun resource" do
         #Then
-        lun_create.provider.expects(:lundestroy).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
-        lun_create.provider.expects(:get_lun_existence_status).with().returns 'false'
-        provider.expects(:info).never
+        lun_destroy.provider.expects(:lundestroy).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
+        lun_destroy.provider.expects(:get_lun_existence_status).with().returns 'false'
+        lun_destroy.provider.expects(:err).never
 
         #When
-        lun_create.provider.destroy
+        lun_destroy.provider.destroy
       end
 
       it "should not be able to delete a lun resource" do
         #Then
-        lun_create.provider.expects(:lundestroy).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
-        lun_create.provider.expects(:get_lun_existence_status).with().returns 'true'
-        provider.expects(:err).never
+        lun_destroy.provider.expects(:lundestroy).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
+        lun_destroy.provider.expects(:get_lun_existence_status).with().returns 'true'
+        lun_destroy.provider.expects(:info).never
 
         #When
-        expect {lun_create.provider.destroy}.to raise_error(Puppet::Error)
+        expect {lun_destroy.provider.destroy}.to raise_error(Puppet::Error)
       end
 
     end
