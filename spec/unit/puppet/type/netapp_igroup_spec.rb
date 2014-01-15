@@ -6,10 +6,10 @@ describe Puppet::Type.type(:netapp_igroup) do
 
   let :resource do
     described_class.new(
-    :name          	=> 'Test_iGroup_Test',
-    :ensure        	=> 'present',
-    :initiatorgrouptype	=> 'initiatorgrouptype',
-    :ostype		=> 'ostype'
+    :name          	     => 'Test_iGroup_Test',
+    :ensure        	     => 'present',
+    :initiatorgrouptype	 => 'initiatorgrouptype',
+    :ostype		           => 'ostype'
     )
   end
 
@@ -35,6 +35,10 @@ describe Puppet::Type.type(:netapp_igroup) do
       it "should allow a valid mapping name where ensure is absent" do
         described_class.new(:name => 'Test_iGroup_Test', :ensure => 'absent')[:name].should == 'Test_iGroup_Test'
       end
+
+      it "should not allow something else" do
+        expect { described_class.new(:name => 'Test_iGroup_Test_1', :ensure => 'present') }.to raise_error Puppet::Error, /Invalid value/
+      end
     end
 
     describe "for ensure" do
@@ -48,6 +52,27 @@ describe Puppet::Type.type(:netapp_igroup) do
 
       it "should not allow something else" do
         expect { described_class.new(:name => 'Test_iGroup_Test', :ensure => 'foo') }.to raise_error Puppet::Error, /Invalid value/
+      end
+    end
+
+    describe "for initiatorgrouptype" do
+      it "should allow a valid initiatorgrouptype" do
+        described_class.new(:name => 'Test_iGroup_Test', :initiatorgrouptype => 'initiatorgrouptype')[:initiatorgrouptype].should == 'initiatorgrouptype'
+      end
+
+      it "should not allow something else" do
+        expect { described_class.new(:name => 'Test_iGroup_Test', :initiatorgrouptype => 'abc') }.to raise_error Puppet::Error, /Invalid value/
+      end
+
+    end
+
+    describe "for ostype" do
+      it "should allow a valid ostype" do
+        described_class.new(:name => 'Test_iGroup_Test', :ostype => 'ostype')[:ostype].should == 'ostype'
+      end
+
+      it "should not allow something else" do
+        expect { described_class.new(:name => 'Test_iGroup_Test', :ostype => 'abc') }.to raise_error Puppet::Error, /Invalid value/
       end
     end
 

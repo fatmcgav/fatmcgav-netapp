@@ -8,7 +8,7 @@ describe Puppet::Type.type(:netapp_igroup_initiator) do
     described_class.new(
     :name          	=> 'Test_iGroup_Test',
     :ensure        	=> 'present',
-    :initiator   	=> 'initiator'
+    :initiator   	  => 'initiator'
     )
   end
 
@@ -34,6 +34,10 @@ describe Puppet::Type.type(:netapp_igroup_initiator) do
       it "should allow a valid mapping name where ensure is absent" do
         described_class.new(:name => 'Test_iGroup_Test', :ensure => 'absent')[:name].should == 'Test_iGroup_Test'
       end
+
+      it "should not allow something else" do
+        expect { described_class.new(:name => 'Test_iGroup_Test_1', :ensure => 'present') }.to raise_error Puppet::Error, /Invalid value/
+      end
     end
 
     describe "for ensure" do
@@ -48,6 +52,17 @@ describe Puppet::Type.type(:netapp_igroup_initiator) do
       it "should not allow something else" do
         expect { described_class.new(:name => 'Test_iGroup_Test', :ensure => 'foo') }.to raise_error Puppet::Error, /Invalid value/
       end
+    end
+
+    describe "for initiator" do
+      it "should allow a valid initiator" do
+        described_class.new(:name => 'Test_iGroup_Test', :initiator => 'initiator')[:initiator].should == 'initiator'
+      end
+
+      it "should not allow something else" do
+        expect { described_class.new(:name => 'Test_iGroup_Test', :initiator => 'abc') }.to raise_error Puppet::Error, /Invalid value/
+      end
+
     end
 
   end

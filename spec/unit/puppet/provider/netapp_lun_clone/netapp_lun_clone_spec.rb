@@ -48,8 +48,8 @@ describe Puppet::Type.type(:netapp_lun_clone).provider(:netapp_lun_clone) do
   context "when cloning a lun resource" do
     it "should be able to clone a lun resource" do
       #Then
-      lun_clone.provider.expects(:luncreateclone).with('parent-lun-path', '/vol/testVolume/testLun1', 'path', '/vol/testVolumeFCoE/testLun_test', 'parent-snap','test_snap')
-      lun_clone.provider.expects(:get_lun_existence_status).with().returns 'true'
+      lun_clone.provider.expects(:luncreateclone).at_most(3).with('parent-lun-path', '/vol/testVolume/testLun1', 'path', '/vol/testVolumeFCoE/testLun_test', 'parent-snap','test_snap')
+      lun_clone.provider.expects(:get_lun_existence_status).at_most(2).with().returns('false','true')
       lun_clone.provider.expects(:err).never
 
       #When
@@ -58,8 +58,8 @@ describe Puppet::Type.type(:netapp_lun_clone).provider(:netapp_lun_clone) do
 
     it "should not be able to clone a lun resource" do
       #Then
-      lun_clone.provider.expects(:luncreateclone).with('parent-lun-path', '/vol/testVolume/testLun1', 'path', '/vol/testVolumeFCoE/testLun_test', 'parent-snap','test_snap').returns ""
-      lun_clone.provider.expects(:get_lun_existence_status).with().returns 'false'
+      lun_clone.provider.expects(:luncreateclone).at_most(3).with('parent-lun-path', '/vol/testVolume/testLun1', 'path', '/vol/testVolumeFCoE/testLun_test', 'parent-snap','test_snap').returns ""
+      lun_clone.provider.expects(:get_lun_existence_status).at_most(2).with().returns('false','false')
       lun_clone.provider.expects(:info).never
 
       #When
@@ -69,8 +69,8 @@ describe Puppet::Type.type(:netapp_lun_clone).provider(:netapp_lun_clone) do
     context "when deleting a lun resource" do
       it "should be able to delete a lun resource" do
         #Then
-        lun_delete.provider.expects(:lundestroy).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
-        lun_delete.provider.expects(:get_lun_existence_status).with().returns 'false'
+        lun_delete.provider.expects(:lundestroy).at_most(3).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
+        lun_delete.provider.expects(:get_lun_existence_status).at_most(2).with().returns('true','false')
         lun_delete.provider.expects(:err).never
 
         #When
@@ -79,8 +79,8 @@ describe Puppet::Type.type(:netapp_lun_clone).provider(:netapp_lun_clone) do
 
       it "should not be able to delete a lun resource" do
         #Then
-        lun_delete.provider.expects(:lundestroy).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
-        lun_delete.provider.expects(:get_lun_existence_status).with().returns 'true'
+        lun_delete.provider.expects(:lundestroy).at_most(3).with('path', '/vol/testVolumeFCoE/testLun_test').returns ""
+        lun_delete.provider.expects(:get_lun_existence_status).at_most(2).with().returns('true','true')
         lun_delete.provider.expects(:info).never
 
         #When
