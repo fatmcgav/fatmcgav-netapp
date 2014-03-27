@@ -24,7 +24,7 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
   end
 
   let :facts do
-    described_class.new(transport)
+    described_class.new(transport).retrieve
   end
 
   before :each do
@@ -35,11 +35,11 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
 
   describe "#retrieve" do
     it "should mixin the version from system-get-version" do
-      facts.retrieve["version"].should == "NetApp Release 8.1P2 7-Mode: Tue Jun 12 17:53:00 PDT 2012 Multistore"
+      facts["version"].should == "NetApp Release 8.1P2 7-Mode: Tue Jun 12 17:53:00 PDT 2012 Multistore"
     end
 
     it "should mixin the domainname from options-get" do
-      facts.retrieve["domain"].should == 'example.com'
+      facts["domain"].should == 'example.com'
     end
 
     {
@@ -58,7 +58,7 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       :is_clustered           => 'false',
     }.each do |fact, expected_value|
       it "should return #{expected_value} for #{fact}" do
-        facts.retrieve[fact.to_s].should == expected_value
+        facts[fact.to_s].should == expected_value
       end
     end
   end
