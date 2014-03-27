@@ -153,7 +153,7 @@ describe Puppet::Type.type(:netapp_export) do
 
     describe "for readonly and readwrite" do
       it "should not support the same value for both" do
-        expect { described_class.new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => 'all_hosts')  }.to raise_error(ArgumentError, /Readonly and Readwrite params cannot be the same./)
+        expect { described_class.new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => 'all_hosts')  }.to raise_error(Puppet::Error, /Readonly and Readwrite params cannot be the same./)
       end
     end
 
