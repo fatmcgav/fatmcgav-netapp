@@ -23,8 +23,20 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
     YAML.load_file(my_fixture('options-get-dns.domainname.yml'))
   end
 
+  let :network do
+    YAML.load_file(my_fixture('network-iface-get.yml'))
+  end
+
+  let :result_failed do
+    n = NaElement.new("results")
+    n.attr_set("status", "failed")
+    n.attr_set("reason", "No response received")
+    n.attr_set("errno", 13001)
+    n
+  end
+
   let :facts do
-    described_class.new(transport)
+    described_class.new(transport).retrieve
   end
 
   before :each do
@@ -35,11 +47,49 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
 
   describe "#retrieve" do
     it "should mixin the version from system-get-version" do
-      facts.retrieve["version"].should == "NetApp Release 8.1P2 7-Mode: Tue Jun 12 17:53:00 PDT 2012 Multistore"
+      transport.expects(:invoke).with('net-ifconfig-get').returns network
+      facts["version"].should == "NetApp Release 8.1P2 7-Mode: Tue Jun 12 17:53:00 PDT 2012 Multistore"
     end
 
     it "should mixin the domainname from options-get" do
-      facts.retrieve["domain"].should == 'example.com'
+      transport.expects(:invoke).with('net-ifconfig-get').returns network
+      facts["domain"].should == 'example.com'
+    end
+
+    it "should not gather interface facts if net-ifconfig-get is not supported" do
+      transport.expects(:invoke).with('net-ifconfig-get').returns result_failed
+      Puppet.expects(:debug).with('API call net-ifconfig-get failed. Probably not supported. Not gathering interface facts')
+      facts
+    end
+
+
+    it "should create an \"ipaddress\" fact for each interfaces if net-ifconfig-get is supported" do
+      transport.expects(:invoke).with('net-ifconfig-get').returns network
+      facts['ipaddress_e0a'].should == '192.168.150.119'
+      facts.should_not have_key 'ipaddress_e0b'
+      facts.should_not have_key 'ipaddress_e0c'
+      facts.should_not have_key 'ipaddress_e0d'
+    end
+
+    it "should create a \"netmask\" fact for each interfaces if net-ifconfig-get is supported" do
+      transport.expects(:invoke).with('net-ifconfig-get').returns network
+      facts['netmask_e0a'].should == '255.255.254.0'
+      facts.should_not have_key 'netmask_e0b'
+      facts.should_not have_key 'netmask_e0c'
+      facts.should_not have_key 'netmask_e0d'
+    end
+
+    it "should create a \"macaddress\" fact for each interface if net-ifconfig-get is supported" do
+      transport.expects(:invoke).with('net-ifconfig-get').returns network
+      facts["macaddress_e0a"].should == '00:0c:29:77:e8:78'
+      facts["macaddress_e0b"].should == '00:0c:29:77:e8:82'
+      facts["macaddress_e0c"].should == '00:0c:29:77:e8:8c'
+      facts["macaddress_e0d"].should == '00:0c:29:77:e8:96'
+    end
+
+    it "should create an \"interfaces\" fact as a comma separated list of interfaces" do
+      transport.expects(:invoke).with('net-ifconfig-get').returns network
+      facts["interfaces"].should == 'e0a,e0b,e0c,e0d'
     end
 
     {
@@ -58,7 +108,8 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       :is_clustered           => 'false',
     }.each do |fact, expected_value|
       it "should return #{expected_value} for #{fact}" do
-        facts.retrieve[fact.to_s].should == expected_value
+        transport.expects(:invoke).with('net-ifconfig-get').returns network
+        facts[fact.to_s].should == expected_value
       end
     end
   end
