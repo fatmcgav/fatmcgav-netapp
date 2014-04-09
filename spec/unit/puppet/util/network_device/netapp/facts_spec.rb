@@ -62,21 +62,22 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       facts
     end
 
-
     it "should create an \"ipaddress\" fact for each interfaces if net-ifconfig-get is supported" do
       transport.expects(:invoke).with('net-ifconfig-get').returns network
       facts['ipaddress_e0a'].should == '192.168.150.119'
-      facts.should_not have_key 'ipaddress_e0b'
-      facts.should_not have_key 'ipaddress_e0c'
-      facts.should_not have_key 'ipaddress_e0d'
+      facts.should_not have_key('ipaddress_e0b')
+      facts.should_not have_key('ipaddress_e0c')
+      facts.should_not have_key('ipaddress_e0d')
+      facts['ipaddress_e0M'].should == '10.0.32.17'
     end
 
     it "should create a \"netmask\" fact for each interfaces if net-ifconfig-get is supported" do
       transport.expects(:invoke).with('net-ifconfig-get').returns network
       facts['netmask_e0a'].should == '255.255.254.0'
-      facts.should_not have_key 'netmask_e0b'
-      facts.should_not have_key 'netmask_e0c'
-      facts.should_not have_key 'netmask_e0d'
+      facts.should_not have_key('netmask_e0b')
+      facts.should_not have_key('netmask_e0c')
+      facts.should_not have_key('netmask_e0d')
+      facts['netmask_e0M'].should == '255.255.224.0'
     end
 
     it "should create a \"macaddress\" fact for each interface if net-ifconfig-get is supported" do
@@ -85,11 +86,12 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       facts["macaddress_e0b"].should == '00:0c:29:77:e8:82'
       facts["macaddress_e0c"].should == '00:0c:29:77:e8:8c'
       facts["macaddress_e0d"].should == '00:0c:29:77:e8:96'
+      facts["macaddress_e0M"].should == '00:0c:29:77:e8:A0'
     end
 
     it "should create an \"interfaces\" fact as a comma separated list of interfaces" do
       transport.expects(:invoke).with('net-ifconfig-get').returns network
-      facts["interfaces"].should == 'e0a,e0b,e0c,e0d'
+      facts["interfaces"].should == 'e0a,e0b,e0c,e0d,e0M'
     end
 
     {
@@ -106,6 +108,9 @@ describe Puppet::Util::NetworkDevice::Netapp::Facts do
       :memorysize             => '8192 MB',
       :hardwareisa            => 'Intel(R) Xeon(R) CPU           L5410  @ 2.33GHz',
       :is_clustered           => 'false',
+      :macaddress             => '00:0c:29:77:e8:A0',
+      :ipaddress              => '10.0.32.17',
+      :netmask                => '255.255.224.0',
     }.each do |fact, expected_value|
       it "should return #{expected_value} for #{fact}" do
         transport.expects(:invoke).with('net-ifconfig-get').returns network
