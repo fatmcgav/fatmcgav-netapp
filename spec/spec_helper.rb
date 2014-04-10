@@ -17,7 +17,7 @@ begin
   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
   SimpleCov.start do
     add_filter '/spec/'
-    add_filter '/lib/puppet/util/network_device/netapp/Na*.rb'
+    add_filter '/lib/puppet/util/network_device/netapp/Na'
   end
 rescue Exception => e
   warn "Coveralls disabled"
