@@ -2,28 +2,33 @@ require 'spec_helper'
 
 describe Puppet::Type.type(:netapp_export) do
 
-  before :each do
-    described_class.stubs(:defaultprovider).returns providerclass
+  before do 
+    @export_example = {
+      :name => '/vol/volume/export',
+      :persistent => true
+    }
+    @provider = stub('provider', :class => Puppet::Type.type(:netapp_export).defaultprovider, :clear => nil)
+    Puppet::Type.type(:netapp_export).defaultprovider.stubs(:new).returns(@provider)
   end
 
-  let :providerclass do
-    described_class.provide(:fake_netapp_export_provider) { mk_resource_methods }
+  let :export_resource do 
+    @export_example
   end
 
   it "should have :name be its namevar" do
-    described_class.key_attributes.should == [:name]
+    Puppet::Type.type(:netapp_export).key_attributes.should == [:name]
   end
 
   describe "when validating attributes" do
     [:name, :provider, :persistent, :path].each do |param|
       it "should have a #{param} parameter" do
-        described_class.attrtype(param).should == :param
+        Puppet::Type.type(:netapp_export).attrtype(param).should == :param
       end
     end
 
     [:ensure, :anon, :readonly, :readwrite].each do |prop|
       it "should have a #{prop} property" do
-        described_class.attrtype(prop).should == :property
+        Puppet::Type.type(:netapp_export).attrtype(prop).should == :property
       end
     end
   end
@@ -31,129 +36,214 @@ describe Puppet::Type.type(:netapp_export) do
   describe "when validating values" do
     describe "for name" do
       it "should support a valid volume export name" do
-        described_class.new(:name => '/vol/volume', :ensure => :present)[:name].should == '/vol/volume'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :ensure => :present)[:name].should == '/vol/volume'
       end
 
       it "should support underscores" do
-        described_class.new(:name => '/vol/volume_a', :ensure => :present)[:name].should == '/vol/volume_a'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume_a', :ensure => :present)[:name].should == '/vol/volume_a'
       end
 
       it "should support a valid qtree export name" do
-        described_class.new(:name => '/vol/volume/qtree', :ensure => :present)[:name].should == '/vol/volume/qtree'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume/qtree', :ensure => :present)[:name].should == '/vol/volume/qtree'
       end
 
       it "should not support spaces" do
-        expect { described_class.new(:name => '/vol/volume a', :ensure => :present) }.to raise_error(Puppet::Error, /\/vol\/volume a is not a valid export name/)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume a', :ensure => :present) }.to raise_error(Puppet::Error, /\/vol\/volume a is not a valid export name/)
       end
 
       it "should not support an invalid volume/qtree name" do
-        expect { described_class.new(:name => '/vol/volume/qtree/a', :ensure => :present) }.to raise_error(Puppet::Error, /\/vol\/volume\/qtree\/a is not a valid export name/)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume/qtree/a', :ensure => :present) }.to raise_error(Puppet::Error, /\/vol\/volume\/qtree\/a is not a valid export name/)
       end
     end
 
     describe "for ensure" do
       it "should support present" do
-        described_class.new(:name => '/vol/volume', :ensure => 'present')[:ensure].should == :present
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :ensure => 'present')[:ensure].should == :present
       end
 
       it "should support absent" do
-        described_class.new(:name => '/vol/volume', :ensure => 'absent')[:ensure].should == :absent
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :ensure => 'absent')[:ensure].should == :absent
       end
 
       it "should not support other values" do
-        expect { described_class.new(:name => '/vol/volume', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
       end
 
       it "should not have a default value" do
-        described_class.new(:name => '/vol/volume')[:ensure].should == nil
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume')[:ensure].should == nil
       end
     end
 
     describe "for persistent" do
       it "should support true" do
-        described_class.new(:name => '/vol/volume', :persistent => 'true')[:persistent].should == :true
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :persistent => 'true')[:persistent].should == :true
       end
 
       it "should support false" do
-        described_class.new(:name => '/vol/volume', :persistent => 'false')[:persistent].should == :false
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :persistent => 'false')[:persistent].should == :false
       end
 
       it "should not support other values" do
-        expect { described_class.new(:name => '/vol/volume', :persistent => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :persistent => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
       end
 
       it "should have a default value of true" do
-        described_class.new(:name => '/vol/volume')[:persistent].should == :true
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume')[:persistent].should == :true
       end
     end
 
     describe "for path" do
       it "should support a valid volume path" do
-        described_class.new(:name => '/vol/volume', :path => '/vol/vexport')[:path].should == '/vol/vexport'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :path => '/vol/vexport')[:path].should == '/vol/vexport'
       end
 
       it "should support underscores" do
-        described_class.new(:name => '/vol/volume', :path => '/vol/vol_export')[:path].should == '/vol/vol_export'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :path => '/vol/vol_export')[:path].should == '/vol/vol_export'
       end
 
       it "should support a valid qtree path" do
-        described_class.new(:name => '/vol/volume', :path => '/vol/volume/qtreeexport')[:path].should == '/vol/volume/qtreeexport'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :path => '/vol/volume/qtreeexport')[:path].should == '/vol/volume/qtreeexport'
       end
 
       it "should not support spaces" do
-        expect { described_class.new(:name => '/vol/volume', :path => '/vol/v export') }.to raise_error(Puppet::Error, /\/vol\/v export is not a valid export filer path/)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :path => '/vol/v export') }.to raise_error(Puppet::Error, /\/vol\/v export is not a valid export filer path/)
       end
 
       it "should not support an invalid volume/qtree path" do
-        expect { described_class.new(:name => '/vol/volume', :path => '/vol/v_export/q_export/export') }.to raise_error(Puppet::Error, /\/vol\/v_export\/q_export\/export is not a valid export filer path/)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :path => '/vol/v_export/q_export/export') }.to raise_error(Puppet::Error, /\/vol\/v_export\/q_export\/export is not a valid export filer path/)
       end
     end
 
     describe "for anon" do
       it "should support a valid string value" do
-        described_class.new(:name => '/vol/volume', :anon => '0')[:anon].should == '0'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :anon => '0')[:anon].should == '0'
       end
 
       it "should not support an integer" do
-        expect { described_class.new(:name => '/vol/volume', :anon => 0) }.to raise_error(Puppet::Error, /Anon should be a string./)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :anon => 0) }.to raise_error(Puppet::Error, /Anon should be a string./)
       end
 
       it "should have a default value of '0'" do
-        described_class.new(:name => '/vol/volume')[:anon].should == '0'
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume')[:anon].should == '0'
+      end
+      
+      it "insync? should return false if is and should values dont match" do
+        export = export_resource.dup
+        is_anon = '1'
+        export[:anon] = '0'
+        Puppet::Type.type(:netapp_export).new(export).property(:anon).insync?(is_anon).should be_false
+      end
+      
+      it "insync? should return true if is and should values match" do
+        export = export_resource.dup
+        is_anon = '0'
+        export[:anon] = '0'
+        Puppet::Type.type(:netapp_export).new(export).property(:anon).insync?(is_anon).should be_true
       end
     end
 
     describe "for readonly" do
       it "should support a value of 'all_hosts'" do
-        described_class.new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => '192.168.1.1')[:readonly].should == ['all_hosts']
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => '192.168.1.1')[:readonly].should == ['all_hosts']
       end
 
       it "should support an array of hosts" do
-        described_class.new(:name => '/vol/volume', :readonly => ['192.168.1.1', '192.168.1.2'])[:readonly].should == ['192.168.1.1', '192.168.1.2']
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :readonly => ['192.168.1.1', '192.168.1.2'])[:readonly].should == ['192.168.1.1', '192.168.1.2']
       end
 
       it "should not have a default value" do
-        described_class.new(:name => '/vol/volume')[:readonly].should == nil
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume')[:readonly].should == nil
+      end
+      
+      it "insync? should return false if 'is' is not an array" do
+        export = export_resource.dup
+        is_readonly = '192.168.1.1'
+        export[:readonly] = ['192.168.1.1']
+        Puppet::Type.type(:netapp_export).new(export).property(:readonly).insync?(is_readonly).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' = 'all_hosts'" do
+        export = export_resource.dup
+        is_readonly = ['all_hosts']
+        export[:readonly] = ['all_hosts']
+        export[:readwrite] = ['192.168.1.1'] # Needs to be a different value to readonly
+        Puppet::Type.type(:netapp_export).new(export).property(:readonly).insync?(is_readonly).should be_true
+      end
+      
+      it "insync? should return false if 'is' and 'should' are different lengths" do
+        export = export_resource.dup
+        is_readonly = ['192.168.1.1', '192.168.1.2']
+        export[:readonly] = ['192.168.1.1']
+        Puppet::Type.type(:netapp_export).new(export).property(:readonly).insync?(is_readonly).should be_false
+      end
+      
+      it "insync? should return false if 'is' and 'should' have different contents" do
+        export = export_resource.dup
+        is_readonly = ['192.168.1.1', '192.168.1.2']
+        export[:readonly] = ['192.168.1.1', '192.168.1.3']
+        Puppet::Type.type(:netapp_export).new(export).property(:readonly).insync?(is_readonly).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' have the same length and contents" do
+        export = export_resource.dup
+        is_readonly = ['192.168.1.1', '192.168.1.2']
+        export[:readonly] = ['192.168.1.1', '192.168.1.2']
+        Puppet::Type.type(:netapp_export).new(export).property(:readonly).insync?(is_readonly).should be_true
       end
     end
 
     describe "for readwrite" do
       it "should support a value of 'all_hosts'" do
-        described_class.new(:name => '/vol/volume', :readwrite => 'all_hosts')[:readwrite].should == ['all_hosts']
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :readwrite => 'all_hosts')[:readwrite].should == ['all_hosts']
       end
 
       it "should support an array of hosts" do
-        described_class.new(:name => '/vol/volume', :readwrite => ['192.168.1.1', '192.168.1.2'])[:readwrite].should == ['192.168.1.1', '192.168.1.2']
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :readwrite => ['192.168.1.1', '192.168.1.2'])[:readwrite].should == ['192.168.1.1', '192.168.1.2']
       end
 
       it "should have a default value of 'all_hosts'" do
-        described_class.new(:name => '/vol/volume')[:readwrite].should == ['all_hosts']
+        Puppet::Type.type(:netapp_export).new(:name => '/vol/volume')[:readwrite].should == ['all_hosts']
+      end
+      
+      it "insync? should return false if 'is' is not an array" do
+        export = export_resource.dup
+        is_readwrite = '192.168.1.1'
+        export[:readwrite] = ['192.168.1.1']
+        Puppet::Type.type(:netapp_export).new(export).property(:readwrite).insync?(is_readwrite).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' = 'all_hosts'" do
+        export = export_resource.dup
+        is_readwrite = ['all_hosts']
+        export[:readwrite] = ['all_hosts']
+        Puppet::Type.type(:netapp_export).new(export).property(:readwrite).insync?(is_readwrite).should be_true
+      end
+      
+      it "insync? should return false if 'is' and 'should' are different lengths" do
+        export = export_resource.dup
+        is_readwrite = ['192.168.1.1', '192.168.1.2']
+        export[:readwrite] = ['192.168.1.1']
+        Puppet::Type.type(:netapp_export).new(export).property(:readwrite).insync?(is_readwrite).should be_false
+      end
+      
+      it "insync? should return false if 'is' and 'should' have different contents" do
+        export = export_resource.dup
+        is_readwrite = ['192.168.1.1', '192.168.1.2']
+        export[:readwrite] = ['192.168.1.1', '192.168.1.3']
+        Puppet::Type.type(:netapp_export).new(export).property(:readwrite).insync?(is_readwrite).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' have the same length and contents" do
+        export = export_resource.dup
+        is_readwrite = ['192.168.1.1', '192.168.1.2']
+        export[:readwrite] = ['192.168.1.1', '192.168.1.2']
+        Puppet::Type.type(:netapp_export).new(export).property(:readwrite).insync?(is_readwrite).should be_true
       end
     end
 
     describe "for readonly and readwrite" do
       it "should not support the same value for both" do
-        expect { described_class.new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => 'all_hosts')  }.to raise_error(Puppet::Error, /Readonly and Readwrite params cannot be the same./)
+        expect { Puppet::Type.type(:netapp_export).new(:name => '/vol/volume', :readonly => 'all_hosts', :readwrite => 'all_hosts')  }.to raise_error(Puppet::Error, /Readonly and Readwrite params cannot be the same./)
       end
     end
 
@@ -161,14 +251,14 @@ describe Puppet::Type.type(:netapp_export) do
 
   describe "autorequiring" do
     let :export_vol do
-      described_class.new(
+      Puppet::Type.type(:netapp_export).new(
         :name   => '/vol/volume',
         :ensure => :present
       )
     end
 
     let :export_vol_path do
-      described_class.new(
+      Puppet::Type.type(:netapp_export).new(
         :name   => '/vol/volume',
         :ensure => :present,
         :path   => '/vol/othervolume'
@@ -176,14 +266,14 @@ describe Puppet::Type.type(:netapp_export) do
     end
 
     let :export_qtree do
-      described_class.new(
+      Puppet::Type.type(:netapp_export).new(
         :name   => '/vol/volume/qtree',
         :ensure => :present
       )
     end
 
     let :export_qtree_path do
-      described_class.new(
+      Puppet::Type.type(:netapp_export).new(
         :name   => '/vol/volume/qtree',
         :ensure => :present,
         :path   => '/vol/volume/otherqtree'
