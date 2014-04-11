@@ -2,28 +2,34 @@ require 'spec_helper'
  
 describe Puppet::Type.type(:netapp_group) do
 
-  before :each do
-    described_class.stubs(:defaultprovider).returns providerclass
+  before do 
+    @group_example = {
+      :groupname => 'group',  
+      :comment   => 'Group comment', 
+      :roles     => 'roles'
+    }
+    @provider = stub('provider', :class => Puppet::Type.type(:netapp_group).defaultprovider, :clear => nil)
+    Puppet::Type.type(:netapp_group).defaultprovider.stubs(:new).returns(@provider)
   end
 
-  let :providerclass do
-    described_class.provide(:fake_netapp_group_provider) { mk_resource_methods }
+  let :group_resource do 
+    @group_example
   end
 
   it "should have :groupname be its namevar" do
-    described_class.key_attributes.should == [:groupname]
+    Puppet::Type.type(:netapp_group).key_attributes.should == [:groupname]
   end
 
   describe "when validating attributes" do
     [:groupname, :provider, :comment].each do |param|
       it "should have a #{param} parameter" do
-        described_class.attrtype(param).should == :param
+        Puppet::Type.type(:netapp_group).attrtype(param).should == :param
       end
     end
 
     [:ensure, :roles].each do |prop|
       it "should have a #{prop} property" do
-        described_class.attrtype(prop).should == :property
+        Puppet::Type.type(:netapp_group).attrtype(prop).should == :property
       end
     end
   end
@@ -31,61 +37,75 @@ describe Puppet::Type.type(:netapp_group) do
   describe "when validating values" do
     describe "for groupname" do
       it "should support an alphanumerical name" do
-        described_class.new(:groupname => 'group1', :ensure => :present)[:groupname].should == 'group1'
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :ensure => :present)[:groupname].should == 'group1'
       end
 
       it "should support underscores" do
-        described_class.new(:groupname => 'group_1', :ensure => :present)[:groupname].should == 'group_1'
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group_1', :ensure => :present)[:groupname].should == 'group_1'
       end
 
       it "should support hyphens" do
-        described_class.new(:groupname => 'group-1', :ensure => :present)[:groupname].should == 'group-1'
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group-1', :ensure => :present)[:groupname].should == 'group-1'
       end
 
       it "should not support spaces" do
-        expect { described_class.new(:groupname => 'group 1', :ensure => :present) }.to raise_error(Puppet::Error, /group 1 is not a valid group name/)
+        expect { Puppet::Type.type(:netapp_group).new(:groupname => 'group 1', :ensure => :present) }.to raise_error(Puppet::Error, /group 1 is not a valid group name/)
       end
     end
 
     describe "for ensure" do
       it "should support present" do
-        described_class.new(:groupname => 'group1', :ensure => 'present')[:ensure].should == :present
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :ensure => 'present')[:ensure].should == :present
       end
 
       it "should support absent" do
-        described_class.new(:groupname => 'group1', :ensure => 'absent')[:ensure].should == :absent
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :ensure => 'absent')[:ensure].should == :absent
       end
 
       it "should not support other values" do
-        expect { described_class.new(:groupname => 'group1', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+        expect { Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
       end
       
       it "should not have a default value" do
-        described_class.new(:groupname => 'group1')[:ensure].should == nil
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1')[:ensure].should == nil
       end
     end
     
     describe "for comment" do
       it "should support an alphanumerical comment, with hyphens and fullstop" do
-        described_class.new(:groupname => 'group1', :comment => 'This is test group-1.', :ensure => :present)[:comment].should == 'This is test group-1.'
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :comment => 'This is test group-1.', :ensure => :present)[:comment].should == 'This is test group-1.'
       end
 
       it "should not support special characters" do
-        expect { described_class.new(:groupname => 'group1', :comment => 'This is test group !', :ensure => :present) }.to raise_error(Puppet::Error, /This is test group ! is not a valid comment/)
+        expect { Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :comment => 'This is test group !', :ensure => :present) }.to raise_error(Puppet::Error, /This is test group ! is not a valid comment/)
       end
     end
     
     describe "for roles" do
       it "should support a single role" do
-        described_class.new(:groupname => 'group1', :roles => 'role1')[:roles].should == 'role1'
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :roles => 'role1')[:roles].should == 'role1'
       end
       
       it "should support a comma-seperated list of role names" do
-        described_class.new(:groupname => 'group1', :roles => 'role1,role2')[:roles].should == 'role1,role2'
+        Puppet::Type.type(:netapp_group).new(:groupname => 'group1', :roles => 'role1,role2')[:roles].should == 'role1,role2'
       end
       
       it "should not support special characters" do
-        expect { described_class.new(:groupname => 'user1', :roles => 'role!') }.to raise_error(Puppet::Error, /role! is not a valid role list/)
+        expect { Puppet::Type.type(:netapp_group).new(:groupname => 'user1', :roles => 'role!') }.to raise_error(Puppet::Error, /role! is not a valid role list/)
+      end
+      
+      it "insync? should return false if is and should values dont match" do
+        group = group_resource.dup
+        is_roles = 'role1'
+        group[:roles] = 'role1,role2'
+        Puppet::Type.type(:netapp_group).new(group).property(:roles).insync?(is_roles).should be_false
+      end
+      
+      it "insync? should return true if is and should values match" do
+        group = group_resource.dup
+        is_roles = 'role1,role2'
+        group[:roles] = 'role1,role2'
+        Puppet::Type.type(:netapp_group).new(group).property(:roles).insync?(is_roles).should be_true
       end
     end
     
@@ -93,7 +113,7 @@ describe Puppet::Type.type(:netapp_group) do
   
   describe "autorequiring" do
     let :group do
-      described_class.new(
+      Puppet::Type.type(:netapp_group).new(
         :groupname => 'group1',
         :ensure    => :present,
         :roles     => 'puppetrole'
