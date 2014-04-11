@@ -198,16 +198,16 @@ describe Puppet::Type.type(:netapp_user) do
       
       it "insync? should return false if is and should values dont match" do
         user = user_resource.dup
-        current_groups = 'group1'
+        is_groups = 'group1'
         user[:groups] = 'group1,group2'
-        Puppet::Type.type(:netapp_user).new(user).property(:groups).insync?(current_groups).should be_false
+        Puppet::Type.type(:netapp_user).new(user).property(:groups).insync?(is_groups).should be_false
       end
       
       it "insync? should return true if is and should values match" do
         user = user_resource.dup
-        current_groups = 'group1,group2'
+        is_groups = 'group1,group2'
         user[:groups] = 'group1,group2'
-        Puppet::Type.type(:netapp_user).new(user).property(:groups).insync?(current_groups).should be_true
+        Puppet::Type.type(:netapp_user).new(user).property(:groups).insync?(is_groups).should be_true
       end
     end
 
