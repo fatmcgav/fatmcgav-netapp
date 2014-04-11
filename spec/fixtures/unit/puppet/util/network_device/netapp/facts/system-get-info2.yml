@@ -1,0 +1,196 @@
+--- !ruby/object:NaElement 
+attrkeys: 
+- status
+attrvals: 
+- passed
+children: 
+- !ruby/object:NaElement 
+  attrkeys: []
+
+  attrvals: []
+
+  children: 
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: FILER02.EXAMPLE.COM
+    name: system-name
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "1918293798"
+    name: system-id
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: FAS3240
+    name: system-model
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: FAS3240
+    name: system-machine-type
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: NetApp
+    name: vendor-id
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "123289979812"
+    name: system-serial-number
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "1008092132"
+    name: partner-system-id
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: FILER01
+    name: partner-system-name
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: F4
+    name: system-revision
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "2333"
+    name: board-speed
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: System Board XVI
+    name: board-type
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: 111-00542
+    name: cpu-part-number
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: F4
+    name: cpu-revision
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "3004123912"
+    name: cpu-serial-number
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: 5.1.1
+    name: cpu-firmware-release
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "4"
+    name: number-of-processors
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "8192"
+    name: memory-size
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: Intel(R) Xeon(R) CPU           L5410  @ 2.33GHz
+    name: cpu-processor-type
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "2571"
+    name: cpu-microcode-version
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: []
+
+    content: "false"
+    name: supports-raid-array
+  content: ""
+  name: system-info
+content: ""
+name: results
