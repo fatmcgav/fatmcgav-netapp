@@ -79,7 +79,7 @@ Puppet::Type.type(:netapp_qtree).provide(:netapp_qtree, :parent => Puppet::Provi
       Puppet.debug("Puppet::Provider::Netapp_qtree: destroying Netapp Qtree #{@resource[:name]} against volume #{@resource[:volume]}")
       
       # Query Netapp to remove qtree against volume. 
-      result = qdelete 'qtree', "/vol/#{@resource[:volume]}/#{@resource[:name]}"
+      result = qdel 'qtree', "/vol/#{@resource[:volume]}/#{@resource[:name]}"
       
       Puppet.debug("Puppet::Provider::Netapp_qtree: qtree #{@resource[:name]} destroyed successfully. \n")
       
