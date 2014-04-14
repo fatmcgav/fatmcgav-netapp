@@ -47,6 +47,13 @@ describe Puppet::Type.type(:netapp_qtree).provider(:netapp_qtree) do
     end
   end
   
+  describe "#prefetch" do
+    it "exists" do
+      described_class.expects(:qlist).returns YAML.load_file(my_fixture('qtree-list.yml'))
+      described_class.prefetch({})
+    end
+  end
+  
   describe "when asking exists?" do
     it "should return true if resource is present" do
       volume_qtree.provider.set(:ensure => :present)
