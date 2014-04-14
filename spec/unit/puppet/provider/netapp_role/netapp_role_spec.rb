@@ -80,7 +80,7 @@ describe Puppet::Type.type(:netapp_role).provider(:netapp_role) do
     it "should be able to destroy a role" do
       # if we destroy a provider, we must have been present before so we must have values in @property_hash
       role.provider.set(:rolename => 'role')
-      role.provider.expects(:rdelete).with('role-name', "role")
+      role.provider.expects(:rdel).with('role-name', 'role')
       role.provider.destroy
       role.provider.flush
     end
