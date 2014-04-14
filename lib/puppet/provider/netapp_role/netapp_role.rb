@@ -31,12 +31,13 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
       # Pull out relevant info
       rolename = role.child_get_string("name")
       Puppet.debug("Puppet::Provider::Netapp_role.prefetch: Processing role info block for #{rolename}.")
-      comment  = role.child_get_string("comment")
       
       # Create base hash
       role_info = { :rolename => rolename,
-                    :ensure   => :present,
-                    :comment  => comment }
+                    :ensure   => :present }
+      
+      # Add comment if present
+      role_info[:comment] = role.child_get_string("comment") unless role.child_get_string("comment").nil?
       
       # Get capabilites
       capability_list = String.new

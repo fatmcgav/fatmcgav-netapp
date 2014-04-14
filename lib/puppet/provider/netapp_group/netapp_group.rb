@@ -30,14 +30,15 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       
       # Pull out relevant info
       groupname = group.child_get_string("name")
-      Puppet.debug("Puppet::Provider::Netapp_group.prefetch: Processing group info block for #{groupname}.")
-      comment = group.child_get_string("comment")          
+      Puppet.debug("Puppet::Provider::Netapp_group.prefetch: Processing group info block for #{groupname}.")         
       
       # Create base hash
       group_info = { :groupname => groupname,
-                     :ensure    => :present,
-                     :comment   => comment }
+                     :ensure    => :present }
       
+      # Add comment if present
+      group_info[:comment] = group.child_get_string("comment") unless group.child_get_string("comment").nil?
+
       # Get roles
       role_list = String.new
       group_roles = group.child_get("useradmin-roles")
