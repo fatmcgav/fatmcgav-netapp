@@ -1,0 +1,86 @@
+--- !ruby/object:NaElement
+name: results
+content: ""
+children:
+- !ruby/object:NaElement
+  name: useradmin-roles
+  content: ""
+  children:
+  - !ruby/object:NaElement
+    name: useradmin-role-info
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: name
+      content: role
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: comment
+      content: "test role"
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: allowed-capabilities
+      content: ""
+      children:
+      - !ruby/object:NaElement
+        name: useradmin-capability-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: name
+          content: login-*
+          children: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      - !ruby/object:NaElement
+        name: useradmin-capability-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: name
+          content: cli-*
+          children: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      - !ruby/object:NaElement
+        name: useradmin-capability-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: name
+          content: api-*
+          children: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      - !ruby/object:NaElement
+        name: useradmin-capability-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: name
+          content: security-*
+          children: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  attrkeys: []
+  attrvals: []
+attrkeys:
+- status
+attrvals:
+- passed
