@@ -12,8 +12,8 @@ describe Puppet::Type.type(:netapp_user) do
       #:passmaxage => '',
       :groups   => 'group'
     }
-    @provider = stub('provider', :class => Puppet::Type.type(:netapp_user).defaultprovider, :clear => nil)
-    Puppet::Type.type(:netapp_user).defaultprovider.stubs(:new).returns(@provider)
+    @provider = stub('provider', :class => described_class.defaultprovider, :clear => nil)
+    described_class.defaultprovider.stubs(:new).returns(@provider)
   end
 
   let :user_resource do 
@@ -21,19 +21,19 @@ describe Puppet::Type.type(:netapp_user) do
   end
 
   it "should have :username be its namevar" do
-    Puppet::Type.type(:netapp_user).key_attributes.should == [:username]
+    described_class.key_attributes.should == [:username]
   end
 
   describe "when validating attributes" do
     [:username, :provider, :password, :status].each do |param|
       it "should have a #{param} parameter" do
-        Puppet::Type.type(:netapp_user).attrtype(param).should == :param
+        described_class.attrtype(param).should == :param
       end
     end
 
     [:ensure, :fullname, :comment, :passminage, :passmaxage, :groups].each do |prop|
       it "should have a #{prop} property" do
-        Puppet::Type.type(:netapp_user).attrtype(prop).should == :property
+        described_class.attrtype(prop).should == :property
       end
     end
   end
@@ -41,173 +41,173 @@ describe Puppet::Type.type(:netapp_user) do
   describe "when validating values" do
     describe "for username" do
       it "should support an alphanumerical name" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :ensure => :present)[:username].should == 'user1'
+        described_class.new(:username => 'user1', :ensure => :present)[:username].should == 'user1'
       end
 
       it "should support underscores" do
-        Puppet::Type.type(:netapp_user).new(:username => 'foo_bar', :ensure => :present)[:username].should == 'foo_bar'
+        described_class.new(:username => 'foo_bar', :ensure => :present)[:username].should == 'foo_bar'
       end
 
       it "should support hyphens" do
-        Puppet::Type.type(:netapp_user).new(:username => 'abc-def', :ensure => :present)[:username].should == 'abc-def'
+        described_class.new(:username => 'abc-def', :ensure => :present)[:username].should == 'abc-def'
       end
 
       it "should not support spaces" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user 1', :ensure => :present) }.to raise_error(Puppet::Error, /user 1 is not a valid username/)
+        expect { described_class.new(:username => 'user 1', :ensure => :present) }.to raise_error(Puppet::Error, /user 1 is not a valid username/)
       end
     end
 
     describe "for ensure" do
       it "should support present" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :ensure => 'present')[:ensure].should == :present
+        described_class.new(:username => 'user1', :ensure => 'present')[:ensure].should == :present
       end
 
       it "should support absent" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :ensure => 'absent')[:ensure].should == :absent
+        described_class.new(:username => 'user1', :ensure => 'absent')[:ensure].should == :absent
       end
 
       it "should not support other values" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+        expect { described_class.new(:username => 'user1', :ensure => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
       end
       
       it "should not have a default value" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1')[:ensure].should == nil
+        described_class.new(:username => 'user1')[:ensure].should == nil
       end
     end
 
     describe "for password" do
       it "should support an alphanumeric password" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :password => 'abcd1234', :ensure => :present)[:password].should == 'abcd1234'
+        described_class.new(:username => 'user1', :password => 'abcd1234', :ensure => :present)[:password].should == 'abcd1234'
       end
 
       it "should not support spaces" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :password => 'abd 123', :ensure => :present) }.to raise_error(Puppet::Error, /abd 123 is not a valid password/)
+        expect { described_class.new(:username => 'user1', :password => 'abd 123', :ensure => :present) }.to raise_error(Puppet::Error, /abd 123 is not a valid password/)
       end
       
       it "should be a minimum of 8 characters" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :password => 'abc123', :ensure => :present) }.to raise_error(Puppet::Error, /abc123 is not a valid password/)
+        expect { described_class.new(:username => 'user1', :password => 'abc123', :ensure => :present) }.to raise_error(Puppet::Error, /abc123 is not a valid password/)
       end
     end
     
     describe "for fullname" do
       it "should support a forename and surname with a space" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :fullname => 'user test', :ensure => :present)[:fullname].should == 'user test'
+        described_class.new(:username => 'user1', :fullname => 'user test', :ensure => :present)[:fullname].should == 'user test'
       end
 
       it "should not support special characters" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :fullname => 'user !', :ensure => :present) }.to raise_error(Puppet::Error, /user ! is not a valid full name/)
+        expect { described_class.new(:username => 'user1', :fullname => 'user !', :ensure => :present) }.to raise_error(Puppet::Error, /user ! is not a valid full name/)
       end
     end
     
     describe "for comment" do
       it "should support an alphanumerical comment, with hyphens and fullstop" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user-1', :comment => 'This is test user-1.', :ensure => :present)[:comment].should == 'This is test user-1.'
+        described_class.new(:username => 'user-1', :comment => 'This is test user-1.', :ensure => :present)[:comment].should == 'This is test user-1.'
       end
 
       it "should not support special characters" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :comment => 'This is test user !', :ensure => :present) }.to raise_error(Puppet::Error, /This is test user ! is not a valid comment/)
+        expect { described_class.new(:username => 'user1', :comment => 'This is test user !', :ensure => :present) }.to raise_error(Puppet::Error, /This is test user ! is not a valid comment/)
       end
     end
     
     describe "for passminage" do
       it "should support a numerical value" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :passminage => '10', :ensure => :present)[:passminage].should == 10
+        described_class.new(:username => 'user1', :passminage => '10', :ensure => :present)[:passminage].should == 10
       end
 
       it "should support a minimum value of 0" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :passminage => '0', :ensure => :present)[:passminage].should == 0
+        described_class.new(:username => 'user1', :passminage => '0', :ensure => :present)[:passminage].should == 0
       end
       
       it "should support a maximum value of 4294967295" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :passminage => '4294967295', :ensure => :present)[:passminage].should == 4294967295
+        described_class.new(:username => 'user1', :passminage => '4294967295', :ensure => :present)[:passminage].should == 4294967295
       end
       
       it "should have a default value of 0" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :ensure => :present)[:passminage].should == 0
+        described_class.new(:username => 'user1', :ensure => :present)[:passminage].should == 0
       end
       
       it "should not support a value larger than 4294967295" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :passminage => '4294967296', :ensure => :present) }.to raise_error(Puppet::Error, /Passminage must be between 0 and 4294967295./)
+        expect { described_class.new(:username => 'user1', :passminage => '4294967296', :ensure => :present) }.to raise_error(Puppet::Error, /Passminage must be between 0 and 4294967295./)
       end
       
       it "should not support a non-numeric value" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :passminage => 'a', :ensure => :present) }.to raise_error(Puppet::Error, /a is not a valid password minimum age./)
+        expect { described_class.new(:username => 'user1', :passminage => 'a', :ensure => :present) }.to raise_error(Puppet::Error, /a is not a valid password minimum age./)
       end
     end
     
     describe "for passmaxage" do
       it "should support a numerical value" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :passmaxage => '10', :ensure => :present)[:passmaxage].should == 10
+        described_class.new(:username => 'user1', :passmaxage => '10', :ensure => :present)[:passmaxage].should == 10
       end
 
       it "should support a minimum value of 0" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :passmaxage => '0', :ensure => :present)[:passmaxage].should == 0
+        described_class.new(:username => 'user1', :passmaxage => '0', :ensure => :present)[:passmaxage].should == 0
       end
       
       it "should support a maximum value of 4294967295" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :passmaxage => '4294967295', :ensure => :present)[:passmaxage].should == 4294967295
+        described_class.new(:username => 'user1', :passmaxage => '4294967295', :ensure => :present)[:passmaxage].should == 4294967295
       end
       
       it "should have a default value of 4294967295" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :ensure => :present)[:passmaxage].should == 4294967295
+        described_class.new(:username => 'user1', :ensure => :present)[:passmaxage].should == 4294967295
       end
       
       it "should not support a value larger than 4294967295" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :passmaxage => '4294967296', :ensure => :present) }.to raise_error(Puppet::Error, /Passmaxage must be between 0 and 4294967295./)
+        expect { described_class.new(:username => 'user1', :passmaxage => '4294967296', :ensure => :present) }.to raise_error(Puppet::Error, /Passmaxage must be between 0 and 4294967295./)
       end
       
       it "should not support a non-numeric value" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :passmaxage => 'a', :ensure => :present) }.to raise_error(Puppet::Error, /a is not a valid password maximum age./)
+        expect { described_class.new(:username => 'user1', :passmaxage => 'a', :ensure => :present) }.to raise_error(Puppet::Error, /a is not a valid password maximum age./)
       end
     end
     
     describe "for status" do
       it "should support enabled" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :status => 'enabled')[:status].should == :enabled
+        described_class.new(:username => 'user1', :status => 'enabled')[:status].should == :enabled
       end
 
       it "should support disabled" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :status => 'disabled')[:status].should == :disabled
+        described_class.new(:username => 'user1', :status => 'disabled')[:status].should == :disabled
       end
 
       it "should support expired" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :status => 'expired')[:status].should == :expired
+        described_class.new(:username => 'user1', :status => 'expired')[:status].should == :expired
       end
       
       it "should have a default value of enabled" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1')[:status].should == :enabled
+        described_class.new(:username => 'user1')[:status].should == :enabled
       end
       
       it "should not support other values" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :status => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+        expect { described_class.new(:username => 'user1', :status => 'foo') }.to raise_error(Puppet::Error, /Invalid value "foo"/)
       end
     end
     
     describe "for groups" do
       it "should support a single group" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :groups => 'group1')[:groups].should == 'group1'
+        described_class.new(:username => 'user1', :groups => 'group1')[:groups].should == 'group1'
       end
       
       it "should support a comma-seperated list of group names" do
-        Puppet::Type.type(:netapp_user).new(:username => 'user1', :groups => 'group1,group2')[:groups].should == 'group1,group2'
+        described_class.new(:username => 'user1', :groups => 'group1,group2')[:groups].should == 'group1,group2'
       end
       
       it "should not support special characters" do
-        expect { Puppet::Type.type(:netapp_user).new(:username => 'user1', :groups => 'group!') }.to raise_error(Puppet::Error, /group! is not a valid group list/)
+        expect { described_class.new(:username => 'user1', :groups => 'group!') }.to raise_error(Puppet::Error, /group! is not a valid group list/)
       end
       
       it "insync? should return false if is and should values dont match" do
         user = user_resource.dup
         is_groups = 'group1'
         user[:groups] = 'group1,group2'
-        Puppet::Type.type(:netapp_user).new(user).property(:groups).insync?(is_groups).should be_false
+        described_class.new(user).property(:groups).insync?(is_groups).should be_false
       end
       
       it "insync? should return true if is and should values match" do
         user = user_resource.dup
         is_groups = 'group1,group2'
         user[:groups] = 'group1,group2'
-        Puppet::Type.type(:netapp_user).new(user).property(:groups).insync?(is_groups).should be_true
+        described_class.new(user).property(:groups).insync?(is_groups).should be_true
       end
     end
 
@@ -215,7 +215,7 @@ describe Puppet::Type.type(:netapp_user) do
   
   describe "autorequiring" do
     let :user do
-      Puppet::Type.type(:netapp_user).new(
+      described_class.new(
         :username => 'user1',
         :ensure   => :present,
         :groups   => 'puppetgroup,Users,Power Users'
