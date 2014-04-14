@@ -1,6 +1,6 @@
 require 'spec_helper'
  
-describe described_class do
+describe Puppet::Type.type(:netapp_group) do
 
   before do 
     @group_example = {
