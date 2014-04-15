@@ -28,6 +28,16 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
     )    
   end
   
+  let :export_volume_ro do
+    Puppet::Type.type(:netapp_export).new(
+      :name      => '/vol/volume',
+      :ensure    => :present,
+      :readwrite => ['server1','192.168.150.50','192.168.150.51'],
+      :readonly  => ['server2','192.168.150.55'],
+      :provider  => provider
+    )    
+  end
+  
   let :export_qtree do
     Puppet::Type.type(:netapp_export).new(
       :name     => '/vol/volume/qtree',
@@ -125,6 +135,11 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
     it "should be able to create a volume export with a readwrite list" do    
       export_volume_rw.provider.expects(:eadd).with('persistent', 'true', 'verbose', 'true', 'rules', is_a(NaElement)).returns YAML.load_file(my_fixture('export-volume-response.yml'))
       export_volume_rw.provider.create
+    end
+    
+    it "should be able to create a volume export with a readonly list" do    
+      export_volume_ro.provider.expects(:eadd).with('persistent', 'true', 'verbose', 'true', 'rules', is_a(NaElement)).returns YAML.load_file(my_fixture('export-volume-response.yml'))
+      export_volume_ro.provider.create
     end
     
     it "should be able to create a qtree export" do    
