@@ -19,6 +19,15 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
     )    
   end
   
+  let :export_volume_rw do
+    Puppet::Type.type(:netapp_export).new(
+      :name      => '/vol/volume',
+      :ensure    => :present,
+      :readwrite => ['server1','192.168.150.50','192.168.150.51'],
+      :provider  => provider
+    )    
+  end
+  
   let :export_qtree do
     Puppet::Type.type(:netapp_export).new(
       :name     => '/vol/volume/qtree',
@@ -49,30 +58,40 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
       instances.size.should == 4
       instances.map do |prov|
         {
-          :name   => prov.get(:name),
-          :ensure => prov.get(:ensure),
-          :path   => prov.get(:path)
+          :name      => prov.get(:name),
+          :ensure    => prov.get(:ensure),
+          :path      => prov.get(:path),
+          :readonly  => prov.get(:readonly),
+          :readwrite => prov.get(:readwrite)
         }
       end.should == [
         {
-          :name   => '/vol/volume',
-          :ensure => :present,
-          :path   => :absent
+          :name      => '/vol/volume',
+          :ensure    => :present,
+          :path      => :absent, 
+          :readonly  => ['all_hosts'],
+          :readwrite => ['server1','192.168.150.50','192.168.150.51']
         },
         {
-          :name   => '/vol/volume/qtree',
-          :ensure => :present,
-          :path   => :absent
+          :name      => '/vol/volume/qtree',
+          :ensure    => :present,
+          :path      => :absent,
+          :readonly  => ['all_hosts'],
+          :readwrite => ['server1','192.168.150.50','192.168.150.51']
         },
         {
-          :name   => '/vol/othervolume',
-          :ensure => :present,
-          :path   => '/vol/volume'
+          :name      => '/vol/othervolume',
+          :ensure    => :present,
+          :path      => '/vol/volume',
+          :readonly  => :absent,
+          :readwrite => ['all_hosts']
         },
         {
-          :name   => '/vol/volume/otherqtree',
-          :ensure => :present,
-          :path   => '/vol/volume/qtree'
+          :name      => '/vol/volume/otherqtree',
+          :ensure    => :present,
+          :path      => '/vol/volume/qtree',
+          :readonly  => :absent,
+          :readwrite => ['all_hosts']
         }
       ]
     end
@@ -103,9 +122,19 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
       export_volume.provider.create
     end
     
+    it "should be able to create a volume export with a readwrite list" do    
+      export_volume_rw.provider.expects(:eadd).with('persistent', 'true', 'verbose', 'true', 'rules', is_a(NaElement)).returns YAML.load_file(my_fixture('export-volume-response.yml'))
+      export_volume_rw.provider.create
+    end
+    
     it "should be able to create a qtree export" do    
       export_qtree.provider.expects(:eadd).with('persistent', 'true', 'verbose', 'true', 'rules', is_a(NaElement)).returns YAML.load_file(my_fixture('export-qtree-response.yml'))
       export_qtree.provider.create
+    end
+    
+    it "should raise an exception if the export creation fails" do
+      export_volume.provider.expects(:eadd).with('persistent', 'true', 'verbose', 'true', 'rules', is_a(NaElement)).returns YAML.load_file(my_fixture('export-failed-response.yml'))
+      expect { export_volume.provider.create }.to raise_error(Puppet::Error, /export rule \/vol\/volume creation failed. Verify settings./)
     end
   end
   
@@ -128,9 +157,26 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
   end
   
   describe "when modifying a resource" do
-    it "should be able to modify an existing export" do
+    it "should be able to modify an existing export path" do
       # Need to have a resource present that we can modify
       export_volume_path.provider.set(:name => '/vol/volume', :ensure => :present, :path => :absent)
+      export_volume_path.provider.expects(:emodify).with('persistent', 'true', 'rule', is_a(NaElement))
+      export_volume_path.provider.flush
+    end
+    
+    it "should be able to modify an existing export readonly list" do
+      # Need to have a resource present that we can modify
+      export_volume_path.provider.set(:name => '/vol/volume', :ensure => :present, :path => :absent, :readonly => ['all_hosts'])
+      export_volume_path[:readonly] = ['server1','192.168.150.50','192.168.150.51']
+      export_volume_path.provider.expects(:emodify).with('persistent', 'true', 'rule', is_a(NaElement))
+      export_volume_path.provider.flush
+    end
+    
+    it "should be able to modify an existing export readwrite list" do
+      # Need to have a resource present that we can modify
+      export_volume_path.provider.set(:name => '/vol/volume', :ensure => :present, :path => :absent, :readonly => :absent, :readwrite => ['all_hosts'])
+      export_volume_path[:readwrite] = ['server1','192.168.150.50','192.168.150.51']
+      export_volume_path[:readonly] = ['all_hosts']
       export_volume_path.provider.expects(:emodify).with('persistent', 'true', 'rule', is_a(NaElement))
       export_volume_path.provider.flush
     end

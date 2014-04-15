@@ -58,7 +58,7 @@ children:
             children:
             - !ruby/object:NaElement
               name: name
-              content: actint-star-db01
+              content: server1
               children: []
               attrkeys: []
               attrvals: []
@@ -166,7 +166,7 @@ children:
             children:
             - !ruby/object:NaElement
               name: name
-              content: actint-star-db01
+              content: server1
               children: []
               attrkeys: []
               attrvals: []
