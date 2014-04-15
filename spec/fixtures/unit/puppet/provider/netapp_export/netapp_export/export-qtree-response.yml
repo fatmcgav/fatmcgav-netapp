@@ -1,0 +1,44 @@
+--- !ruby/object:NaElement
+name: results
+content: ""
+children:
+- !ruby/object:NaElement
+  name: loaded-pathnames
+  content: ""
+  children:
+  - !ruby/object:NaElement
+    name: pathname-info
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: name
+      content: /vol/othervolume2/otherqtree
+      children: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  attrkeys: []
+  attrvals: []
+- !ruby/object:NaElement
+  name: exported-pathnames
+  content: ""
+  children:
+  - !ruby/object:NaElement
+    name: pathname-info
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: name
+      content: /vol/volume/qtree
+      children: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  attrkeys: []
+  attrvals: []
+attrkeys:
+- status
+attrvals:
+- passed
