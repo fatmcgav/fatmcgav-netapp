@@ -24,6 +24,7 @@ describe Puppet::Type.type(:netapp_export).provider(:netapp_export) do
       :name      => '/vol/volume',
       :ensure    => :present,
       :readwrite => ['server1','192.168.150.50','192.168.150.51'],
+      :readonly => ['all_hosts'],
       :provider  => provider
     )    
   end
