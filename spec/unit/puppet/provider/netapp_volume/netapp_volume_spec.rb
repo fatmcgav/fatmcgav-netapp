@@ -313,7 +313,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
       end
     end
     
-    describe "for #snapreserve="
+    describe "for #snapreserve=" do
       it "should be able to modify snapreserve value on an existing volume" do
         # Need to have a resource present that we can modify
         volume.provider.set(:name => 'volume', :ensure => :present, :snapreserve => 0)
@@ -323,7 +323,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
       end
     end
     
-    descibe "for #autoincrement="
+    descibe "for #autoincrement=" do
       it "should be enable autoincrement on an existing volume" do
         # Need to have a resource present that we can modify
         volume.provider.set(:name => 'volume', :ensure => :present, :autoincrement => :false)
@@ -341,7 +341,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
       end
     end
     
-    describe "for #state="
+    describe "for #state=" do
       it "should be able to offline an existing online volume" do
         # Need to have a resource present that we can modify
         volume.provider.set(:name => 'volume', :ensure => :present, :state => :online)
@@ -380,8 +380,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
         volume[:state] = :online
         volume.provider.expects(:volonline).with('name', 'volume')
         volume.provider.send("state=", :online)
-      end 
-    end
+      end
+    end 
   end
-  
 end
