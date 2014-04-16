@@ -148,7 +148,12 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
                               "ha_policy"=>"cfo",
                               "striping"=>"not_striped",
                               "compression"=>"off"},
-          :snapschedule  => :absent
+          :snapschedule  => { "minutes"=>"0",
+                              "hours"=>"0",
+                              "days"=>"0",
+                              "weeks"=>"0",
+                              "which-hours"=>" ",
+                              "which-minutes"=>" "}
         },
         {
           :name          => 'volume_offline_200g',
@@ -195,12 +200,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
                               "ha_policy"=>"cfo",
                               "striping"=>"not_striped",
                               "compression"=>"off"},
-          :snapschedule  => { "minutes"=>"0",
-                              "hours"=>"0",
-                              "days"=>"0",
-                              "weeks"=>"0",
-                              "which-hours"=>" ",
-                              "which-minutes"=>" "}
+          :snapschedule  => :absent
         }
       ]
     end
@@ -293,7 +293,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
   end
   
   describe "when modifying a resource" do
-    describe "for #initsize="
+    describe "for #initsize=" do
       it "should be able to resize an existing volume with autoincrement enabled" do
         # Need to have a resource present that we can modify
         volume.provider.set(:name => 'volume', :ensure => :present, :initsize => '1g')
@@ -323,7 +323,7 @@ describe Puppet::Type.type(:netapp_volume).provider(:netapp_volume) do
       end
     end
     
-    descibe "for #autoincrement=" do
+    describe "for #autoincrement=" do
       it "should be enable autoincrement on an existing volume" do
         # Need to have a resource present that we can modify
         volume.provider.set(:name => 'volume', :ensure => :present, :autoincrement => :false)
