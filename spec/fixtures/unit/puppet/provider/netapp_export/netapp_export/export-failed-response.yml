@@ -1,0 +1,32 @@
+--- !ruby/object:NaElement
+name: results
+content: ""
+children:
+- !ruby/object:NaElement
+  name: loaded-pathnames
+  content: ""
+  children: []
+  attrkeys: []
+  attrvals: []
+- !ruby/object:NaElement
+  name: exported-pathnames
+  content: ""
+  children:
+  - !ruby/object:NaElement
+    name: pathname-info
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: name
+      content: /vol/volume
+      children: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  attrkeys: []
+  attrvals: []
+attrkeys:
+- status
+attrvals:
+- passed

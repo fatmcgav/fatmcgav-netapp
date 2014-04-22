@@ -30,11 +30,14 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
       
       # Pull out relevant info
       rolename = role.child_get_string("name")
-      Puppet.debug("Puppet::Provider::Netapp_role.prefetch: Processing role info block for #{rolename}.")          
+      Puppet.debug("Puppet::Provider::Netapp_role.prefetch: Processing role info block for #{rolename}.")
       
       # Create base hash
-      role_info = { :name => rolename,
-                    :ensure => :present }
+      role_info = { :rolename => rolename,
+                    :ensure   => :present }
+      
+      # Add comment if present
+      role_info[:comment] = role.child_get_string("comment") unless role.child_get_string("comment").nil?
       
       # Get capabilites
       capability_list = String.new
@@ -63,8 +66,8 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     Puppet.debug("Puppet::Provider::Netapp_role: Got to self.prefetch.")
     # Iterate instances and match provider where relevant.
     instances.each do |prov|
-      Puppet.debug("Prov.name = #{resources[prov.name]}. ")
-      if resource = resources[prov.name]
+      Puppet.debug("Prov.rolename = #{resources[prov.rolename]}. ")
+      if resource = resources[prov.rolename]
         resource.provider = prov
       end
     end
@@ -78,7 +81,7 @@ Puppet::Type.type(:netapp_role).provide(:netapp_role, :parent => Puppet::Provide
     case @property_hash[:ensure] 
     when :absent  
       # Query Netapp to remove role.
-      result = rdelete("role-name", @resource[:rolename])
+      result = rdel("role-name", @resource[:rolename])
       
       Puppet.debug("Puppet::Provider::Netapp_role: role #{@resource[:rolename]} deleted successfully. \n")
       return true

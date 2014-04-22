@@ -1,0 +1,412 @@
+--- !ruby/object:NaElement
+attrkeys:
+- status
+attrvals:
+- passed
+children:
+- !ruby/object:NaElement
+  attrkeys: []
+
+  attrvals: []
+
+  children:
+  - !ruby/object:NaElement
+    attrkeys: []
+
+    attrvals: []
+
+    children:
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: e0a
+      name: interface-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: default-ipspace
+      name: ipspace-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children:
+      - !ruby/object:NaElement
+        attrkeys: []
+
+        attrvals: []
+
+        children:
+        - !ruby/object:NaElement
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: af-inet
+          name: addr-family
+        - !ruby/object:NaElement
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: 192.168.150.119
+          name: address
+        - !ruby/object:NaElement
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: 255.255.254.0
+          name: netmask-or-prefix
+        - !ruby/object:NaElement
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: 192.168.151.255
+          name: broadcast
+        - !ruby/object:NaElement
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: vfiler:vfiler0
+          name: creator
+        content: ""
+        name: ip-address-info
+      content: ""
+      name: v4-primary-address
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: 00:0c:29:77:e8:78
+      name: mac-address
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: auto-1000t-fd-up
+      name: mediatype
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: full
+      name: flowcontrol
+    content: ""
+    name: interface-config-info
+  - !ruby/object:NaElement
+    attrkeys: []
+
+    attrvals: []
+
+    children:
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: e0b
+      name: interface-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: default-ipspace
+      name: ipspace-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: 00:0c:29:77:e8:82
+      name: mac-address
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: auto-1000t-fd-up
+      name: mediatype
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: full
+      name: flowcontrol
+    content: ""
+    name: interface-config-info
+  - !ruby/object:NaElement
+    attrkeys: []
+
+    attrvals: []
+
+    children:
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: e0c
+      name: interface-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: default-ipspace
+      name: ipspace-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: 00:0c:29:77:e8:8c
+      name: mac-address
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: auto-1000t-fd-up
+      name: mediatype
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: full
+      name: flowcontrol
+    content: ""
+    name: interface-config-info
+  - !ruby/object:NaElement
+    attrkeys: []
+
+    attrvals: []
+
+    children:
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: e0d
+      name: interface-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: default-ipspace
+      name: ipspace-name
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: 00:0c:29:77:e8:96
+      name: mac-address
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: auto-1000t-fd-up
+      name: mediatype
+    - !ruby/object:NaElement
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: full
+      name: flowcontrol
+    content: ""
+    name: interface-config-info
+  - !ruby/object:NaElement 
+    attrkeys: []
+
+    attrvals: []
+
+    children: 
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: e0M
+      name: interface-name
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: default-ipspace
+      name: ipspace-name
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: 
+      - !ruby/object:NaElement 
+        attrkeys: []
+
+        attrvals: []
+
+        children: 
+        - !ruby/object:NaElement 
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: af-inet
+          name: addr-family
+        - !ruby/object:NaElement 
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: 10.0.32.17
+          name: address
+        - !ruby/object:NaElement 
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: 255.255.224.0
+          name: netmask-or-prefix
+        - !ruby/object:NaElement 
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: 10.0.63.255
+          name: broadcast
+        - !ruby/object:NaElement 
+          attrkeys: []
+
+          attrvals: []
+
+          children: []
+
+          content: vfiler:vfiler0
+          name: creator
+        content: ""
+        name: ip-address-info
+      content: ""
+      name: v4-primary-address
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: 00:0c:29:77:e8:A0
+      name: mac-address
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: auto-100tx-fd-up
+      name: mediatype
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: full
+      name: flowcontrol
+    - !ruby/object:NaElement 
+      attrkeys: []
+
+      attrvals: []
+
+      children: []
+
+      content: 10.0.32.18
+      name: partner
+    content: ""
+    name: interface-config-info
+  content: ""
+  name: interface-config-info
+content: ""
+name: results

@@ -2,12 +2,20 @@ require 'spec_helper'
  
 describe Puppet::Type.type(:netapp_volume) do
 
-  before :each do
-    described_class.stubs(:defaultprovider).returns providerclass
+  before do 
+    @volume_example = {
+      :name        => 'volume', 
+      :state       => 'online',
+      :initsize    => '10g',  
+      :aggregate   => 'aggr0', 
+      :snapreserve => '0'
+    }
+    @provider = stub('provider', :class => described_class.defaultprovider, :clear => nil)
+    described_class.defaultprovider.stubs(:new).returns(@provider)
   end
 
-  let :providerclass do
-    described_class.provide(:fake_netapp_volume_provider) { mk_resource_methods }
+  let :volume_resource do 
+    @volume_example
   end
 
   it "should have :name be its namevar" do
@@ -181,6 +189,27 @@ describe Puppet::Type.type(:netapp_volume) do
       it "should not have a default value" do
         described_class.new(:name => 'volume', :ensure => :present)[:options].should == nil
       end
+      
+      it "insync? should return false if is isn't a hash" do
+        volume = volume_resource.dup
+        is_options = 'option'
+        volume[:options] = {'option' => 'value'}
+        described_class.new(volume).property(:options).insync?(is_options).should be_false
+      end
+      
+      it "insync? should return false if is and should don't match" do
+        volume = volume_resource.dup
+        is_options = {'option1' => 'value1'}
+        volume[:options] = {'option2' => 'value2'}
+        described_class.new(volume).property(:options).insync?(is_options).should be_false
+      end
+      
+      it "insync? should return true if is and should match" do
+        volume = volume_resource.dup
+        is_options = {'option1' => 'value1'}
+        volume[:options] = {'option1' => 'value1'}
+        described_class.new(volume).property(:options).insync?(is_options).should be_true
+      end
     end 
     
     describe "for snapschedule" do
@@ -198,6 +227,27 @@ describe Puppet::Type.type(:netapp_volume) do
       
       it "should not have a default value" do
         described_class.new(:name => 'volume', :ensure => :present)[:snapschedule].should == nil
+      end
+      
+      it "insync? should return false if is isn't a hash" do
+        volume = volume_resource.dup
+        is_snapsched = 'snapschedule'
+        volume[:snapschedule] = {'minutes' => 'value', 'hours' => 'value', 'days' => 'value'}
+        described_class.new(volume).property(:snapschedule).insync?(is_snapsched).should be_false
+      end
+      
+      it "insync? should return false if is and should don't match" do
+        volume = volume_resource.dup
+        is_snapsched = {'minutes' => 'value2', 'hours' => 'value', 'days' => 'value'}
+        volume[:snapschedule] = {'minutes' => 'value', 'hours' => 'value', 'days' => 'value'}
+        described_class.new(volume).property(:snapschedule).insync?(is_snapsched).should be_false
+      end
+      
+      it "insync? should return true if is and should match" do
+        volume = volume_resource.dup
+        is_snapsched = {'minutes' => 'value', 'hours' => 'value', 'days' => 'value'}
+        volume[:snapschedule] = {'minutes' => 'value', 'hours' => 'value', 'days' => 'value'}
+        described_class.new(volume).property(:snapschedule).insync?(is_snapsched).should be_true
       end
     end 
   end

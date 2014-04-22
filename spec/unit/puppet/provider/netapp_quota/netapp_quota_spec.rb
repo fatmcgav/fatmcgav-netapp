@@ -72,15 +72,15 @@ describe Puppet::Type.type(:netapp_quota).provider(:netapp_quota) do
     end
 
     it "should raise an error on negative values" do
-      expect { described_class.size_in_byte("-20") }.to raise_error ArgumentError, 'Invalid input "-20"'
+      expect { described_class.size_in_byte("-20") }.to raise_error(ArgumentError, 'Invalid input "-20"')
     end
 
     it "should raise an error for unknown units" do
-      expect { described_class.size_in_byte("3R") }.to raise_error ArgumentError, 'Invalid input "3R"'
+      expect { described_class.size_in_byte("3R") }.to raise_error(ArgumentError, 'Invalid input "3R"')
     end
 
     it "should raise an error on non numeric values" do
-      expect { described_class.size_in_byte("G") }.to raise_error ArgumentError, 'Invalid input "G"'
+      expect { described_class.size_in_byte("G") }.to raise_error(ArgumentError, 'Invalid input "G"')
     end
   end
 
@@ -257,7 +257,7 @@ describe Puppet::Type.type(:netapp_quota).provider(:netapp_quota) do
     [:type, :volume, :qtree].each do |immutable_prop|
       describe immutable_prop do
         it "should not allow setting #{immutable_prop}" do
-          expect { provider.send("#{immutable_prop}=", "some_value") }.to raise_error Puppet::Error, /Please perform the necessary steps manually/
+          expect { provider.send("#{immutable_prop}=", "some_value") }.to raise_error(Puppet::Error, /Please perform the necessary steps manually/)
         end
       end
     end

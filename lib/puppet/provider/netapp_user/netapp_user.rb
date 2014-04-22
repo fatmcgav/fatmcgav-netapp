@@ -33,8 +33,8 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
       Puppet.debug("Puppet::Provider::Netapp_user.prefetch: Processing user info block for #{username}.")          
       
       # Create base hash
-      user_info = { :name => username,
-                    :ensure => :present }
+      user_info = { :username => username,
+                    :ensure   => :present }
       
       # Add fullname if present
       user_info[:fullname] = user.child_get_string("full-name") unless user.child_get_string("full-name").nil?
@@ -76,8 +76,8 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     Puppet.debug("Puppet::Provider::Netapp_user: Got to self.prefetch.")
     # Iterate instances and match provider where relevant.
     instances.each do |prov|
-      Puppet.debug("Prov.name = #{resources[prov.name]}. ")
-      if resource = resources[prov.name]
+      Puppet.debug("Prov.username = #{resources[prov.username]}. ")
+      if resource = resources[prov.username]
         resource.provider = prov
       end
     end
@@ -178,7 +178,7 @@ Puppet::Type.type(:netapp_user).provide(:netapp_user, :parent => Puppet::Provide
     user_info.child_add(user_groups)
     
     # Add the user
-    result = uadd('password', @resource[:password], 'useradmin-user', user_info)
+    result = uadd('useradmin-user', user_info, 'password', @resource[:password])
     
     # Passed above, therefore must of worked. 
     Puppet.debug("Puppet::Provider::Netapp_user: user #{@resource[:username]} created successfully. \n")

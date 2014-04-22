@@ -2,12 +2,22 @@ require 'spec_helper'
  
 describe Puppet::Type.type(:netapp_user) do
 
-  before :each do
-    described_class.stubs(:defaultprovider).returns providerclass
+  before do 
+    @user_example = {
+      :username => 'user', 
+      :password => 'password',
+      :fullname => 'User Name', 
+      :comment  => 'User comment', 
+      #:passminage => '0', 
+      #:passmaxage => '',
+      :groups   => 'group'
+    }
+    @provider = stub('provider', :class => described_class.defaultprovider, :clear => nil)
+    described_class.defaultprovider.stubs(:new).returns(@provider)
   end
 
-  let :providerclass do
-    described_class.provide(:fake_netapp_user_provider) { mk_resource_methods }
+  let :user_resource do 
+    @user_example
   end
 
   it "should have :username be its namevar" do
@@ -185,8 +195,22 @@ describe Puppet::Type.type(:netapp_user) do
       it "should not support special characters" do
         expect { described_class.new(:username => 'user1', :groups => 'group!') }.to raise_error(Puppet::Error, /group! is not a valid group list/)
       end
+      
+      it "insync? should return false if is and should values dont match" do
+        user = user_resource.dup
+        is_groups = 'group1'
+        user[:groups] = 'group1,group2'
+        described_class.new(user).property(:groups).insync?(is_groups).should be_false
+      end
+      
+      it "insync? should return true if is and should values match" do
+        user = user_resource.dup
+        is_groups = 'group1,group2'
+        user[:groups] = 'group1,group2'
+        described_class.new(user).property(:groups).insync?(is_groups).should be_true
+      end
     end
-    
+
   end
   
   describe "autorequiring" do
