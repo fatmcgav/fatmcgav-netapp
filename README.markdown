@@ -3,7 +3,7 @@
 **Please note that the device configuration management has been changed as of v0.4.0 of this module. 
 You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
 
-[![Coverage Status](https://coveralls.io/repos/fatmcgav/fatmcgav-netapp/badge.png?branch=develop)](https://coveralls.io/r/fatmcgav/fatmcgav-netapp?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/fatmcgav/fatmcgav-netapp/badge.png?branch=v0.4-fixes)](https://coveralls.io/r/fatmcgav/fatmcgav-netapp?branch=branch=v0.4-fixes)
 
 **Table of Contents**
 
