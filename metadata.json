@@ -1,10 +1,97 @@
 {
-  "name": "fatmcgav-netapp",
-  "version": "0.5.0",
-  "summary": "NetApp Network Device support for Puppet",
   "author": "fatmcgav",
-  "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nOverview:\nThe NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.\n\nThe Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode. \nHowever it may well be compatible with other OnTap versions. \n\nFeatures:\nThe following items are supported:\n* Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.\n* Creation, modification and deletion of QTrees. \n* Creation, modification and deletion of NFS Exports, including NFS Export security. \n* Creation, modification and deletion of users, groups and roles. \n* Creation, modification and deletion of Quotas. \n* Creation of snapmirror relationships. \n* Creation of snapmirror schedules.",
+  "checksums": {
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_export\\netapp_export\\export-qtree-response.yml": "c6f44a2ef96f617416f15243f365018b",
+    "spec\\unit\\puppet\\type\\netapp_role_spec.rb": "b83f9b39eb081adefffadc1643b16dc9",
+    "lib\\puppet\\type\\netapp_user.rb": "64c317d0d820b0dc1c28d1cf222d465d",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_role\\netapp_role\\role-list.yml": "dc57fcfba069941038f1d3cd3668d951",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-off.yml": "d5c0ed9cc4e625e3127fbbbdac153703",
+    "lib\\puppet\\provider\\netapp_snapmirror\\netapp_snapmirror.rb": "7cc52b6000ab387924891414e9832753",
+    "lib\\puppet\\provider\\netapp_user\\netapp_user.rb": "87502bec2290b055b1544c9d778282ff",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_volume\\netapp_volume\\volume-snapsched-list.yml": "1ea389b2eadf66b6d6aa6fc1a91b0aec",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_volume\\netapp_volume\\volume-options-list.yml": "412d27926d18d87511104d92043eddd5",
+    "lib\\puppet\\util\\network_device\\netapp\\NaErrno.rb": "f39ce8c746c6284cac04820e9a609259",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_user\\netapp_user\\user-list.yml": "9da5a2b69cd5f3bafeefcae60027b6a6",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_qtree\\netapp_qtree\\qtree-list.yml": "cb6b7ca939f5f25ee5a41bebefb22936",
+    "LICENSE": "2180042ca176b660becdef4fc29225e1",
+    "spec\\unit\\puppet\\provider\\netapp_quota\\netapp_quota_spec.rb": "dc0c6824b2a6d118d53f9ea6c151b4cc",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_export\\netapp_export\\export-list.yml": "2d69cd864614f629e46736c93781a2ea",
+    "lib\\puppet\\type\\netapp_role.rb": "2119a7c03276199e09609f55e9ee0bab",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_volume\\netapp_volume\\volume-list.yml": "446872784adff2a4a92de275fb85b409",
+    "files\\NaServer.patch": "0bcc518dc0b20c9241c765cef027e2b0",
+    "spec\\unit\\puppet\\type\\netapp_user_spec.rb": "aece6da5ac4f5078be93f317316aa2a4",
+    "lib\\puppet\\util\\network_device\\netapp\\NaServer.rb": "0ede800393481ab75d216c52f88a1096",
+    "spec\\unit\\puppet\\util\\network_device\\netapp\\facts_spec.rb": "67a30cab57194d49ddb1fc66c7126f18",
+    "spec\\unit\\puppet\\type\\netapp_group_spec.rb": "2f9aab9937ff0c2514b99da2ca4b1097",
+    "spec\\fixtures\\integration\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-on.yml": "9c87b99691ed0b69ff117d69f7ced15e",
+    "lib\\puppet\\util\\network_device\\netapp\\device.rb": "72d73c3c53851dc9508c6e5eef4162a6",
+    "lib\\puppet\\type\\netapp_export.rb": "50108695edec9d737ae9e7fbede2a40f",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-on.yml": "9c87b99691ed0b69ff117d69f7ced15e",
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\system-get-info.yml": "e72825c087664d4185d70f6e3307b94a",
+    "lib\\puppet\\util\\network_device\\netapp\\NaElement.rb": "d4cf097921aeb47f89bc5ea55e367e53",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-list-entries.yml": "2b380d4e363c93b85544ddc8f1936b32",
+    "spec\\support\\shared_type_examples_spec.rb": "a95d98d50f4d94b35f6aefc9fdc29fad",
+    "lib\\puppet\\provider\\netapp_group\\netapp_group.rb": "720df5eb0e4a8612d886e89a7421e639",
+    "manifests\\vqe.pp": "c1534f2a218b6f4337964d7849371061",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_volume\\netapp_volume\\volume-list-restricted.yml": "7d27c05de5868f2410155b7ac3508a08",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\system-get-version.yml": "bc97d352909e890ddb8d203dacd0335f",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\device\\system-get-version.yml": "bc97d352909e890ddb8d203dacd0335f",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\system-get-info2.yml": "310aa2713bcf3ede1ce045ef9e1ee62c",
+    "spec\\unit\\puppet\\provider\\netapp_qtree\\netapp_qtree_spec.rb": "5762bad6d012e6b0dee73f2d804a29ce",
+    "spec\\unit\\puppet\\type\\netapp_quota_spec.rb": "9b42ed2f0393c55aabdc9dea6a6a0dd7",
+    "lib\\puppet\\util\\network_device\\netapp.rb": "ddf62939ce81fa9d42430fabb7624c52",
+    "spec\\integration\\puppet\\provider\\netapp_quota\\netapp_quota_spec.rb": "99c301416a1429721b667ca6bfa15160",
+    "spec\\spec_helper.rb": "a61bff6db876f13773267edf14147eae",
+    "lib\\puppet\\type\\netapp_snapmirror_schedule.rb": "b0677906b066227be1ef8cfa544a713a",
+    "spec\\unit\\puppet\\provider\\netapp_spec.rb": "6ca35e59f44253f3b03ff539c940e091",
+    "spec\\unit\\puppet\\provider\\netapp_export\\netapp_export_spec.rb": "1c79c079434654cf9f1ff4cf3905c707",
+    "lib\\puppet\\type\\netapp_volume.rb": "4829a96d401efca8ec742bfafa8345a5",
+    "spec\\unit\\puppet\\type\\netapp_qtree_spec.rb": "96f7a358acd6a4c3523ff096f68c5887",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_volume\\netapp_volume\\volume-list-online.yml": "66bc5c2a9294607c59f85ad5669cabda",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\options-get-dns.domainname.yml": "e3e355ddd42890950f0078ec39903838",
+    "lib\\puppet\\type\\netapp_quota.rb": "82a728ef0729f1b993ac84d7625d5474",
+    "manifests\\init.pp": "2a339766a367be56b4dd3cb7750e2dcb",
+    "spec\\fixtures\\integration\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-list-entries.yml": "2b380d4e363c93b85544ddc8f1936b32",
+    "lib\\puppet\\type\\netapp_notify.rb": "1d365882e58072affc352c5b17a1ff3d",
+    "lib\\puppet\\type\\netapp_group.rb": "d72a4265dcfafa8af780de3ceab1f284",
+    "lib\\puppet\\util\\network_device\\netapp\\DfmErrno.rb": "ea5b040424301e88cd79eb1ac7f0c1c2",
+    "spec\\spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "lib\\puppet\\provider\\netapp.rb": "899f95fab96aff07cd4ad654de239f9a",
+    "spec\\unit\\puppet\\provider\\netapp_user\\netapp_user_spec.rb": "1892d94d206879bf2e5f050869f3bf70",
+    "lib\\puppet\\provider\\netapp_volume\\netapp_volume.rb": "ffb3d739e5de80d038af161bc1817788",
+    "lib\\puppet\\provider\\netapp_quota\\netapp_quota.rb": "c26dcbb25d73c833b1fadef4038cfb95",
+    "spec\\unit\\puppet\\util\\network_device\\netapp\\device_spec.rb": "32dfe445f91835f731a19c9b8b2fa673",
+    "spec\\unit\\puppet\\provider\\netapp_role\\netapp_role_spec.rb": "f2cb31483473c3482dd19e519b856d2c",
+    "spec\\unit\\puppet\\provider\\netapp_group\\netapp_group_spec.rb": "6b3a04b97f917b00995d1c9ada2bc8ac",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_group\\netapp_group\\group-list.yml": "2471c86e77cb7165ea89d43af9d76a62",
+    "CHANGELOG": "8483d64929953029cf28affb23787dde",
+    "lib\\puppet\\provider\\netapp_export\\netapp_export.rb": "4b0986e848ac2d55105dd4d70e3edc52",
+    "Gemfile": "6f1138a03b966713bb6b21567b46248e",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_export\\netapp_export\\export-volume-response.yml": "ae6bd9147588aaeaeb5269b6181706ba",
+    "Modulefile": "2f734fa185a65c934a53471dcc46f801",
+    "lib\\puppet\\type\\netapp_snapmirror.rb": "36c01e2792b4414b930888260cd0557d",
+    "README.markdown": "2fb5110cfe2130efacca7ba6aa428a76",
+    "spec\\unit\\puppet\\type\\netapp_volume_spec.rb": "e8eda87558f436bc533ee904aa6f1843",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_volume\\netapp_volume\\volume-list-offline.yml": "85b7cda7dadd11d68e51c9956394d75c",
+    "spec\\unit\\puppet\\type\\netapp_export_spec.rb": "aaf91a1cd8d21e222aa40e9ac11784da",
+    "lib\\puppet\\type\\netapp_qtree.rb": "8dbe2887701253a2b2592b6e28eae714",
+    "spec\\fixtures\\unit\\puppet\\provider\\netapp_export\\netapp_export\\export-failed-response.yml": "e0ac50c7abfbe146044319c1e2e8b2af",
+    "lib\\puppet\\util\\network_device\\netapp\\facts.rb": "52230de298489be8e984bb493f5630fd",
+    "spec\\fixtures\\unit\\puppet\\util\\network_device\\netapp\\facts\\network-iface-get.yml": "a82aef9cf83ad8cac51cb75d6514b3ae",
+    "lib\\puppet\\provider\\netapp_role\\netapp_role.rb": "353c68023cbe7353d396138d1048f6e0",
+    "lib\\puppet\\provider\\netapp_snapmirror_schedule\\netapp_snapmirror_schedule.rb": "2dab4329a2b473f488ff2c38541cf1ac",
+    "lib\\puppet\\provider\\netapp_qtree\\netapp_qtree.rb": "4f415ef559583bbc4e1ba843f6908d59",
+    "spec\\fixtures\\integration\\puppet\\provider\\netapp_quota\\netapp_quota\\quota-status-result-off.yml": "d5c0ed9cc4e625e3127fbbbdac153703",
+    "spec\\unit\\puppet\\provider\\netapp_volume\\netapp_volume_spec.rb": "3513dec41c8c931677ea4523fd6be18c"
+  },
   "dependencies": [],
+  "description": "Module to extend Puppet Network Device functionality to support NetApp filers. \n\nOverview:\nThe NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.\n\nThe Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode. \nHowever it may well be compatible with other OnTap versions. \n\nFeatures:\nThe following items are supported:\n* Creation, modification and deletion of volumes, including auto-increment, snapshot schedules and volume options.\n* Creation, modification and deletion of QTrees. \n* Creation, modification and deletion of NFS Exports, including NFS Export security. \n* Creation, modification and deletion of users, groups and roles. \n* Creation, modification and deletion of Quotas. \n* Creation of snapmirror relationships. \n* Creation of snapmirror schedules.",
+  "license": "Apache License, version 2.0",
+  "name": "fatmcgav-netapp",
+  "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
+  "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
+  "summary": "NetApp Network Device support for Puppet",
   "types": [
     {
       "properties": [
@@ -85,10 +172,12 @@
           "doc": "An arbitrary tag for your own reference; the name of the message."
         }
       ],
+      "providers": [],
       "name": "netapp_notify",
       "doc": "Sends an arbitrary message to the agent run-time log."
     },
     {
+      "properties": [],
       "parameters": [
         {
           "name": "name",
@@ -182,6 +271,7 @@
       "doc": "Manage Netapp Role creation, modification and deletion."
     },
     {
+      "properties": [],
       "parameters": [
         {
           "name": "source_location",
@@ -213,6 +303,7 @@
       "doc": "Manage Netapp Snapmirror creation, modification and deletion."
     },
     {
+      "properties": [],
       "parameters": [
         {
           "name": "source_location",
@@ -358,8 +449,5 @@
       "doc": "Manage Netapp Volume creation, modification and deletion."
     }
   ],
-  "checksums": {},
-  "source": "https://github.com/fatmcgav/fatmcgav-netapp.git",
-  "project_page": "https://github.com/fatmcgav/fatmcgav-netapp",
-  "license": "Apache License, version 2.0"
+  "version": "0.5.0"
 }

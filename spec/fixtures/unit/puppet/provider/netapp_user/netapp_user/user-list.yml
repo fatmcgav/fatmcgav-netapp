@@ -1,0 +1,62 @@
+--- !ruby/object:NaElement
+name: results
+content: ""
+children:
+- !ruby/object:NaElement
+  name: useradmin-users
+  content: ""
+  children:
+  - !ruby/object:NaElement
+    name: useradmin-user-info
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: name
+      content: user
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: comment
+      content: test user
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: useradmin-groups
+      content: ""
+      children:
+      - !ruby/object:NaElement
+        name: useradmin-group-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: name
+          content: group1
+          children: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      - !ruby/object:NaElement
+        name: useradmin-group-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: name
+          content: group2
+          children: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  attrkeys: []
+  attrvals: []
+attrkeys:
+- status
+attrvals:
+- passed

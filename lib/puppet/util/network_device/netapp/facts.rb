@@ -128,7 +128,7 @@ class Puppet::Util::NetworkDevice::Netapp::Facts
     if @facts['hostname'].include? @facts['domain']
       # Hostname contains the domain, therefore must be FQDN
       @facts['fqdn'] = @facts['hostname']
-      @facts['hostname'] = @facts['fqdn'].split('.',1).shift
+      @facts['hostname'] = @facts['fqdn'].split('.',2).shift
     else
       # Hostname doesnt include domain.
       @facts['fqdn'] = "#{@facts['hostname']}.#{@facts['domain']}"

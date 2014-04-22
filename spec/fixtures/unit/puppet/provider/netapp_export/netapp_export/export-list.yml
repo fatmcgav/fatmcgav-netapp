@@ -1,0 +1,362 @@
+--- !ruby/object:NaElement
+name: results
+content: ""
+children:
+- !ruby/object:NaElement
+  name: rules
+  content: ""
+  children:
+  - !ruby/object:NaElement
+    name: exports-rule-info-2
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: pathname
+      content: /vol/volume
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: security-rules
+      content: ""
+      children:
+      - !ruby/object:NaElement
+        name: security-rule-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: anon
+          content: '0'
+          children: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: read-only
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: all-hosts
+              content: 'true'
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: read-write
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: name
+              content: server1
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: name
+              content: 192.168.150.50
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: name
+              content: 192.168.150.51
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: sec-flavor
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: sec-flavor-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: flavor
+              content: sys
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  - !ruby/object:NaElement
+    name: exports-rule-info-2
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: pathname
+      content: /vol/volume/qtree
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: security-rules
+      content: ""
+      children:
+      - !ruby/object:NaElement
+        name: security-rule-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: anon
+          content: '0'
+          children: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: read-only
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: all-hosts
+              content: 'true'
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: read-write
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: name
+              content: server1
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: name
+              content: 192.168.150.50
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: name
+              content: 192.168.150.51
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: sec-flavor
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: sec-flavor-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: flavor
+              content: sys
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  - !ruby/object:NaElement
+    name: exports-rule-info-2
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: pathname
+      content: /vol/othervolume
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: actual-pathname
+      content: /vol/volume
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: security-rules
+      content: ""
+      children:
+      - !ruby/object:NaElement
+        name: security-rule-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: read-write
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: all-hosts
+              content: 'true'
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: sec-flavor
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: sec-flavor-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: flavor
+              content: sys
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: []
+  - !ruby/object:NaElement
+    name: exports-rule-info-2
+    content: ""
+    children:
+    - !ruby/object:NaElement
+      name: pathname
+      content: /vol/volume/otherqtree
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: actual-pathname
+      content: /vol/volume/qtree
+      children: []
+      attrkeys: []
+      attrvals: []
+    - !ruby/object:NaElement
+      name: security-rules
+      content: ""
+      children:
+      - !ruby/object:NaElement
+        name: security-rule-info
+        content: ""
+        children:
+        - !ruby/object:NaElement
+          name: read-write
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: exports-hostname-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: all-hosts
+              content: 'true'
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        - !ruby/object:NaElement
+          name: sec-flavor
+          content: ""
+          children:
+          - !ruby/object:NaElement
+            name: sec-flavor-info
+            content: ""
+            children:
+            - !ruby/object:NaElement
+              name: flavor
+              content: sys
+              children: []
+              attrkeys: []
+              attrvals: []
+            attrkeys: []
+            attrvals: []
+          attrkeys: []
+          attrvals: []
+        attrkeys: []
+        attrvals: []
+      attrkeys: []
+      attrvals: []
+    attrkeys: []
+    attrvals: [] 
+  attrkeys: []
+  attrvals: [] 
+attrkeys:
+- status
+attrvals:
+- passed

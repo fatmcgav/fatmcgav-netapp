@@ -2,12 +2,18 @@ require 'spec_helper'
  
 describe Puppet::Type.type(:netapp_group) do
 
-  before :each do
-    described_class.stubs(:defaultprovider).returns providerclass
+  before do 
+    @group_example = {
+      :groupname => 'group',  
+      :comment   => 'Group comment', 
+      :roles     => 'roles'
+    }
+    @provider = stub('provider', :class => described_class.defaultprovider, :clear => nil)
+    described_class.defaultprovider.stubs(:new).returns(@provider)
   end
 
-  let :providerclass do
-    described_class.provide(:fake_netapp_group_provider) { mk_resource_methods }
+  let :group_resource do 
+    @group_example
   end
 
   it "should have :groupname be its namevar" do
@@ -86,6 +92,20 @@ describe Puppet::Type.type(:netapp_group) do
       
       it "should not support special characters" do
         expect { described_class.new(:groupname => 'user1', :roles => 'role!') }.to raise_error(Puppet::Error, /role! is not a valid role list/)
+      end
+      
+      it "insync? should return false if is and should values dont match" do
+        group = group_resource.dup
+        is_roles = 'role1'
+        group[:roles] = 'role1,role2'
+        described_class.new(group).property(:roles).insync?(is_roles).should be_false
+      end
+      
+      it "insync? should return true if is and should values match" do
+        group = group_resource.dup
+        is_roles = 'role1,role2'
+        group[:roles] = 'role1,role2'
+        described_class.new(group).property(:roles).insync?(is_roles).should be_true
       end
     end
     

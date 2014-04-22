@@ -255,7 +255,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
     rule_list.child_add(security)
     
     # Add the export rule
-    result = eadd('persistent', @resource[:persistent], 'verbose', 'true', 'rules', rule_list)
+    result = eadd('persistent', @resource[:persistent].to_s, 'verbose', 'true', 'rules', rule_list)
 
     # Work-around defect in NetApp SDK, whereby command will pass, even if export is not valid. 
     output = result.child_get("loaded-pathnames")
