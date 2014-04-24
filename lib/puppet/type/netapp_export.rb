@@ -9,7 +9,7 @@ Puppet::Type.newtype(:netapp_export) do
     desc "The export path. Valid format is /vol/[volume_name](/[qtree_name])."
     isnamevar
     validate do |value|
-    	unless value =~ /^(\/[\w]+){2,3}$/
+      unless value =~ /^(\/[\w]+){2,3}$/
         raise ArgumentError, "%s is not a valid export name." % value
       end
     end
@@ -24,11 +24,18 @@ Puppet::Type.newtype(:netapp_export) do
   newparam(:path) do
     desc "The filer path to export. If not specified, uses :name value"
     validate do |value|
-    	unless value =~ /^(\/[\w]+){2,3}$/
+      unless value =~ /^(\/[\w]+){2,3}$/
         raise ArgumentError, "%s is not a valid export filer path." % value
       end
     end
   end
+
+  newparam(:append_readwrite) do
+      desc "Include existing read-write hosts"
+      newvalues(:true, :false)
+      defaultto(:false)
+  end
+
   
   newproperty(:anon) do 
     desc "Should the export support anonymous root access."

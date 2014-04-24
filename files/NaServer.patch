@@ -1,43 +1,26 @@
---- lib/puppet/util/network_device/netapp/NaServer.rb.orig      2013-07-22 08:49:06.878678638 +0000
-+++ lib/puppet/util/network_device/netapp/NaServer.rb   2013-07-22 08:49:13.902571339 +0000
+--- NaServer.rb.orig	2014-04-23 05:07:01.984514600 -0500
++++ NaServer.rb	2014-04-23 09:09:08.030093900 -0500
 @@ -18,7 +18,7 @@
  include REXML
  require 'stringio'
  include StreamListener
 -require 'NaElement'
 +require File.dirname(__FILE__) + "/NaElement"
-
-
- # Class for managing Network Appliance(r) Storage System
-@@ -425,18 +425,24 @@
-    #
-
-   def invoke(api, *args)
--    num_parms = args.length
-+    num_parms = args.length
-     if ((num_parms & 1) != 0)
-         return self.fail_response(13001, "in Zapi::invoke, invalid number of parameters")
--    end
-+    end
-     xi = NaElement.new(api)
-     i = 0
-     while(i < num_parms)
--        key = args[i]
--    i = i + 1
--    value = args[i]
--    i = i + 1
--    xi.child_add(NaElement.new(key, value))
-+      key = args[i]
-+      i = i + 1
-+      value = args[i]
-+      i = i + 1
+ require 'pathname'
+ 
+ # Official NMSDK release version
+@@ -572,8 +572,14 @@
+     i = i + 1
+     value = args[i]
+     i = i + 1
 +      if value.class == NaElement
 +        x = NaElement.new(key)
 +        x.child_add(value)
 +        xi.child_add(x)
 +      else
-+        xi.child_add(NaElement.new(key, value))
-+      end
+     xi.child_add(NaElement.new(key, value))
      end
++    end
      return invoke_elem(xi)
    end
+ 
