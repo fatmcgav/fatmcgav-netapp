@@ -110,14 +110,11 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
         resource.provider = prov
       end
     end
-    Puppet.debug("Export info in prefetch: #{@exportinfo}")
   end
 
   def flush
     Puppet.debug("Puppet::Provider::Netapp_export: Got to flush for resource #{@resource[:name]}.")
    
- 
-    Puppet.debug("Export info in flush: #{@property_hash }")
     # Check required resource state
     Puppet.debug("Property_hash ensure = #{@property_hash[:ensure]}")
     case @property_hash[:ensure]
@@ -293,43 +290,44 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
   end
 
   private
+  
   def get_existing_read_write_hosts(path)
-  # Get a list of all nfs export rules
-  result = elist
-  rw_hosts = []
-  # Get a list of exports
-  rule_list = result.child_get("rules")
-  rules = rule_list.children_get()
-  # Iterate through each 'export-info' block.
-  rules.each do |rule|
-    name = rule.child_get_string("pathname")
-    if path.to_s != name.to_s 
-      Puppet.debug "export name #{path} not matching with path #{name}"
-      next
-    end
-    # Pull out security rules block
-    security_rules = rule.child_get("security-rules")
-    security_rule_info = security_rules.child_get("security-rule-info")
+    # Get a list of all nfs export rules
+    result = elist
+    rw_hosts = []
+    # Get a list of exports
+    rule_list = result.child_get("rules")
+    rules = rule_list.children_get()
+    # Iterate through each 'export-info' block.
+    rules.each do |rule|
+      name = rule.child_get_string("pathname")
+      if path.to_s != name.to_s
+        Puppet.debug "export name #{path} not matching with path #{name}"
+        next
+      end
+      # Pull out security rules block
+      security_rules = rule.child_get("security-rules")
+      security_rule_info = security_rules.child_get("security-rule-info")
 
-    # Pull read-write rules
-    read_write = security_rule_info.child_get("read-write")
-    unless read_write.nil?
-      Puppet.debug("Processing read-write security rules. \n")
-      read_write_hosts = read_write.children_get()
-      read_write_hosts.each do |rw_export|
-        rw_host_name = rw_export.child_get_string("name")
-        rw_all_hosts = rw_export.child_get_string("all-hosts")
-        Puppet.debug("Read-write: Name = #{rw_host_name}, All hosts = #{rw_all_hosts} \n")
-        if rw_all_hosts
-          Puppet.debug("All_hosts = #{rw_all_hosts} \n")
-        else
-          Puppet.debug("Processing hostname_records... \n")
-          rw_hosts << rw_host_name
+      # Pull read-write rules
+      read_write = security_rule_info.child_get("read-write")
+      unless read_write.nil?
+        Puppet.debug("Processing read-write security rules. \n")
+        read_write_hosts = read_write.children_get()
+        read_write_hosts.each do |rw_export|
+          rw_host_name = rw_export.child_get_string("name")
+          rw_all_hosts = rw_export.child_get_string("all-hosts")
+          Puppet.debug("Read-write: Name = #{rw_host_name}, All hosts = #{rw_all_hosts} \n")
+          if rw_all_hosts
+            Puppet.debug("All_hosts = #{rw_all_hosts} \n")
+          else
+            Puppet.debug("Processing hostname_records... \n")
+            rw_hosts << rw_host_name
+          end
         end
       end
     end
-  end
-  rw_hosts  
+    rw_hosts
   end
   
 end
