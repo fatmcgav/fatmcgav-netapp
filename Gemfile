@@ -17,6 +17,5 @@ group :test do
   gem 'puppet-lint'
   gem 'puppet-syntax'
   gem 'librarian-puppet'
-  gem 'simplecov', :require => false
-  gem 'coveralls', :require => false
+  gem 'simplecov', :require => false, :platforms => [:ruby_19, :ruby_20]
 end

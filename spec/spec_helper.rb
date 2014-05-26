@@ -10,15 +10,16 @@ class Object
   alias :must_not :should_not
 end
 
-# Coveralls loading
+# Simplecov for Teamcity
 begin
   require 'simplecov'
-  require 'coveralls'
-  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
   SimpleCov.start do
     add_filter '/spec/'
     add_filter '/lib/puppet/util/network_device/netapp/Na'
+    at_exit do
+      SimpleCov::Formatter::TeamcitySummaryFormatter.new.format(SimpleCov.result) if ENV['TEAMCITY_VERSION']
+    end
   end
 rescue Exception => e
-  warn "Coveralls disabled"
+  warn "Simplecov disabled"
 end
