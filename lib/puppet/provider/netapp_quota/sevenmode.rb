@@ -1,6 +1,18 @@
 require 'puppet/provider/netapp'
-Puppet::Type.type(:netapp_quota).provide(:netapp_quota, :parent => Puppet::Provider::Netapp) do
+Puppet::Type.type(:netapp_quota).provide(:sevenmode, :parent => Puppet::Provider::Netapp) do
 
+  confine :feature => :posix
+  defaultfor :feature => :posix
+  
+  # Restrict to 7Mode
+  confine :false => begin
+    a = Puppet::Node::Facts.indirection
+    a.terminus_class = :network_device
+    a.find(Puppet::Indirector::Request.new(:facts, :find, "clustered", nil))
+  rescue
+    :true
+  end
+  
   netapp_commands :list => 'quota-list-entries'
   netapp_commands :add => 'quota-add-entry'
   netapp_commands :del => 'quota-delete-entry'

@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'yaml'
 require 'puppet/util/network_device/netapp/NaServer'
 
-describe Puppet::Type.type(:netapp_user).provider(:netapp_user) do
+describe Puppet::Type.type(:netapp_user).provider(:sevenmode) do
 
   before :each do
     described_class.stubs(:suitable?).returns true

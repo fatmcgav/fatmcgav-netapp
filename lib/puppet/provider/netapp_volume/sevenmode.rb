@@ -1,10 +1,23 @@
 require 'puppet/provider/netapp'
 
-Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Provider::Netapp) do
-  @doc = "Manage Netapp Volume creation, modification and deletion."
+Puppet::Type.type(:netapp_volume).provide(:sevenmode, :parent => Puppet::Provider::Netapp) do
+  @doc = "Manage Netapp 7-Mode Volume creation, modification and deletion."
   
   confine :feature => :posix
   defaultfor :feature => :posix
+  
+  # Only run in 7Mode
+  #confine :clustered => :false
+  #defaultfor :clustered => :false
+  
+  # Restrict to 7Mode
+  confine :false => begin
+    a = Puppet::Node::Facts.indirection
+    a.terminus_class = :network_device
+    a.find(Puppet::Indirector::Request.new(:facts, :find, "clustered", nil))
+  rescue
+    :true
+  end
  
   netapp_commands :vollist        => 'volume-list-info'
   netapp_commands :optslist       => 'volume-options-list-info'

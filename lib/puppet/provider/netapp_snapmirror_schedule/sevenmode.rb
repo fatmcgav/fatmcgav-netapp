@@ -1,10 +1,19 @@
 require 'puppet/provider/netapp'
 
-Puppet::Type.type(:netapp_snapmirror_schedule).provide(:netapp_snapmirror_schedule, :parent => Puppet::Provider::Netapp) do
+Puppet::Type.type(:netapp_snapmirror_schedule).provide(:sevenmode, :parent => Puppet::Provider::Netapp) do
   @doc = "Manage Netapp Snapmirror schedule creation, modification and deletion."
   
   confine :feature => :posix
   defaultfor :feature => :posix
+  
+  # Restrict to 7Mode
+  confine :false => begin
+    a = Puppet::Node::Facts.indirection
+    a.terminus_class = :network_device
+    a.find(Puppet::Indirector::Request.new(:facts, :find, "clustered", nil))
+  rescue
+    :true
+  end
   
   netapp_commands :sslist => 'snapmirror-list-schedule'
   

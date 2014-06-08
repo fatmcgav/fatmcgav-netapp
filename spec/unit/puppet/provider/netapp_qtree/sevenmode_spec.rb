@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'yaml'
 require 'puppet/util/network_device/netapp/NaServer'
 
-describe Puppet::Type.type(:netapp_qtree).provider(:netapp_qtree) do
+describe Puppet::Type.type(:netapp_qtree).provider(:sevenmode) do
 
   before :each do
     described_class.stubs(:suitable?).returns true
