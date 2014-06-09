@@ -13,7 +13,7 @@ gem 'rake'
 group :test do
   gem 'puppet', puppetversion
   gem 'rspec-puppet', '>=1.0.1'
-  gem 'puppetlabs_spec_helper'
+  gem 'puppetlabs_spec_helper', '~>0.4.0'
   gem 'puppet-lint'
   gem 'puppet-syntax'
   gem 'librarian-puppet'
