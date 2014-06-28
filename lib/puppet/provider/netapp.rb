@@ -27,34 +27,60 @@ class Puppet::Provider::Netapp < Puppet::Provider
   def self.netapp_commands(command_specs)
     command_specs.each do |name, apicommand|
       # The `create_class_and_instance_method` method was added in puppet 3.0.0
-      if respond_to? :create_class_and_instance_method
-        create_class_and_instance_method(name) do |*args|
-          debug "Executing api call #{[apicommand, args].flatten.join(' ')}"
+      create_class_and_instance_method(name) do |*args|
+        Puppet.debug("apicommand is a - #{apicommand.class}")
+        if apicommand.is_a?(Hash) && apicommand[:iter]
+          Puppet.debug("Got an iter request, for #{apicommand[:result_element]} element.")
+          result = netapp_itterate(apicommand[:api], apicommand[:result_element])
+        else
+          Puppet.debug("Executing api call #{[apicommand, args].flatten.join(' ')}")
           result = transport.invoke(apicommand, *args)
           if result.results_status == 'failed'
             raise Puppet::Error, "Executing api call #{[apicommand, args].flatten.join(' ')} failed: #{result.results_reason.inspect}"
           end
-          result
         end
-      else
-        # workaround for puppet 2.7.x
-        unless singleton_class.method_defined?(name)
-          meta_def(name) do |*args|
-            debug "Executing api call #{[apicommand, args].flatten.join(' ')}"
-            result = transport.invoke(apicommand, *args)
-            if result.results_status == 'failed'
-              raise Puppet::Error, "Executing api call #{[apicommand, args].flatten.join(' ')} failed: #{result.results_reason.inspect}"
-            end
-            result
-          end
-        end
-        unless method_defined?(name)
-          define_method(name) do |*args|
-            self.class.send(name, *args)
-          end
-        end
+        
+        # Return the results
+        result
       end
     end
+  end
+  
+  # Helper function for itterating over an itterative api call
+  def self.netapp_itterate(api,result_element)
+    Puppet.debug("Got to netapp_itterate. API = #{api}, result_element = #{result_element}")
+    
+    # Initial vars
+    tag = ""
+    results = []
+      
+    # Itterate over the api
+    while !tag.nil?
+      # Invoke api request
+      Puppet.debug("Invoking: [#{api}, \"tag\", #{tag}]")
+      output = transport.invoke(api, "tag", tag)
+      if output.results_status == 'failed'
+        raise Puppet::Error, "Executing api call #{[api,"tag",tag].flatten.join(' ')} failed: #{output.results_reason.inspect}"
+      end
+      
+      # Check if any results were actually returned
+      records_returned = output.child_get_int("num-records")
+      if records_returned == 0
+        Puppet.debug("No records returned on this call...")
+        return
+      end
+      
+      # Update tag
+      tag = output.child_get_string("next-tag")
+      
+      # Get the result_element and push into results array
+      element = output.child_get(result_element)
+      results.push(*element.children_get())
+    end
+    
+    # We're done itterating
+    Puppet.debug("Finished itterating over api. Returning results")
+    results
   end
 
 end
