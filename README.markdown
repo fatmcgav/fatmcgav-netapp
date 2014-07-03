@@ -1,6 +1,6 @@
 # NetApp network device module
 
-**Please note that the device configuration management has been changed as of v0.4.0 of this module. 
+**Please note that the device configuration management has been changed as of v0.4.0 of this module.
 You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
 
 **Table of Contents**
@@ -10,6 +10,7 @@ You will therefore need to update your device configuration file if upgrading fr
 	- [Features](#features)
 	- [Requirements](#requirements)
 		- [NetApp Manageability SDK](#netapp-manageability-sdk)
+		- [NetApp user](#netapp-user)
 	- [Usage](#usage)
 		- [Device Setup](#device-setup)
 		- [NetApp operations](#netapp-operations)
@@ -31,10 +32,10 @@ The following items are supported:
  * Creation, modification and deletion of QTrees.
  * Creation, modification and deletion of NFS Exports, including NFS export security.
  * Creation, modification and deletion of users, groups and roles.
- * Creation, modification and deletion of Quotas. 
+ * Creation, modification and deletion of Quotas.
  * Creation of snapmirror relationships.
  * Creation of snapmirror schedules.
- 
+
 ## Requirements
 Since we can not directly install a puppet agent on the NetApp filers, it can either be managed from the Puppet Master server,
 or through an intermediate proxy system running a puppet agent. The requirement for the proxy system:
@@ -49,10 +50,10 @@ Please note you need a NetApp NOW account in order to be able to download the SD
 Once you have downloaded and extracted the SDK, the following files need to be copied onto your Puppet Master:
 `../lib/ruby/NetApp > [module dir]/netapp/lib/puppet/util/network_device/netapp/`
 
-Once the files have been copied into place on your Puppet Master, a patch needs to be applied to *NaServer.rb*.  
-The patch file can be found under `files/NaServer.patch`.  
+Once the files have been copied into place on your Puppet Master, a patch needs to be applied to *NaServer.rb*.
+The patch file can be found under `files/NaServer.patch`.
 To apply, change into the `netapp` module root directory and run:
-	
+
 	patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
 
 This should apply the patch without any errors, as below:
@@ -60,7 +61,41 @@ This should apply the patch without any errors, as below:
 	$ patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
 	patching file lib/puppet/util/network_device/netapp/NaServer.rb
 	$
-	
+
+### NetApp user
+
+If you want to access the NetApp filer with a dedicated user (recommended), you have to create a role with the following capabilities:
+
+* *Basic capabilities* (you will not be able to use the module without these)  
+  `login-http-admin`, `api-system-get-version`, `api-system-get-info`, `api-options-get`, `api-net-ifconfig-get`
+* If you intend to manage a virtual filer through a physical filer, instead of connecting to the virtual filer directly, you need to have the following capability:  
+  `security-api-vfiler`
+* To be able to use the *netapp\_export* type you need the following capabilities:  
+  `api-nfs-exportfs-append-rules-2`, `api-nfs-exportfs-delete-rules`, `api-nfs-exportfs-list-rules-2`, `api-nfs-exportfs-modify-rule-2`
+* To be able to use the *netapp\_group* type you need the following capabilities:  
+  `api-useradmin-group-add`, `api-useradmin-group-delete`, `api-useradmin-group-list`, `api-useradmin-group-modify`
+* To be able to use the *netapp\_qtree* type you need the following capabilities:  
+  `api-qtree-create`, `api-qtree-delete`, `api-qtree-list`
+* To be able to use the *netapp\_quota* type you need the following capabilities:  
+  `api-quota-add-entry`, `api-quota-delete-entry`, `api-quota-list-entries`, `api-quota-modify-entry`, `api-quota-off`, `api-quota-on`, `api-quota-resize`, `api-quota-status`  
+* To be able to use the *netapp\_role* type you need the following capabilities:  
+  `api-useradmin-role-add`, `api-useradmin-role-delete`, `api-useradmin-role-list`, `api-useradmin-role-modify`
+* To be able to use the *netapp\_snapmirror* type you need the following capabilities:  
+  `api-snapmirror-get-status`, `api-snapmirror-initialize`  
+* To be able to use the *netapp\_snapmirror_schedule* type you need the following capabilities:
+  `api-snapmirror-list-schedule`, `api-snapmirror-set-schedule`  
+* To be able to use the *netapp\_user* type you need the following capabilities:  
+  `api-useradmin-user-add`, `api-useradmin-user-delete`, `api-useradmin-user-list`, `api-useradmin-user-modify`
+* To be able to use the *netapp\_volume* type you need the following capabilities:  
+  `api-snapshot-get-schedule`, `api-snapshot-set-reserve`, `api-snapshot-set-schedule`, `api-volume-autosize-set`, `api-volume-create`, `api-volume-destroy`, `api-volume-list-info`, `api-volume-offline`, `api-volume-online`, `api-volume-options-list-info`, `api-volume-restrict`, `api-volume-set-option`, `api-volume-size`
+
+Let's say you only want to manage quotas with puppet and you want to limit the user's rights to the *netapp\_quota* type. You can now create a role for that purpose, add the role to a new group `puppet_group` and add a new user `puppet` to that group:
+
+    useradmin role add puppet_role -a login-http-admin,security-api-vfiler,api-system-get-version,api-system-get-info,api-options-get,api-net-ifconfig-get,api-quota-list-entries,api-quota-add-entry,api-quota-delete-entry,api-quota-modify-entry,api-quota-resize,api-quota-off,api-quota-on,api-quota-status
+    useradmin group add puppet_group -r puppet_role
+    useradmin user add puppet -g puppet_group
+
+The last step will ask you to assign a password to the new user `puppet`. You can now setup `puppet device` to use the specified user and password to access your NetApp device (see next section)
 
 ## Usage
 
