@@ -27,7 +27,7 @@ Puppet::Type.newtype(:netapp_user) do
   newproperty(:fullname) do
     desc "The user full name."
     validate do |value|
-      unless value =~ /^[\w+\s]+$/
+      unless value =~ /^[\w\s]+$/
          raise ArgumentError, "%s is not a valid full name." % value
       end
     end
