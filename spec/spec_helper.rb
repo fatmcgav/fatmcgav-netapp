@@ -9,3 +9,17 @@ class Object
   alias :must :should
   alias :must_not :should_not
 end
+
+# Simplecov for Teamcity
+begin
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/spec/'
+    add_filter '/lib/puppet/util/network_device/netapp/Na'
+    #at_exit do
+    #  SimpleCov::Formatter::TeamcitySummaryFormatter.new.format(SimpleCov.result) if ENV['TEAMCITY_VERSION']
+    #end
+  end
+rescue Exception => e
+  warn "Simplecov disabled"
+end

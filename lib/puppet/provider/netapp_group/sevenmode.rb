@@ -1,10 +1,19 @@
 require 'puppet/provider/netapp'
 
-Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provider::Netapp) do
+Puppet::Type.type(:netapp_group).provide(:sevenmode, :parent => Puppet::Provider::Netapp) do
   @doc = "Manage Netapp group creation, modification and deletion."
   
   confine :feature => :posix
   defaultfor :feature => :posix
+  
+  # Restrict to 7Mode
+  confine :false => begin
+    a = Puppet::Node::Facts.indirection
+    a.terminus_class = :network_device
+    a.find(Puppet::Indirector::Request.new(:facts, :find, "clustered", nil))
+  rescue
+    :true
+  end
 
   netapp_commands :glist   => 'useradmin-group-list' 
   netapp_commands :gdel    => 'useradmin-group-delete'
@@ -30,12 +39,15 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
       
       # Pull out relevant info
       groupname = group.child_get_string("name")
-      Puppet.debug("Puppet::Provider::Netapp_group.prefetch: Processing group info block for #{groupname}.")          
+      Puppet.debug("Puppet::Provider::Netapp_group.prefetch: Processing group info block for #{groupname}.")         
       
       # Create base hash
-      group_info = { :name => groupname,
-                    :ensure => :present }
+      group_info = { :groupname => groupname,
+                     :ensure    => :present }
       
+      # Add comment if present
+      group_info[:comment] = group.child_get_string("comment") unless group.child_get_string("comment").nil?
+
       # Get roles
       role_list = String.new
       group_roles = group.child_get("useradmin-roles")
@@ -63,8 +75,8 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
     Puppet.debug("Puppet::Provider::Netapp_group: Got to self.prefetch.")
     # Iterate instances and match provider where relevant.
     instances.each do |prov|
-      Puppet.debug("Prov.name = #{resources[prov.name]}. ")
-      if resource = resources[prov.name]
+      Puppet.debug("Prov.name = #{resources[prov.groupname]}. ")
+      if resource = resources[prov.groupname]
         resource.provider = prov
       end
     end
@@ -78,7 +90,7 @@ Puppet::Type.type(:netapp_group).provide(:netapp_group, :parent => Puppet::Provi
     case @property_hash[:ensure] 
     when :absent  
       # Query Netapp to remove user group.
-      result = gdel 'useradmin-group-delete', 'group-name', @resource[:groupname]
+      result = gdel('group-name', @resource[:groupname])
       Puppet.debug("Puppet::Provider::Netapp_group: group #{@resource[:groupname]} deleted successfully. \n")
       return true
     when :present

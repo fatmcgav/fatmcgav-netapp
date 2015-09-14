@@ -1,7 +1,9 @@
 # NetApp network device module
 
-**Please note that the device configuration management has been changed as of v0.4.0 of this module. 
-You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
+**N.B. Please note that this module is no longer being maintained.   
+For the supported version, please see the [Puppetlabs-NetApp](https://forge.puppetlabs.com/puppetlabs/netapp)**
+
+[![Coverage Status](https://coveralls.io/repos/fatmcgav/fatmcgav-netapp/badge.png?branch=develop)](https://coveralls.io/r/fatmcgav/fatmcgav-netapp?branch=develop)
 
 **Table of Contents**
 
@@ -13,6 +15,7 @@ You will therefore need to update your device configuration file if upgrading fr
 	- [Usage](#usage)
 		- [Device Setup](#device-setup)
 		- [NetApp operations](#netapp-operations)
+		- [Type/Provider Support](#type/provider-support)
 	- [Contributors](#contributors)
 	- [TODO](#todo)
 	- [Development](#development)
@@ -21,8 +24,8 @@ You will therefore need to update your device configuration file if upgrading fr
 ## Overview
 The NetApp network device module is designed to add support for managing NetApp filer configuration using Puppet and its Network Device functionality.
 
-The Netapp network device module has been written and tested against NetApp OnTap 8.0.4 7-mode.
-However it may well be compatible with other OnTap versions.
+The Netapp network device module has been written and tested against NetApp ONTAP 8.0.4 7-mode and NetApp ONTAP 8.2 C-Mode
+However it may well be compatible with other ONTAP versions.
 
 ## Features
 The following items are supported:
@@ -49,16 +52,19 @@ Please note you need a NetApp NOW account in order to be able to download the SD
 Once you have downloaded and extracted the SDK, the following files need to be copied onto your Puppet Master:
 `../lib/ruby/NetApp > [module dir]/netapp/lib/puppet/util/network_device/netapp/`
 
-Once the files have been copied into place on your Puppet Master, a patch needs to be applied to *NaServer.rb*.  
-The patch file can be found under `files/NaServer.patch`.  
+Once the files have been copied into place on your Puppet Master, a patch needs to be applied to *NaServer.rb* and *NaElement.rb*.  
+The patches can be found under the `files` directory.  
 To apply, change into the `netapp` module root directory and run:
 	
 	patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
+	patch lib/puppet/util/network_device/netapp/NaElement.rb < files/NaElement.patch
 
 This should apply the patch without any errors, as below:
 
 	$ patch lib/puppet/util/network_device/netapp/NaServer.rb < files/NaServer.patch
 	patching file lib/puppet/util/network_device/netapp/NaServer.rb
+	$ patch lib/puppet/util/network_device/netapp/NaElement.rb < files/NaElement.patch
+	patching file lib/puppet/util/network_device/netapp/NaElement.rb
 	$
 	
 
@@ -79,7 +85,7 @@ Example configuration `/etc/puppet/device/pfiler01.example.com.conf`:
       type netapp
       url https://root:secret@pfiler01.example.com
 
-You can also specify a virtual filer you want to operate on: Simply
+You can also specify a virtual filer or vserver you want to operate on: Simply
 provide the connection information for your physical filer and specify
 an optional path that represents the name of your virtual filer. Example
 configuration `/etc/puppet/device/vfiler01.example.com.conf`:
@@ -108,6 +114,32 @@ The space reservation mode will be set to volume, and snapshot space reserve wil
 The volume will be able to auto increment, and the NFS export will be persistent.
 
 You can also use any of the types individually, or create new defined types as required.
+
+### Type/Provider Support
+This module supports both NetApp filers operating in both 7-Mode and Cluster-Mode. The table below outlines what modes are supported by what types/providers. 
+
+Resource | 7-Mode supported | CMode supported
+--- | --- | ---
+netapp_aggregate | No | Yes
+netapp_cluster_id | No | Yes
+netapp_cluster_peer | No | Yes
+netapp_export_policy | No | Yes
+netapp_group | Yes | No
+netapp_igroup | No | Yes
+netapp_license | No | Yes
+netapp_lif | No | Yes
+netapp_lun | No | Yes
+netapp_lun_map | No | Yes
+netapp_nfs_export | Yes | No
+netapp_notify | Yes | Yes
+netapp_qtree | Yes | Yes
+netapp_quota | Yes | Yes
+netapp_role | Yes | No
+netapp_snapmirror | Yes | Yes
+netapp_user | Yes | No
+netapp_volume | Yes | Yes
+netapp_vserver | No | Yes
+netapp_vserver_option | No | Yes
 
 ## Contributors
 Thanks to the following people who have helped with this module:

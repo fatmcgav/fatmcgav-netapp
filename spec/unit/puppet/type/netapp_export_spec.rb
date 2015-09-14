@@ -2,12 +2,17 @@ require 'spec_helper'
 
 describe Puppet::Type.type(:netapp_export) do
 
-  before :each do
-    described_class.stubs(:defaultprovider).returns providerclass
+  before do 
+    @export_example = {
+      :name => '/vol/volume/export',
+      :persistent => true
+    }
+    @provider = stub('provider', :class => described_class.defaultprovider, :clear => nil)
+    described_class.defaultprovider.stubs(:new).returns(@provider)
   end
 
-  let :providerclass do
-    described_class.provide(:fake_netapp_export_provider) { mk_resource_methods }
+  let :export_resource do 
+    @export_example
   end
 
   it "should have :name be its namevar" do
@@ -121,6 +126,20 @@ describe Puppet::Type.type(:netapp_export) do
       it "should have a default value of '0'" do
         described_class.new(:name => '/vol/volume')[:anon].should == '0'
       end
+      
+      it "insync? should return false if is and should values dont match" do
+        export = export_resource.dup
+        is_anon = '1'
+        export[:anon] = '0'
+        described_class.new(export).property(:anon).insync?(is_anon).should be_false
+      end
+      
+      it "insync? should return true if is and should values match" do
+        export = export_resource.dup
+        is_anon = '0'
+        export[:anon] = '0'
+        described_class.new(export).property(:anon).insync?(is_anon).should be_true
+      end
     end
 
     describe "for readonly" do
@@ -135,6 +154,42 @@ describe Puppet::Type.type(:netapp_export) do
       it "should not have a default value" do
         described_class.new(:name => '/vol/volume')[:readonly].should == nil
       end
+      
+      it "insync? should return false if 'is' is not an array" do
+        export = export_resource.dup
+        is_readonly = '192.168.1.1'
+        export[:readonly] = ['192.168.1.1']
+        described_class.new(export).property(:readonly).insync?(is_readonly).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' = 'all_hosts'" do
+        export = export_resource.dup
+        is_readonly = ['all_hosts']
+        export[:readonly] = ['all_hosts']
+        export[:readwrite] = ['192.168.1.1'] # Needs to be a different value to readonly
+        described_class.new(export).property(:readonly).insync?(is_readonly).should be_true
+      end
+      
+      it "insync? should return false if 'is' and 'should' are different lengths" do
+        export = export_resource.dup
+        is_readonly = ['192.168.1.1', '192.168.1.2']
+        export[:readonly] = ['192.168.1.1']
+        described_class.new(export).property(:readonly).insync?(is_readonly).should be_false
+      end
+      
+      it "insync? should return false if 'is' and 'should' have different contents" do
+        export = export_resource.dup
+        is_readonly = ['192.168.1.1', '192.168.1.2']
+        export[:readonly] = ['192.168.1.1', '192.168.1.3']
+        described_class.new(export).property(:readonly).insync?(is_readonly).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' have the same length and contents" do
+        export = export_resource.dup
+        is_readonly = ['192.168.1.1', '192.168.1.2']
+        export[:readonly] = ['192.168.1.1', '192.168.1.2']
+        described_class.new(export).property(:readonly).insync?(is_readonly).should be_true
+      end
     end
 
     describe "for readwrite" do
@@ -148,6 +203,41 @@ describe Puppet::Type.type(:netapp_export) do
 
       it "should have a default value of 'all_hosts'" do
         described_class.new(:name => '/vol/volume')[:readwrite].should == ['all_hosts']
+      end
+      
+      it "insync? should return false if 'is' is not an array" do
+        export = export_resource.dup
+        is_readwrite = '192.168.1.1'
+        export[:readwrite] = ['192.168.1.1']
+        described_class.new(export).property(:readwrite).insync?(is_readwrite).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' = 'all_hosts'" do
+        export = export_resource.dup
+        is_readwrite = ['all_hosts']
+        export[:readwrite] = ['all_hosts']
+        described_class.new(export).property(:readwrite).insync?(is_readwrite).should be_true
+      end
+      
+      it "insync? should return false if 'is' and 'should' are different lengths" do
+        export = export_resource.dup
+        is_readwrite = ['192.168.1.1', '192.168.1.2']
+        export[:readwrite] = ['192.168.1.1']
+        described_class.new(export).property(:readwrite).insync?(is_readwrite).should be_false
+      end
+      
+      it "insync? should return false if 'is' and 'should' have different contents" do
+        export = export_resource.dup
+        is_readwrite = ['192.168.1.1', '192.168.1.2']
+        export[:readwrite] = ['192.168.1.1', '192.168.1.3']
+        described_class.new(export).property(:readwrite).insync?(is_readwrite).should be_false
+      end
+      
+      it "insync? should return true if 'is' and 'should' have the same length and contents" do
+        export = export_resource.dup
+        is_readwrite = ['192.168.1.1', '192.168.1.2']
+        export[:readwrite] = ['192.168.1.1', '192.168.1.2']
+        described_class.new(export).property(:readwrite).insync?(is_readwrite).should be_true
       end
     end
 

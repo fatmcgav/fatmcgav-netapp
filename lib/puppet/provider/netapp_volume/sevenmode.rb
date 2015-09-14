@@ -1,10 +1,23 @@
 require 'puppet/provider/netapp'
 
-Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Provider::Netapp) do
-  @doc = "Manage Netapp Volume creation, modification and deletion."
+Puppet::Type.type(:netapp_volume).provide(:sevenmode, :parent => Puppet::Provider::Netapp) do
+  @doc = "Manage Netapp 7-Mode Volume creation, modification and deletion."
   
   confine :feature => :posix
   defaultfor :feature => :posix
+  
+  # Only run in 7Mode
+  #confine :clustered => :false
+  #defaultfor :clustered => :false
+  
+  # Restrict to 7Mode
+  confine :false => begin
+    a = Puppet::Node::Facts.indirection
+    a.terminus_class = :network_device
+    a.find(Puppet::Indirector::Request.new(:facts, :find, "clustered", nil))
+  rescue
+    :true
+  end
  
   netapp_commands :vollist        => 'volume-list-info'
   netapp_commands :optslist       => 'volume-options-list-info'
@@ -240,8 +253,10 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     # Query Netapp to update volume size. 
     result = volsizeset("volume", @resource[:name], "new-size", @resource[:initsize])
     Puppet.debug("Puppet::Provider::Netapp_volume initsize=: Volume size set succesfully for volume #{@resource[:name]}.")
-    # Trigger and autoincrement run.
-    self.send('autoincrement=', resource['autoincrement'.to_sym]) if resource['autoincrement'.to_sym]
+    # Trigger and autoincrement run if required.
+    if @resource[:autoincrement] == :true
+      self.send('autoincrement=', resource['autoincrement'.to_sym]) if resource['autoincrement'.to_sym]
+    end
     return true
   end
   
@@ -259,28 +274,38 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
   def autoincrement=(value)
     Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: setting auto-increment for Volume #{@resource[:name]}")
 
-    # Need to work out a sensible auto-increment size
-    # Max growth of 20%, increment of 5%
-    size, unit = @resource[:initsize].match(/^(\d+)([A-Z])$/i).captures
-
-    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Volume size = #{size}, unit = #{unit}.")
-
-    # Need to convert size into MB... 
-    if unit == 'g'
-      size = size.to_i * 1024
-    elsif unit == 't'
-      size = size.to_i * 1024 * 1024
+    # Enabling or disabling autoincrement
+    if @resource[:autoincrement] == :true
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Enabling autoincrement.")
+    
+      # Need to work out a sensible auto-increment size
+      # Max growth of 20%, increment of 5%
+      size, unit = @resource[:initsize].match(/^(\d+)([A-Z])$/i).captures
+  
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Volume size = #{size}, unit = #{unit}.")
+  
+      # Need to convert size into MB... 
+      if unit == 'g'
+        size = size.to_i * 1024
+      elsif unit == 't'
+        size = size.to_i * 1024 * 1024
+      end
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Volume size in m = #{size}.")
+  
+      # Set max-size
+      maxsize = (size.to_i*1.2).to_i
+      incrsize = (size.to_i*0.05).to_i
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Maxsize = #{maxsize}, incrsize = #{incrsize}.")
+  
+      # Query Netapp to set autosize status.
+      result = autosizeset("volume", @resource[:name], "is-enabled", @resource[:autoincrement], "maximum-size", maxsize.to_s + "m", "increment-size", incrsize.to_s + "m")
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Auto-increment set succesfully for volume #{@resource[:name]}.")
+    else
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Disabling autoincrement.")
+      # Query Netapp to set autosize status.
+      result = autosizeset("volume", @resource[:name], "is-enabled", @resource[:autoincrement])
+      Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Auto-increment disabled succesfully for volume #{@resource[:name]}.")      
     end
-    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Volume size in m = #{size}.")
-
-    # Set max-size
-    maxsize = (size.to_i*1.2).to_i
-    incrsize = (size.to_i*0.05).to_i
-    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Maxsize = #{maxsize}, incrsize = #{incrsize}.")
-
-    # Query Netapp to set autosize status.
-    result = autosizeset("volume", @resource[:name], "is-enabled", @resource[:autoincrement], "maximum-size", maxsize.to_s + "m", "increment-size", incrsize.to_s + "m")
-    Puppet.debug("Puppet::Provider::Netapp_volume autoincrement=: Auto-increment set succesfully for volume #{@resource[:name]}.")
     return true
   end
   
@@ -332,15 +357,15 @@ Puppet::Type.type(:netapp_volume).provide(:netapp_volume, :parent => Puppet::Pro
     Puppet.debug("Puppet::Provider::Netapp_volume state=: Required state = #{required_state}.") 
     
     # Handle the required_state value
-    if (required_state == "online")
+    if (required_state == :online)
       Puppet.debug("Onlining volume #{@resource[:name]}.")
       # Online volume
-      result = volonline("name", @resouce[:name])
-    elsif (required_state == "offline")
+      result = volonline("name", @resource[:name])
+    elsif (required_state == :offline)
       Puppet.debug("Offlining volume #{@resource[:name]}.")
       # Offline volume
-      result = voloffline("name", @resouce[:name])
-    elsif (required_state == "restricted")
+      result = voloffline("name", @resource[:name])
+    elsif (required_state == :restricted)
       Puppet.debug("Restricting volume #{@resource[:name]}.")
       # Restrict volume
       result = volrestrict("name", @resource[:name])

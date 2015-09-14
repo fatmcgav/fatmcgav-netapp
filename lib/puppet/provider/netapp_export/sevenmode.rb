@@ -1,10 +1,19 @@
 require 'puppet/provider/netapp'
 
-Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Provider::Netapp) do
+Puppet::Type.type(:netapp_export).provide(:sevenmode, :parent => Puppet::Provider::Netapp) do
   @doc = "Manage Netapp export creation, modification and deletion."
   
   confine :feature => :posix
   defaultfor :feature => :posix
+  
+  # Restrict to 7Mode
+  confine :false => begin
+    a = Puppet::Node::Facts.indirection
+    a.terminus_class = :network_device
+    a.find(Puppet::Indirector::Request.new(:facts, :find, "clustered", nil))
+  rescue
+    :true
+  end
 
   netapp_commands :elist   => 'nfs-exportfs-list-rules-2'
   netapp_commands :edel    => 'nfs-exportfs-delete-rules'
@@ -255,7 +264,7 @@ Puppet::Type.type(:netapp_export).provide(:netapp_export, :parent => Puppet::Pro
     rule_list.child_add(security)
     
     # Add the export rule
-    result = eadd('persistent', @resource[:persistent], 'verbose', 'true', 'rules', rule_list)
+    result = eadd('persistent', @resource[:persistent].to_s, 'verbose', 'true', 'rules', rule_list)
 
     # Work-around defect in NetApp SDK, whereby command will pass, even if export is not valid. 
     output = result.child_get("loaded-pathnames")
