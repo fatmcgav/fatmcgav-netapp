@@ -1,7 +1,7 @@
 # NetApp network device module
 
-**Please note that the device configuration management has been changed as of v0.4.0 of this module. 
-You will therefore need to update your device configuration file if upgrading from a version < 0.4.0.**
+**N.B. Please note that this module is no longer being maintained.   
+For the supported version, please see the [Puppetlabs-NetApp](https://forge.puppetlabs.com/puppetlabs/netapp)**
 
 [![Coverage Status](https://coveralls.io/repos/fatmcgav/fatmcgav-netapp/badge.png?branch=develop)](https://coveralls.io/r/fatmcgav/fatmcgav-netapp?branch=develop)
 
